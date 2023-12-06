@@ -1,7 +1,7 @@
 
 import { createElement } from '../render.js';
 
-const createInfoSectionTemplate = () => (
+const createInfoViewTemplate = () => (
   `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
     <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
@@ -13,9 +13,9 @@ const createInfoSectionTemplate = () => (
   </section>`
 );
 
-export default class InfoSectionView {
+export default class InfoView {
   getTemplate() {
-    return createInfoSectionTemplate();
+    return createInfoViewTemplate();
   }
 
   getElement() {
