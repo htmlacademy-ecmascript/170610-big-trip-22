@@ -5,12 +5,16 @@ const POINT_DATE_DATE_FORMAT = 'MMM DD';
 const POINT_TIME_FORMAT = 'HH:mm';
 const POINT_DATE_TIME_TYPE_FORMAT = 'YYYY-MM-DDTHH:mm';
 
+const POINT_INPUT_DATE_TIME_FORMAT = 'DD/MM/YY HH:mm';
+
 const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
 
 const humanizePointDateTime = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_DATE_TIME_FORMAT) : '';
 const humanizePointDateDate = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_DATE_DATE_FORMAT) : '';
 const humanizePointTimeDate = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_TIME_FORMAT) : '';
 const humanizePointDateTimeType = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_DATE_TIME_TYPE_FORMAT) : '';
+
+const humanizePointInputDateTimeType = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_INPUT_DATE_TIME_FORMAT) : '';
 
 const getFormattedDiffDuration = (dateTo, dateFrom) => {
 
@@ -39,5 +43,6 @@ export {
   humanizePointDateDate,
   humanizePointDateTimeType,
   humanizePointTimeDate,
-  getFormattedDiffDuration
+  getFormattedDiffDuration,
+  humanizePointInputDateTimeType
 };
