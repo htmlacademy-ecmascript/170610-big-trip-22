@@ -7,8 +7,6 @@ const POINT_DATE_TIME_TYPE_FORMAT = 'YYYY-MM-DDTHH:mm';
 
 const POINT_INPUT_DATE_TIME_FORMAT = 'DD/MM/YY HH:mm';
 
-const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
-
 const humanizePointDateTime = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_DATE_TIME_FORMAT) : '';
 const humanizePointDateDate = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_DATE_DATE_FORMAT) : '';
 const humanizePointTimeDate = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_TIME_FORMAT) : '';
@@ -38,7 +36,6 @@ const getFormattedDiffDuration = (dateTo, dateFrom) => {
 
 
 export {
-  getRandomArrayElement,
   humanizePointDateTime,
   humanizePointDateDate,
   humanizePointDateTimeType,

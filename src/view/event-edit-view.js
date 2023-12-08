@@ -13,14 +13,15 @@ const BLANK_POINT = {
   'type': ''
 };
 
-const createEventEditViewTemplate = (data) => {
+// eslint-disable-next-line no-unused-vars
+const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const {
     basePrice,
     dateFrom,
     dateTo,
     type,
-  } = data;
+  } = point;
 
   return (
     `<li class="trip-events__item">
@@ -183,12 +184,18 @@ const createEventEditViewTemplate = (data) => {
 
 export default class EventEditView {
 
-  constructor({ point = BLANK_POINT }) {
+  constructor({ point = BLANK_POINT }, { destinations }, { offers }) {
     this.point = point;
+    this.destinations = destinations;
+    this.offers = offers;
   }
 
   getTemplate() {
-    return createEventEditViewTemplate(this.point);
+    return createEventEditViewTemplate(
+      this.point,
+      this.destinations,
+      this.offers,
+    );
   }
 
   getElement() {
