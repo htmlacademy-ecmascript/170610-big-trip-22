@@ -1,27 +1,27 @@
-import { getRandomArrayElement } from '../utils';
-import { OFFERS_TYPES } from '../const';
+import { getRandomArrayElement } from '../utils.js';
+import { OFFERS_TYPES } from '../const.js';
 import { nanoid } from 'nanoid';
 
 const mockPoints = [
   {
-    'id': 'f4b62099-293f-4c3d-a702-94eec4a2808c',
-    'base_price': 1100,
-    'date_from': '2019-07-10T22:55:56.845Z',
-    'date_to': '2019-07-11T11:22:13.375Z',
-    'destination': 'bfa5cb75-a1fe-4b77-a83c-0e528e910e04',
-    'is_favorite': false,
+    'id': nanoid(),
+    'basePrice': 1100,
+    'dateFrom': '2019-07-10T22:55:56.845Z',
+    'dateTo': '2019-07-11T11:22:13.375Z',
+    'destination': nanoid(),
+    'isFavorite': false,
     'offers': [
       'b4c3e4e6-9053-42ce-b747-e281314baa31'
     ],
-    'type': 'taxi',
+    'type': getRandomArrayElement(OFFERS_TYPES)
   },
   {
     'id': nanoid(),
-    'base_price': 1100,
-    'date_from': '2019-07-10T22:55:56.845Z',
-    'date_to': '2019-07-11T11:22:13.375Z',
+    'basePrice': 1200,
+    'dateFrom': '2019-07-10T22:55:56.845Z',
+    'dateTo': '2019-07-11T11:22:13.375Z',
     'destination': nanoid(),
-    'is_favorite': false,
+    'isFavorite': true,
     'offers': [
       nanoid(),
     ],
@@ -29,11 +29,11 @@ const mockPoints = [
   },
   {
     'id': nanoid(),
-    'base_price': 1100,
-    'date_from': '2019-07-10T22:55:56.845Z',
-    'date_to': '2019-07-11T11:22:13.375Z',
+    'basePrice': 1300,
+    'dateFrom': '2019-07-10T22:55:56.845Z',
+    'dateTo': '2019-07-11T11:22:13.375Z',
     'destination': nanoid(),
-    'is_favorite': false,
+    'isFavorite': false,
     'offers': [
       nanoid(),
     ],
@@ -41,11 +41,11 @@ const mockPoints = [
   },
   {
     'id': nanoid(),
-    'base_price': 1100,
-    'date_from': '2019-07-10T22:55:56.845Z',
-    'date_to': '2019-07-11T11:22:13.375Z',
+    'basePrice': 1400,
+    'dateFrom': '2019-07-10T22:55:56.845Z',
+    'dateTo': '2019-07-11T11:22:13.375Z',
     'destination': nanoid(),
-    'is_favorite': false,
+    'isFavorite': true,
     'offers': [
       nanoid(),
     ],
