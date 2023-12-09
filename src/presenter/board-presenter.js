@@ -1,10 +1,9 @@
+import { render } from '../framework/render.js';
 import BoardView from '../view/board-view.js';
 import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
-
-import { render } from '../render.js';
 
 export default class BoardPresenter {
   boardComponent = new BoardView();
@@ -24,13 +23,13 @@ export default class BoardPresenter {
     this.boardOffers = [...this.offersModel.getOffers()];
 
     render(this.boardComponent, this.boardContainer);
-    render(new SortView(), this.boardComponent.getElement());
-    render(this.eventsListComponent, this.boardComponent.getElement());
+    render(new SortView(), this.boardComponent.element);
+    render(this.eventsListComponent, this.boardComponent.element);
 
-    render(new EventEditView({ point: this.boardPoints[0] }, { destinations: this.boardDestinations }, { offers: this.boardOffers }), this.eventsListComponent.getElement());
+    render(new EventEditView({ point: this.boardPoints[0] }, { destinations: this.boardDestinations }, { offers: this.boardOffers }), this.eventsListComponent.element);
 
     for (let i = 1; i < this.boardPoints.length; i++) {
-      render(new EventView({ point: this.boardPoints[i] }, { destinations: this.boardDestinations }, { offers: this.boardOffers }), this.eventsListComponent.getElement());
+      render(new EventView({ point: this.boardPoints[i] }, { destinations: this.boardDestinations }, { offers: this.boardOffers }), this.eventsListComponent.element);
     }
 
   }

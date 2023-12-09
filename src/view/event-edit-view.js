@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointInputDateTimeType } from '../utils.js';
 
 const BLANK_POINT = {
@@ -214,31 +214,26 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   );
 };
 
-export default class EventEditView {
+export default class EventEditView extends AbstractView {
+
+  #point = null;
+  #destinations = null;
+  #offers = null;
 
   constructor({ point = BLANK_POINT }, { destinations }, { offers }) {
-    this.point = point;
-    this.destinations = destinations;
-    this.offers = offers;
+    super();
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
-  getTemplate() {
+  get template() {
     return createEventEditViewTemplate(
-      this.point,
-      this.destinations,
-      this.offers,
+      this.#point,
+      this.#destinations,
+      this.#offers,
     );
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
 
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
 }
