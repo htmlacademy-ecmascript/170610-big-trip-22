@@ -1,9 +1,9 @@
 import { generatedOffers } from '../mock/point.js';
 
 export default class OffersModel {
-  offers = generatedOffers;
+  #offers = generatedOffers;
 
-  getOffers() {
-    return this.offers;
+  get offers() {
+    return this.#offers;
   }
 }
