@@ -220,11 +220,18 @@ export default class EventEditView extends AbstractView {
   #destinations = null;
   #offers = null;
 
-  constructor({ point = BLANK_POINT }, { destinations }, { offers }) {
+  #handleFormSubmit = null;
+
+  constructor({ point = BLANK_POINT }, { destinations }, { offers }, { onFormSubmit }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offers;
+
+    this.#handleFormSubmit = onFormSubmit;
+
+    this.element.querySelector('.event')
+      .addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
@@ -235,5 +242,9 @@ export default class EventEditView extends AbstractView {
     );
   }
 
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
 }
