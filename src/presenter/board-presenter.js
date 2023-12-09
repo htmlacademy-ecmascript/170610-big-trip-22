@@ -29,7 +29,7 @@ export default class BoardPresenter {
 
     render(new EventEditView({ point: this.boardPoints[0] }, { destinations: this.boardDestinations }, { offers: this.boardOffers }), this.eventsListComponent.getElement());
 
-    for (let i = 0; i < this.boardPoints.length; i++) {
+    for (let i = 1; i < this.boardPoints.length; i++) {
       render(new EventView({ point: this.boardPoints[i] }, { destinations: this.boardDestinations }, { offers: this.boardOffers }), this.eventsListComponent.getElement());
     }
 

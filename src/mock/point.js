@@ -27,6 +27,13 @@ const generatedOffers = TYPES
 
 const generatePoint = () => {
 
+  const randomDestination = generatedDestinations.reduce((accumulator, currentValue) => {
+    const randomIndex = Math.floor(Math.random() * 2);
+    return randomIndex ? currentValue : accumulator;
+  });
+
+  const randomDestinationId = randomDestination.id;
+
   const pointType = getRandomArrayElement(TYPES);
 
   const matchingOffers = generatedOffers
@@ -42,7 +49,7 @@ const generatePoint = () => {
     basePrice: getRandomInteger(400, 1100),
     dateFrom: getRandomDateFrom(),
     dateTo: getRandomDateTo(),
-    destination: getRandomInteger(1, DESTINATIONS.length),
+    destination: randomDestinationId,
     isFavorite: Boolean(getRandomInteger(0, 1)),
     type: pointType,
     offers: offers,

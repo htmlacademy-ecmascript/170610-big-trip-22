@@ -13,15 +13,18 @@ const BLANK_POINT = {
   'type': ''
 };
 
-// eslint-disable-next-line no-unused-vars
 const createEventEditViewTemplate = (point, destinations, offers) => {
+
+  // console.log(point);
 
   const {
     basePrice,
     dateFrom,
     dateTo,
     type,
+    destination: destinationId,
   } = point;
+
 
   return (
     `<li class="trip-events__item">

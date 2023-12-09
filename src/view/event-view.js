@@ -7,9 +7,19 @@ import {
   getFormattedDiffDuration
 } from '../utils.js';
 
-const createEventViewTemplate = (point) => {
+const createEventViewTemplate = (point, destinations) => {
 
-  const { basePrice, dateFrom, dateTo, type, isFavorite } = point;
+  const {
+    basePrice,
+    dateFrom,
+    dateTo,
+    type,
+    isFavorite,
+    destination: destinationId,
+  } = point;
+
+  console.log(point);
+  console.log(destinations);
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn--active'
@@ -58,12 +68,13 @@ const createEventViewTemplate = (point) => {
 
 export default class EventView {
 
-  constructor({ point }) {
+  constructor({ point }, { destinations }) {
     this.point = point;
+    this.destinations = destinations;
   }
 
   getTemplate() {
-    return createEventViewTemplate(this.point);
+    return createEventViewTemplate(this.point, this.destinations);
   }
 
   getElement() {
