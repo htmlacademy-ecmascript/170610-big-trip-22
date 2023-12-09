@@ -7,32 +7,58 @@ import {
   getFormattedDiffDuration
 } from '../utils.js';
 
-const createEventViewTemplate = (point, destinations) => {
+const createEventViewTemplate = (point, destinations, offers) => {
 
   const {
     basePrice,
     dateFrom,
     dateTo,
-    type,
+    type: pointType,
     isFavorite,
-    destination: destinationId,
+    destination: pointDestinationId,
+    offers: pointOffersIds,
   } = point;
-
-  console.log(point);
-  console.log(destinations);
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn--active'
     : '';
+
+  const pointDestinationName = destinations
+    .find(({ id }) => id === pointDestinationId)
+    ?.name;
+
+  const isSelectedOffers = () => Boolean(pointOffersIds.length);
+
+  const pointTypeOffers = offers
+    .find(({ type }) => type === pointType)
+    ?.offers;
+
+  const pointSelectedOffers = pointTypeOffers.filter((offer) => pointOffersIds.includes(offer.id));
+
+  const createEventSelectedOffersTemplate = (selectedOffers) => (
+    `${isSelectedOffers(pointOffersIds) ? `
+            <ul class="event__selected-offers">
+                ${selectedOffers.map(({ title, price }) =>
+      `<li class="event__offer">
+                <span class="event__offer-title">${title}</span>
+                +€
+                <span class="event__offer-price">${price}</span>
+              </li>`).join('')}
+            </ul>`
+      : ''}`
+  );
+
+  const selectedOffersTemplate = createEventSelectedOffersTemplate(pointSelectedOffers);
+
 
   return (
     `<li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="${humanizePointDateTime(dateFrom)}">${humanizePointDateDate(dateFrom)}</time>
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${pointType}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} Amsterdam</h3>
+        <h3 class="event__title">${pointType} ${pointDestinationName}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${humanizePointDateTimeType(dateFrom)}">${humanizePointTimeDate(dateFrom)}</time>
@@ -45,13 +71,9 @@ const createEventViewTemplate = (point, destinations) => {
           €&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">Order Uber</span>
-            +€&nbsp;
-            <span class="event__offer-price">20</span>
-          </li>
-        </ul>
+
+         ${selectedOffersTemplate}
+
         <button class="event__favorite-btn ${favoriteClassName}" type="button">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -68,13 +90,14 @@ const createEventViewTemplate = (point, destinations) => {
 
 export default class EventView {
 
-  constructor({ point }, { destinations }) {
+  constructor({ point }, { destinations }, { offers }) {
     this.point = point;
     this.destinations = destinations;
+    this.offers = offers;
   }
 
   getTemplate() {
-    return createEventViewTemplate(this.point, this.destinations);
+    return createEventViewTemplate(this.point, this.destinations, this.offers);
   }
 
   getElement() {
