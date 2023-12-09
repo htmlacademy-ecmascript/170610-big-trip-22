@@ -1,9 +1,10 @@
-import { render, replace, remove } from '../framework/render.js';
+import { render, replace } from '../framework/render.js';
 import BoardView from '../view/board-view.js';
 import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
+import NoEventView from '../view/no-event-view.js';
 
 export default class BoardPresenter {
 
@@ -84,12 +85,18 @@ export default class BoardPresenter {
 
   #renderBoard() {
     render(this.#boardComponent, this.#boardContainer);
-    render(new SortView(), this.#boardComponent.element);
-    render(this.#eventsListComponent, this.#boardComponent.element);
 
-    for (let i = 0; i < this.#boardPoints.length; i++) {
-      this.#renderPoint(this.#boardPoints[i], this.#boardDestinations, this.#boardOffers);
+    if (this.#boardPoints.length) {
+      render(new SortView(), this.#boardComponent.element);
+      render(this.#eventsListComponent, this.#boardComponent.element);
+
+      for (let i = 0; i < this.#boardPoints.length; i++) {
+        this.#renderPoint(this.#boardPoints[i], this.#boardDestinations, this.#boardOffers);
+      }
+    } else {
+      render(new NoEventView(), this.#boardComponent.element);
     }
+
   }
 
 }
