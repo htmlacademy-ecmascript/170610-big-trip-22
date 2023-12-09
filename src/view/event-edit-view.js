@@ -80,139 +80,157 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const destinationListTemplate = createEventDestinationListTemplate();
 
+  const pointDestination = destinations
+    .find(({ id }) => id === pointDestinationId);
+
+  const hasDestinationDescription = Object.keys(pointDestination).some((key) => key === 'description');
+
+  const pointDestinationDescription = pointDestination.description;
+
+  const createDestinationDescriptionTemplate = () => (
+    `${hasDestinationDescription ? `
+      <section class="event__section  event__section--destination">
+          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+          <p class="event__destination-description">${pointDestinationDescription}</p>
+        </section>
+      </section>
+    ` : ''} `
+  );
+
+  const destinationDescriptionTemplate = createDestinationDescriptionTemplate();
+
 
   return (
     `< li class="trip-events__item" >
-  <form class="event event--edit" action="#" method="post">
-    <header class="event__header">
-      <div class="event__type-wrapper">
+      <form class="event event--edit" action="#" method="post">
+        <header class="event__header">
+          <div class="event__type-wrapper">
 
-        <label class="event__type  event__type-btn" for="event-type-toggle-${pointDestinationId}">
-          <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType}.png" alt="Event type icon">
-        </label>
-
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointDestinationId}" type="checkbox">
-
-          ${typeListTemplate}
-
-      </div>
-
-      <div class="event__field-group  event__field-group--destination">
-        <label class="event__label  event__type-output" for="event-destination-${pointDestinationId}">
-          ${pointType}
-        </label>
-        <input
-          class="event__input  event__input--destination"
-          id="event-destination-${pointDestinationId}"
-          type="text"
-          name="event-destination"
-          value="${pointDestinationName}"
-          list="destination-list-${pointDestinationId}">
-
-          ${destinationListTemplate}
-
-      </div>
-
-      <div class="event__field-group  event__field-group--time">
-
-        <label class="visually-hidden" for="event-start-time-${pointDestinationId}">From</label>
-
-        <input
-          class="event__input  event__input--time"
-          id="event-start-time-${pointDestinationId}"
-          type="text"
-          name="event-start-time"
-          value="${humanizePointInputDateTimeType(dateFrom)}">
-          —
-          <label class="visually-hidden" for="event-end-time-${pointDestinationId}">To</label>
-          <input
-            class="event__input event__input--time"
-            id="event-end-time-${pointDestinationId}"
-            type="text"
-            name="event-end-time"
-            value="${humanizePointInputDateTimeType(dateTo)}">
-          </div>
-
-          <div class="event__field-group  event__field-group--price">
-            <label class="event__label" for="event-price-${pointDestinationId}">
-              <span class="visually-hidden">Price</span>
-              €
+            <label class="event__type  event__type-btn" for="event-type-toggle-${pointDestinationId}">
+              <span class="visually-hidden">Choose event type</span>
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType}.png" alt="Event type icon">
             </label>
-            <input
-              class="event__input event__input--price"
-              id="event-price-${pointDestinationId}"
-              type="text"
-              name="event-price"
-              value="${basePrice}">
+
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointDestinationId}" type="checkbox">
+
+              ${typeListTemplate}
+
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-          </button>
-        </header>
+          <div class="event__field-group  event__field-group--destination">
 
-        <section class="event__details">
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+            <label class="event__label  event__type-output" for="event-destination-${pointDestinationId}">
+              ${pointType}
+            </label>
 
-            <div class="event__available-offers">
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${pointDestinationId}" type="checkbox" name="event-offer-luggage" checked="">
-                  <label class="event__offer-label" for="event-offer-luggage-${pointDestinationId}">
-                    <span class="event__offer-title">Add luggage</span>
-                    +€&nbsp;
-                    <span class="event__offer-price">50</span>
-                  </label>
+            <input
+              class="event__input  event__input--destination"
+              id="event-destination-${pointDestinationId}"
+              type="text"
+              name="event-destination"
+              value="${pointDestinationName}"
+              list="destination-list-${pointDestinationId}">
+
+              ${destinationListTemplate}
+
+          </div>
+
+          <div class="event__field-group  event__field-group--time">
+
+            <label class="visually-hidden" for="event-start-time-${pointDestinationId}">From</label>
+
+            <input
+              class="event__input event__input--time"
+              id="event-start-time-${pointDestinationId}"
+              type="text"
+              name="event-start-time"
+              value="${humanizePointInputDateTimeType(dateFrom)}">
+              —
+              <label class="visually-hidden" for="event-end-time-${pointDestinationId}">To</label>
+              <input
+                class="event__input event__input--time"
+                id="event-end-time-${pointDestinationId}"
+                type="text"
+                name="event-end-time"
+                value="${humanizePointInputDateTimeType(dateTo)}">
               </div>
 
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-${pointDestinationId}" type="checkbox" name="event-offer-comfort" checked="">
-                  <label class="event__offer-label" for="event-offer-comfort-${pointDestinationId}">
-                    <span class="event__offer-title">Switch to comfort</span>
-                    +€&nbsp;
-                    <span class="event__offer-price">80</span>
-                  </label>
+              <div class="event__field-group event__field-group--price">
+                <label class="event__label" for="event-price-${pointDestinationId}">
+                  <span class="visually-hidden">Price</span>
+                  €
+                </label>
+                <input
+                  class="event__input event__input--price"
+                  id="event-price-${pointDestinationId}"
+                  type="text"
+                  name="event-price"
+                  value="${basePrice}">
               </div>
 
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-${pointDestinationId}" type="checkbox" name="event-offer-meal">
-                  <label class="event__offer-label" for="event-offer-meal-${pointDestinationId}">
-                    <span class="event__offer-title">Add meal</span>
-                    +€&nbsp;
-                    <span class="event__offer-price">15</span>
-                  </label>
-              </div>
+              <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+              <button class="event__reset-btn" type="reset">Delete</button>
+              <button class="event__rollup-btn" type="button">
+                <span class="visually-hidden">Open event</span>
+              </button>
+            </header>
 
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-${pointDestinationId}" type="checkbox" name="event-offer-seats">
-                  <label class="event__offer-label" for="event-offer-seats-${pointDestinationId}">
-                    <span class="event__offer-title">Choose seats</span>
-                    +€&nbsp;
-                    <span class="event__offer-price">5</span>
-                  </label>
-              </div>
+            <section class="event__details">
+              <section class="event__section  event__section--offers">
+                <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-${pointDestinationId}" type="checkbox" name="event-offer-train">
-                  <label class="event__offer-label" for="event-offer-train-${pointDestinationId}">
-                    <span class="event__offer-title">Travel by train</span>
-                    +€&nbsp;
-                    <span class="event__offer-price">40</span>
-                  </label>
-              </div>
-            </div>
-          </section>
+                <div class="event__available-offers">
+                  <div class="event__offer-selector">
+                    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${pointDestinationId}" type="checkbox" name="event-offer-luggage" checked="">
+                      <label class="event__offer-label" for="event-offer-luggage-${pointDestinationId}">
+                        <span class="event__offer-title">Add luggage</span>
+                        +€&nbsp;
+                        <span class="event__offer-price">50</span>
+                      </label>
+                  </div>
 
-          <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France, Switzerland and Italy. At the base of Mont Blanc, the highest summit in the Alps, it's renowned for its skiing.</p>
-          </section>
-        </section>
-      </form>
-    </>`
+                  <div class="event__offer-selector">
+                    <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-${pointDestinationId}" type="checkbox" name="event-offer-comfort" checked="">
+                      <label class="event__offer-label" for="event-offer-comfort-${pointDestinationId}">
+                        <span class="event__offer-title">Switch to comfort</span>
+                        +€&nbsp;
+                        <span class="event__offer-price">80</span>
+                      </label>
+                  </div>
+
+                  <div class="event__offer-selector">
+                    <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-${pointDestinationId}" type="checkbox" name="event-offer-meal">
+                      <label class="event__offer-label" for="event-offer-meal-${pointDestinationId}">
+                        <span class="event__offer-title">Add meal</span>
+                        +€&nbsp;
+                        <span class="event__offer-price">15</span>
+                      </label>
+                  </div>
+
+                  <div class="event__offer-selector">
+                    <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-${pointDestinationId}" type="checkbox" name="event-offer-seats">
+                      <label class="event__offer-label" for="event-offer-seats-${pointDestinationId}">
+                        <span class="event__offer-title">Choose seats</span>
+                        +€&nbsp;
+                        <span class="event__offer-price">5</span>
+                      </label>
+                  </div>
+
+                  <div class="event__offer-selector">
+                    <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-${pointDestinationId}" type="checkbox" name="event-offer-train">
+                      <label class="event__offer-label" for="event-offer-train-${pointDestinationId}">
+                        <span class="event__offer-title">Travel by train</span>
+                        +€&nbsp;
+                        <span class="event__offer-price">40</span>
+                      </label>
+                  </div>
+                </div>
+              </section>
+
+              ${destinationDescriptionTemplate}
+
+          </form>
+        </>`
   );
 };
 
