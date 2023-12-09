@@ -33,13 +33,8 @@ export default class BoardPresenter {
     this.#boardDestinations = [...this.#destinationsModel.destinations];
     this.#boardOffers = [...this.#offersModel.offers];
 
-    render(this.#boardComponent, this.#boardContainer);
-    render(new SortView(), this.#boardComponent.element);
-    render(this.#eventsListComponent, this.#boardComponent.element);
+    this.#renderBoard();
 
-    for (let i = 0; i < this.#boardPoints.length; i++) {
-      this.#renderPoint(this.#boardPoints[i], this.#boardDestinations, this.#boardOffers);
-    }
   }
 
   #renderPoint(point, destinations, offers) {
@@ -85,6 +80,16 @@ export default class BoardPresenter {
     }
 
     render(eventComponent, this.#eventsListComponent.element);
+  }
+
+  #renderBoard() {
+    render(this.#boardComponent, this.#boardContainer);
+    render(new SortView(), this.#boardComponent.element);
+    render(this.#eventsListComponent, this.#boardComponent.element);
+
+    for (let i = 0; i < this.#boardPoints.length; i++) {
+      this.#renderPoint(this.#boardPoints[i], this.#boardDestinations, this.#boardOffers);
+    }
   }
 
 }
