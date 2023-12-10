@@ -16,6 +16,8 @@ export default class BoardPresenter {
 
   #boardComponent = new BoardView();
   #eventsListComponent = new EventsListView();
+  #sortComponent = new SortView();
+  #noEventComponent = new NoEventView();
 
   #boardPoints = [];
   #boardDestinations = [];
@@ -36,6 +38,10 @@ export default class BoardPresenter {
 
     this.#renderBoard();
 
+  }
+
+  #renderSort() {
+    render(this.#sortComponent, this.#boardComponent.element);
   }
 
   #renderPoint(point, destinations, offers) {
@@ -89,18 +95,35 @@ export default class BoardPresenter {
     render(eventComponent, this.#eventsListComponent.element);
   }
 
+  #renderPoints(points) {
+    points
+      .forEach((point) => this.#renderPoint(
+        point,
+        this.#boardDestinations,
+        this.#boardOffers,
+      ));
+  }
+
+  #renderNoEvent() {
+    render(this.#noEventComponent, this.#boardComponent.element);
+  }
+
+  #renderEventsList() {
+    render(this.#eventsListComponent, this.#boardComponent.element);
+
+    this.#renderPoints(
+      this.#boardPoints
+    );
+  }
+
   #renderBoard() {
     render(this.#boardComponent, this.#boardContainer);
 
     if (this.#boardPoints.length) {
-      render(new SortView(), this.#boardComponent.element);
-      render(this.#eventsListComponent, this.#boardComponent.element);
-
-      for (let i = 0; i < this.#boardPoints.length; i++) {
-        this.#renderPoint(this.#boardPoints[i], this.#boardDestinations, this.#boardOffers);
-      }
+      this.#renderSort();
+      this.#renderEventsList();
     } else {
-      render(new NoEventView(), this.#boardComponent.element);
+      this.#renderNoEvent();
     }
 
   }
