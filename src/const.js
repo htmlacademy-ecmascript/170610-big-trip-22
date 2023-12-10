@@ -10,4 +10,12 @@ const OFFERS_TYPES = [
   'restaurant'
 ];
 
-export { OFFERS_TYPES };
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
+
+export { OFFERS_TYPES, FilterType };
