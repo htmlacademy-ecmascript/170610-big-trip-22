@@ -5,7 +5,7 @@ import {
   humanizePointDateTimeType,
   humanizePointTimeDate,
   getFormattedDiffDuration
-} from '../utils/task.js';
+} from '../utils/point.js';
 
 const createEventViewTemplate = (point, destinations, offers) => {
 
