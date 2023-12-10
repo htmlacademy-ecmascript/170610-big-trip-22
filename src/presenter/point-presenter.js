@@ -5,6 +5,7 @@ import EventEditView from '../view/event-edit-view.js';
 
 export default class PointPresenter {
   #eventListContainer = null;
+  #handleDataChange = null;
 
   #eventComponent = null;
   #eventEditComponent = null;
@@ -13,8 +14,9 @@ export default class PointPresenter {
   #destinations = null;
   #offers = null;
 
-  constructor({ eventListContainer }) {
+  constructor({ eventListContainer, onDataChange }) {
     this.#eventListContainer = eventListContainer;
+    this.#handleDataChange = onDataChange;
   }
 
   init(point, destinations, offers) {
@@ -31,6 +33,7 @@ export default class PointPresenter {
       { destinations: this.#destinations },
       { offers: this.#offers },
       { onEditClick: this.#handleEditClick },
+      { onFavoriteClick: this.#handleFavoriteClick },
     );
 
     this.#eventEditComponent = new EventEditView(
@@ -85,7 +88,21 @@ export default class PointPresenter {
     this.#replaceCardToForm();
   };
 
-  #handleFormSubmit = () => {
+  #handleFavoriteClick = () => {
+    this.#handleDataChange(
+      { ...this.#point, isFavorite: !this.#point.isFavorite },
+      this.#destinations,
+      this.#offers,
+    );
+  };
+
+  #handleFormSubmit = (point, destinations, offers) => {
+
+    this.#handleDataChange(
+      point,
+      destinations,
+      offers,
+    );
     this.#replaceFormToCard();
   };
 

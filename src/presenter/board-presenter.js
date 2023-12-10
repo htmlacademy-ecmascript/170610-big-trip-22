@@ -4,6 +4,7 @@ import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import PointPresenter from './point-presenter.js';
+import { updateItem } from '../utils/common.js';
 
 export default class BoardPresenter {
 
@@ -41,6 +42,11 @@ export default class BoardPresenter {
 
   }
 
+  #handlePointChange = (updatedPoint, destinations, offers) => {
+    this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
+    this.#eventPresenters.get(updatedPoint.id).init(updatedPoint, destinations, offers);
+  };
+
   #renderSort() {
     render(this.#sortComponent, this.#boardComponent.element);
   }
@@ -49,6 +55,7 @@ export default class BoardPresenter {
 
     const pointPresenter = new PointPresenter({
       eventListContainer: this.#eventsListComponent.element,
+      onDataChange: this.#handlePointChange
     });
 
     pointPresenter.init(point, destinations, offers);
