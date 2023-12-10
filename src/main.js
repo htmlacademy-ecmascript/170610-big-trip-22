@@ -1,6 +1,6 @@
+import { render, RenderPosition } from './framework/render.js';
 import InfoView from './view/info-view.js';
 import FiltersView from './view/filters-view.js';
-import { render, RenderPosition } from './render.js';
 import BoardPresenter from './presenter/board-presenter.js';
 import PointsModel from './model/points-model.js';
 import DestinationsModel from './model/destinations-model.js';

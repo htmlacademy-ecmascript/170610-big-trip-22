@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointInputDateTimeType } from '../utils.js';
 
 const BLANK_POINT = {
@@ -214,31 +214,52 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   );
 };
 
-export default class EventEditView {
+export default class EventEditView extends AbstractView {
 
-  constructor({ point = BLANK_POINT }, { destinations }, { offers }) {
-    this.point = point;
-    this.destinations = destinations;
-    this.offers = offers;
+  #point = null;
+  #destinations = null;
+  #offers = null;
+
+  #handleFormSubmit = null;
+  #handleCloseClick = null;
+
+  constructor(
+    { point = BLANK_POINT },
+    { destinations },
+    { offers },
+    { onFormSubmit },
+    { onCloseClick }
+  ) {
+    super();
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
+
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleCloseClick = onCloseClick;
+
+    this.element.querySelector('.event')
+      .addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#closeClickHandler);
   }
 
-  getTemplate() {
+  get template() {
     return createEventEditViewTemplate(
-      this.point,
-      this.destinations,
-      this.offers,
+      this.#point,
+      this.#destinations,
+      this.#offers,
     );
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
-    return this.element;
-  }
+  #closeClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCloseClick();
+  };
 
-  removeElement() {
-    this.element = null;
-  }
 }

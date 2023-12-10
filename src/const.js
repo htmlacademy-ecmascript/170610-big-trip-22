@@ -10,5 +10,4 @@ const OFFERS_TYPES = [
   'restaurant'
 ];
 
-
 export { OFFERS_TYPES };
