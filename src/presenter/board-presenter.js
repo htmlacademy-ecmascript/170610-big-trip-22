@@ -1,10 +1,9 @@
-import { render, replace } from '../framework/render.js';
+import { render } from '../framework/render.js';
 import BoardView from '../view/board-view.js';
 import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
-import EventView from '../view/event-view.js';
-import EventEditView from '../view/event-edit-view.js';
 import NoEventView from '../view/no-event-view.js';
+import PointPresenter from './point-presenter.js';
 
 export default class BoardPresenter {
 
@@ -46,53 +45,12 @@ export default class BoardPresenter {
 
   #renderPoint(point, destinations, offers) {
 
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
+    const pointPresenter = new PointPresenter({
+      eventListContainer: this.#eventsListComponent.element,
+    });
 
-    const eventComponent = new EventView(
-      { point },
-      { destinations },
-      { offers },
-      {
-        onEditClick: () => {
-          replaceCardToForm();
-          document.addEventListener('keydown', escKeyDownHandler);
-        }
-      }
-    );
+    pointPresenter.init(point, destinations, offers);
 
-    const eventEditComponent = new EventEditView(
-      { point },
-      { destinations },
-      { offers },
-      {
-        onFormSubmit: () => {
-          replaceFormToCard();
-          document.removeEventListener('keydown', escKeyDownHandler);
-        }
-      },
-      {
-        onCloseClick: () => {
-          replaceFormToCard();
-          document.removeEventListener('keydown', escKeyDownHandler);
-        }
-      }
-    );
-
-    function replaceCardToForm() {
-      replace(eventEditComponent, eventComponent);
-    }
-
-    function replaceFormToCard() {
-      replace(eventComponent, eventEditComponent);
-    }
-
-    render(eventComponent, this.#eventsListComponent.element);
   }
 
   #renderPoints(points) {
