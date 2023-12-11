@@ -16,8 +16,8 @@ export default class BoardPresenter {
 
   #boardComponent = new BoardView();
   #eventsListComponent = new EventsListView();
-  #sortComponent = new SortView();
   #noEventComponent = new NoEventView();
+  #sortComponent = null;
 
   #boardPoints = [];
   #boardDestinations = [];
@@ -51,7 +51,17 @@ export default class BoardPresenter {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 
+  #handleSortTypeChange = (sortType) => {
+    // - Сортируем задачи
+    // - Очищаем список
+    // - Рендерим список заново
+  };
+
   #renderSort() {
+    this.#sortComponent = new SortView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
+
     render(this.#sortComponent, this.#boardComponent.element);
   }
 
