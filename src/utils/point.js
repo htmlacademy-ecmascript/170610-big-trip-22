@@ -42,6 +42,21 @@ const isEventFuture = (date) => dayjs(date).isAfter(dayjs());
 const isEventPresent = (date) => dayjs(date).isSameOrAfter(dayjs(), 'day');
 const isEventPast = (date) => dayjs(date).isBefore(dayjs(), 'day');
 
+const calculateDurationInSeconds = (dateFrom, dateTo) => {
+  const start = dayjs(dateFrom);
+  const end = dayjs(dateTo);
+  return end.diff(start, 'second');
+};
+
+const sortByDuration = (pointA, pointB) => {
+  const durationA = calculateDurationInSeconds(pointA.dateFrom, pointA.dateTo);
+  const durationB = calculateDurationInSeconds(pointB.dateFrom, pointB.dateTo);
+
+  return durationB - durationA;
+};
+
+const sortByBasePrice = (pointA, pointB) =>
+  pointB.basePrice - pointA.basePrice;
 
 export {
   humanizePointDateTime,
@@ -54,4 +69,6 @@ export {
   isEventFuture,
   isEventPresent,
   isEventPast,
+  sortByDuration,
+  sortByBasePrice,
 };

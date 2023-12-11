@@ -17,5 +17,10 @@ const FilterType = {
   PAST: 'past',
 };
 
+const SortType = {
+  DEFAULT: 'default',
+  TIME: 'sort-time',
+  PRICE: 'sort-price',
+};
 
-export { OFFERS_TYPES, FilterType };
+export { OFFERS_TYPES, FilterType, SortType };
