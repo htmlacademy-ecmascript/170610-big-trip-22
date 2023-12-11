@@ -1,10 +1,10 @@
-import { render, replace } from '../framework/render.js';
+import { render } from '../framework/render.js';
 import BoardView from '../view/board-view.js';
 import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
-import EventView from '../view/event-view.js';
-import EventEditView from '../view/event-edit-view.js';
 import NoEventView from '../view/no-event-view.js';
+import PointPresenter from './point-presenter.js';
+import { updateItem } from '../utils/common.js';
 
 export default class BoardPresenter {
 
@@ -16,10 +16,14 @@ export default class BoardPresenter {
 
   #boardComponent = new BoardView();
   #eventsListComponent = new EventsListView();
+  #sortComponent = new SortView();
+  #noEventComponent = new NoEventView();
 
   #boardPoints = [];
   #boardDestinations = [];
   #boardOffers = [];
+
+  #eventPresenters = new Map();
 
   constructor({ boardContainer, pointsModel, destinationsModel, offersModel }) {
     this.#boardContainer = boardContainer;
@@ -38,69 +42,67 @@ export default class BoardPresenter {
 
   }
 
+  #handlePointChange = (updatedPoint, destinations, offers) => {
+    this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
+    this.#eventPresenters.get(updatedPoint.id).init(updatedPoint, destinations, offers);
+  };
+
+  #handleModeChange = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #renderSort() {
+    render(this.#sortComponent, this.#boardComponent.element);
+  }
+
   #renderPoint(point, destinations, offers) {
 
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
+    const pointPresenter = new PointPresenter({
+      eventListContainer: this.#eventsListComponent.element,
+      onDataChange: this.#handlePointChange,
+      onModeChange: this.#handleModeChange,
+    });
 
-    const eventComponent = new EventView(
-      { point },
-      { destinations },
-      { offers },
-      {
-        onEditClick: () => {
-          replaceCardToForm();
-          document.addEventListener('keydown', escKeyDownHandler);
-        }
-      }
+    pointPresenter.init(point, destinations, offers);
+
+    this.#eventPresenters.set(point.id, pointPresenter);
+
+  }
+
+  #renderPoints(points) {
+    points
+      .forEach((point) => this.#renderPoint(
+        point,
+        this.#boardDestinations,
+        this.#boardOffers,
+      ));
+  }
+
+  #renderNoEvent() {
+    render(this.#noEventComponent, this.#boardComponent.element);
+  }
+
+  #clearTaskList() {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+  }
+
+  #renderEventsList() {
+    render(this.#eventsListComponent, this.#boardComponent.element);
+
+    this.#renderPoints(
+      this.#boardPoints
     );
-
-    const eventEditComponent = new EventEditView(
-      { point },
-      { destinations },
-      { offers },
-      {
-        onFormSubmit: () => {
-          replaceFormToCard();
-          document.removeEventListener('keydown', escKeyDownHandler);
-        }
-      },
-      {
-        onCloseClick: () => {
-          replaceFormToCard();
-          document.removeEventListener('keydown', escKeyDownHandler);
-        }
-      }
-    );
-
-    function replaceCardToForm() {
-      replace(eventEditComponent, eventComponent);
-    }
-
-    function replaceFormToCard() {
-      replace(eventComponent, eventEditComponent);
-    }
-
-    render(eventComponent, this.#eventsListComponent.element);
   }
 
   #renderBoard() {
     render(this.#boardComponent, this.#boardContainer);
 
     if (this.#boardPoints.length) {
-      render(new SortView(), this.#boardComponent.element);
-      render(this.#eventsListComponent, this.#boardComponent.element);
-
-      for (let i = 0; i < this.#boardPoints.length; i++) {
-        this.#renderPoint(this.#boardPoints[i], this.#boardDestinations, this.#boardOffers);
-      }
+      this.#renderSort();
+      this.#renderEventsList();
     } else {
-      render(new NoEventView(), this.#boardComponent.element);
+      this.#renderNoEvent();
     }
 
   }
