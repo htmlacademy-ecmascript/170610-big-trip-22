@@ -79,6 +79,8 @@ export default class BoardPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
+    this.#clearEventsList();
+    this.#renderEventsList();
     this.#sortPoints(sortType);
   };
 
