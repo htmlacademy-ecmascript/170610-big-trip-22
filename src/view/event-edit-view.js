@@ -61,6 +61,10 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     .find(({ id }) => id === pointDestinationId)
     ?.name;
 
+  const pointDestinationPhotos = destinations
+    .find(({ id }) => id === pointDestinationId)
+    ?.pictures;
+
   const createDestinationListTemplate = () => (
     `<datalist id="destination-list-${pointDestinationId}">
       ${destinations.map(({ name }) =>
@@ -71,21 +75,38 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const destinationListTemplate = createDestinationListTemplate();
 
+  const hasPointDestinationPhotos = Boolean(pointDestinationPhotos.length);
+
+  const createDestinationPhotosTemplate = () => (
+    `<div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${hasPointDestinationPhotos ? pointDestinationPhotos.map(({ src, description }) =>
+      `<img class="event__photo" src="${src}" alt="${description}">`
+    ).join('')
+      : ''}
+      </div>
+    </div`
+  );
+
+  const destinationPhotosTemplate = createDestinationPhotosTemplate();
+
   const pointDestination = destinations
     .find(({ id }) => id === pointDestinationId);
 
-  const hasDestinationDescription = Object.keys(pointDestination).some((key) => key === 'description');
+  const hasDestinationDescription = Boolean(pointDestination.description);
 
   const pointDestinationDescription = pointDestination.description;
 
   const createDestinationDescriptionTemplate = () => (
-    `${hasDestinationDescription ? `
+    `${hasDestinationDescription || hasPointDestinationPhotos ? `
       <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${pointDestinationDescription}</p>
+           ${pointDestinationPhotos ? destinationPhotosTemplate : ''}
         </section>
       </section>
-    ` : ''} `
+    ` : ''
+    } `
   );
 
   const destinationDescriptionTemplate = createDestinationDescriptionTemplate();
@@ -122,7 +143,8 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     }).join('')}
           </div>
       </section>
-    ` : ''} `
+    ` : ''
+    } `
   );
 
   const offersSectionTemplate = createOffersSectionTemplateTemplate();
@@ -209,8 +231,8 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
               ${destinationDescriptionTemplate}
 
-          </form>
-        </>`
+        </form>
+      </>`
   );
 };
 

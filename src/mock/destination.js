@@ -10,12 +10,7 @@ const generatePicture = () => ({
   description: generateDescriptionText(),
 });
 
-const generatePictures = () => Array.from({ length: getRandomInteger(1, 5) }, () => generatePicture());
-
-const generateDescription = (el) => ({
-  description: `${el} - ${generateDescriptionText()}`,
-  pictures: generatePictures()
-});
+const generatePictures = () => Array.from({ length: getRandomInteger(0, 5) }, () => generatePicture());
 
 const generateDestination = (destination) => {
   const isDescription = getRandomInteger(0, 1);
@@ -23,7 +18,8 @@ const generateDestination = (destination) => {
   return {
     id: nanoid(),
     name: destination,
-    ...isDescription ? generateDescription(destination) : {}
+    description: isDescription ? `${destination} - ${generateDescriptionText()}` : '',
+    pictures: generatePictures(),
   };
 };
 
