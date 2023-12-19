@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizePointInputDateTimeType } from '../utils/point.js';
 
 const BLANK_POINT = {
@@ -149,7 +149,6 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const offersSectionTemplate = createOffersSectionTemplateTemplate();
 
-
   return (
     `<li class="trip-events__item" >
       <form class="event event--edit" action="#" method="post">
@@ -236,7 +235,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   );
 };
 
-export default class EventEditView extends AbstractView {
+export default class EventEditView extends AbstractStatefulView {
 
   #point = null;
   #destinations = null;
@@ -253,7 +252,7 @@ export default class EventEditView extends AbstractView {
     { onCloseClick }
   ) {
     super();
-    this.#point = point;
+    this._setState(EventEditView.parsePointToState(point));
     this.#destinations = destinations;
     this.#offers = offers;
 
@@ -268,7 +267,7 @@ export default class EventEditView extends AbstractView {
 
   get template() {
     return createEventEditViewTemplate(
-      this.#point,
+      this._state,
       this.#destinations,
       this.#offers,
     );
@@ -277,7 +276,7 @@ export default class EventEditView extends AbstractView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit(
-      this.#point,
+      EventEditView.parseStateToPoint(this._state),
       this.#destinations,
       this.#offers,
     );
@@ -287,5 +286,23 @@ export default class EventEditView extends AbstractView {
     evt.preventDefault();
     this.#handleCloseClick();
   };
+
+  static parsePointToState(point) {
+    return {
+      ...point,
+    };
+  }
+
+  static parseStateToPoint(state) {
+    const point = { ...state };
+
+    // if (!point.isDueDate) {
+    //   point.dueDate = null;
+    // }
+
+    // delete point.isRepeating;
+
+    return point;
+  }
 
 }
