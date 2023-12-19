@@ -15,6 +15,8 @@ const BLANK_POINT = {
 const createEventEditViewTemplate = (point, destinations, offers) => {
 
   console.log('this._state', point);
+  console.log('destinations', destinations);
+  console.log('offers', offers);
 
   const {
     id: pointId,
@@ -113,10 +115,10 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const destinationDescriptionTemplate = createDestinationDescriptionTemplate();
 
-  const hasPointOffers = Boolean(pointOffersIds.length);
+  const hasPointTypeOffers = Boolean(pointTypeOffers.length);
 
   const createOffersSectionTemplateTemplate = () => (
-    `${hasPointOffers ? `
+    `${hasPointTypeOffers ? `
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           <div class="event__available-offers">
