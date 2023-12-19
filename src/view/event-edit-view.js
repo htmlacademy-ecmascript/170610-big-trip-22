@@ -259,6 +259,19 @@ export default class EventEditView extends AbstractStatefulView {
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
 
+    this._restoreHandlers();
+
+  }
+
+  get template() {
+    return createEventEditViewTemplate(
+      this._state,
+      this.#destinations,
+      this.#offers,
+    );
+  }
+
+  _restoreHandlers() {
     this.element.querySelector('.event')
       .addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__rollup-btn')
@@ -275,14 +288,6 @@ export default class EventEditView extends AbstractStatefulView {
     this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
       checkbox.addEventListener('change', (evt) => this.#offerCheckboxChangeHandler(evt));
     });
-  }
-
-  get template() {
-    return createEventEditViewTemplate(
-      this._state,
-      this.#destinations,
-      this.#offers,
-    );
   }
 
   #formSubmitHandler = (evt) => {
