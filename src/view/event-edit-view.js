@@ -263,6 +263,18 @@ export default class EventEditView extends AbstractStatefulView {
       .addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#closeClickHandler);
+    this.element.querySelectorAll('.event__type-input').forEach((inputElement) => {
+      inputElement.addEventListener('click', (evt) => {
+        this.#eventTypeInputClickHandler(evt);
+      });
+    });
+    this.element.querySelector('.event__input--price')
+      .addEventListener('input', this.#priceInputChangeHandler);
+    this.element.querySelector('.event__input')
+      .addEventListener('change', this.#destinationInputChangeHandler);
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
+      checkbox.addEventListener('change', (evt) => this.#offerCheckboxChangeHandler(evt));
+    });
   }
 
   get template() {
@@ -285,6 +297,27 @@ export default class EventEditView extends AbstractStatefulView {
   #closeClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleCloseClick();
+  };
+
+
+  #eventTypeInputClickHandler = (evt) => {
+    evt.preventDefault();
+    console.log(evt.target.value);
+  };
+
+  #destinationInputChangeHandler = (evt) => {
+    evt.preventDefault();
+    console.log(evt.target.value);
+  };
+
+  #priceInputChangeHandler = (evt) => {
+    evt.preventDefault();
+    console.log(evt.target.value);
+  };
+
+  #offerCheckboxChangeHandler = (evt) => {
+    evt.preventDefault();
+    console.log(evt.target.value);
   };
 
   static parsePointToState(point) {
