@@ -275,7 +275,7 @@ export default class EventEditView extends AbstractStatefulView {
 
   reset(point) {
     this.updateElement(
-      EventEditView.parseTaskToState(point),
+      EventEditView.parsePointToState(point),
     );
   }
 
