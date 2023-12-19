@@ -315,7 +315,9 @@ export default class EventEditView extends AbstractStatefulView {
 
   #eventTypeInputClickHandler = (evt) => {
     evt.preventDefault();
-    console.log(evt.target.value);
+    this.updateElement({
+      type: evt.target.value,
+    });
   };
 
   #destinationInputChangeHandler = (evt) => {
