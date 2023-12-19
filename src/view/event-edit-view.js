@@ -273,6 +273,12 @@ export default class EventEditView extends AbstractStatefulView {
     );
   }
 
+  reset(point) {
+    this.updateElement(
+      EventEditView.parseTaskToState(point),
+    );
+  }
+
   _restoreHandlers() {
     this.element.querySelector('.event')
       .addEventListener('submit', this.#formSubmitHandler);
