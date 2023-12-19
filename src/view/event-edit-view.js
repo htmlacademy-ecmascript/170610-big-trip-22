@@ -291,13 +291,14 @@ export default class EventEditView extends AbstractStatefulView {
         this.#eventTypeInputClickHandler(evt);
       });
     });
-    this.element.querySelector('.event__input--price')
-      .addEventListener('input', this.#priceInputChangeHandler);
     this.element.querySelector('.event__input')
       .addEventListener('change', this.#destinationInputChangeHandler);
     this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
       checkbox.addEventListener('change', (evt) => this.#offerCheckboxChangeHandler(evt));
     });
+    this.element.querySelector('.event__input--price')
+      .addEventListener('input', this.#priceInputChangeHandler);
+
   }
 
   #formSubmitHandler = (evt) => {
@@ -323,9 +324,32 @@ export default class EventEditView extends AbstractStatefulView {
     });
   };
 
+
   #destinationInputChangeHandler = (evt) => {
     evt.preventDefault();
-    console.log(evt.target.value);
+    const datalist = evt.target.nextElementSibling;
+
+    const getPointDestinationName = (destinationId) => this.#destinations
+      .find(({ id: pointDestinationId }) => pointDestinationId === destinationId)
+      ?.name;
+
+    const prevDestinationOption = getPointDestinationName(this._state.destination);
+    const selectedDestinationOption = Array.from(datalist.options).find((option) => option.value === evt.target.value);
+
+    if (!selectedDestinationOption) {
+      evt.target.value = prevDestinationOption;
+    }
+
+    const targetDestinationArray = this.#destinations.filter((destination) => destination.name === evt.target.value);
+
+    const [{ id }] = targetDestinationArray;
+
+    if (selectedDestinationOption) {
+      this.updateElement({
+        destination: id,
+      });
+    }
+
   };
 
   #priceInputChangeHandler = (evt) => {
