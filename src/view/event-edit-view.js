@@ -14,7 +14,7 @@ const BLANK_POINT = {
 
 const createEventEditViewTemplate = (point, destinations, offers) => {
 
-  console.log('this._state', point);
+  console.log('point', point);
   console.log('destinations', destinations);
   console.log('offers', offers);
 
@@ -125,7 +125,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
       ${pointTypeOffers.map(({ id, title, price }) => {
 
-      const offerLastWord = title.split(' ').pop();
+      const offerLastWord = title.split(' ').pop().replace(/-/g, '');
       const checked = pointOffersIds.includes(id) ? 'checked' : '';
 
       return `
@@ -319,6 +319,7 @@ export default class EventEditView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       type: evt.target.value,
+      offers: [],
     });
   };
 
@@ -337,7 +338,21 @@ export default class EventEditView extends AbstractStatefulView {
 
   #offerCheckboxChangeHandler = (evt) => {
     evt.preventDefault();
-    console.log(evt.target.value);
+    const checkboxId = evt.target.id;
+
+    const offerId = checkboxId.split('-').slice(3).join('-');
+
+    const toggleId = (id) => {
+      const newOffers = this._state.offers.includes(id)
+        ? this._state.offers.filter((offer) => offer !== id)
+        : [...this._state.offers, id];
+      return newOffers;
+    };
+
+    this.updateElement({
+      offers: toggleId(offerId),
+    });
+
   };
 
   static parsePointToState(point) {
