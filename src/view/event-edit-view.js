@@ -14,10 +14,6 @@ const BLANK_POINT = {
 
 const createEventEditViewTemplate = (point, destinations, offers) => {
 
-  console.log('point', point);
-  console.log('destinations', destinations);
-  console.log('offers', offers);
-
   const {
     id: pointId,
     basePrice,
