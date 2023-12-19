@@ -297,7 +297,7 @@ export default class EventEditView extends AbstractStatefulView {
       checkbox.addEventListener('change', (evt) => this.#offerCheckboxChangeHandler(evt));
     });
     this.element.querySelector('.event__input--price')
-      .addEventListener('input', this.#priceInputChangeHandler);
+      .addEventListener('change', this.#priceInputChangeHandler);
 
   }
 
@@ -353,11 +353,28 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   #priceInputChangeHandler = (evt) => {
+
     evt.preventDefault();
-    console.log(evt.target.value);
-    this._setState({
-      basePrice: evt.target.value,
-    });
+
+    evt.target.value = evt.target.value.replace(/[^0-9]/g, '');
+
+    const prevBasePrice = this._state.basePrice;
+    const nextBasePrice = evt.target.value;
+
+    if (nextBasePrice === '') {
+      evt.target.value = prevBasePrice;
+    }
+
+    if (nextBasePrice < 0) {
+      evt.target.value = prevBasePrice;
+    }
+
+    if (nextBasePrice !== '' && nextBasePrice >= 0) {
+      this._setState({
+        basePrice: nextBasePrice,
+      });
+    }
+
   };
 
   #offerCheckboxChangeHandler = (evt) => {
