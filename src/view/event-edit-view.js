@@ -14,6 +14,8 @@ const BLANK_POINT = {
 
 const createEventEditViewTemplate = (point, destinations, offers) => {
 
+  console.log('this._state', point);
+
   const {
     id: pointId,
     basePrice,
@@ -318,6 +320,9 @@ export default class EventEditView extends AbstractStatefulView {
   #priceInputChangeHandler = (evt) => {
     evt.preventDefault();
     console.log(evt.target.value);
+    this._setState({
+      basePrice: evt.target.value,
+    });
   };
 
   #offerCheckboxChangeHandler = (evt) => {
