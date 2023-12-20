@@ -4,6 +4,10 @@ import {
   getDestinationName,
 } from '../utils/point.js';
 
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
+
 const BLANK_POINT = {
   'id': '',
   'base_price': 0,
