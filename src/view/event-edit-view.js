@@ -5,7 +5,6 @@ import {
 } from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
-
 import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
@@ -248,6 +247,8 @@ export default class EventEditView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleCloseClick = null;
 
+  #datepicker = null;
+
   constructor(
     { point = BLANK_POINT },
     { destinations },
@@ -265,6 +266,8 @@ export default class EventEditView extends AbstractStatefulView {
 
     this._restoreHandlers();
 
+    console.log(this._state);
+
   }
 
   get template() {
@@ -273,6 +276,15 @@ export default class EventEditView extends AbstractStatefulView {
       this.#destinations,
       this.#offers,
     );
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
   }
 
   reset(point) {
@@ -298,6 +310,9 @@ export default class EventEditView extends AbstractStatefulView {
     });
     this.element.querySelector('.event__input--price')
       .addEventListener('change', this.#priceInputChangeHandler);
+
+    this.#setDateFromDatepicker();
+    this.#setDateToDatepicker();
 
   }
 
@@ -391,6 +406,41 @@ export default class EventEditView extends AbstractStatefulView {
     });
 
   };
+
+  #setDateFromDatepicker() {
+    if (this._state.dateFrom) {
+      this.#datepicker = flatpickr(
+        this.element.querySelector('input[name="event-start-time"]'),
+        {
+          dateFormat: 'd/m/y H:i',
+          defaultDate: this._state.dateFrom,
+          onChange: this.#dateFromChangeHandler,
+        },
+      );
+    }
+  }
+
+  #dateFromChangeHandler() {
+    console.log('dateFromChangeHandler');
+  }
+
+  #setDateToDatepicker() {
+    if (this._state.dateTo) {
+      this.#datepicker = flatpickr(
+        this.element.querySelector('input[name="event-end-time"]'),
+        {
+          dateFormat: 'd/m/y H:i',
+          defaultDate: this._state.dateTo,
+          onChange: this.#dateToChangeHandler,
+        },
+      );
+    }
+  }
+
+  #dateToChangeHandler() {
+    console.log('dateToChangeHandler');
+  }
+
 
   static parsePointToState(point, destinations) {
 
