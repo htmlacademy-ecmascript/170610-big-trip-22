@@ -143,20 +143,6 @@ export default class BoardPresenter {
   }
 
 
-  #clearEventList() {
-    this.#eventPresenters.forEach((presenter) => presenter.destroy());
-    this.#eventPresenters.clear();
-  }
-
-
-  #renderEventList() {
-
-    const points = this.points;
-    render(this.#eventsListComponent, this.#boardComponent.element);
-    this.#renderPoints(points);
-  }
-
-
   #clearBoard({ resetSortType = false } = {}) {
 
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
