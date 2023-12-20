@@ -58,6 +58,13 @@ const sortByDuration = (pointA, pointB) => {
 const sortByBasePrice = (pointA, pointB) =>
   pointB.basePrice - pointA.basePrice;
 
+const getDestinationName = (destinationId, destinations) => destinations
+  .find(({ id: pointDestinationId }) => pointDestinationId === destinationId)
+  ?.name;
+
+const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+
+
 export {
   humanizePointDateTime,
   humanizePointDateDate,
@@ -71,4 +78,6 @@ export {
   isEventPast,
   sortByDuration,
   sortByBasePrice,
+  getDestinationName,
+  isDatesEqual
 };

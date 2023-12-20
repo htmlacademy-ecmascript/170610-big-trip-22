@@ -78,11 +78,15 @@ export default class BoardPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType, data);
+    // console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
-        this.#eventPresenters.get(data.id).init(data);
+        this.#eventPresenters.get(data.id).init(
+          data,
+          this.#boardDestinations,
+          this.#boardOffers
+        );
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
