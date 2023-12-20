@@ -1,5 +1,8 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { humanizePointInputDateTimeType } from '../utils/point.js';
+import {
+  humanizePointInputDateTimeType,
+  getPointDestinationName
+} from '../utils/point.js';
 
 const BLANK_POINT = {
   'id': '',
@@ -22,6 +25,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     type: pointType,
     destination: pointDestinationId,
     offers: pointOffersIds,
+    pointDestinationName,
   } = point;
 
   const pointTypeOffers = offers
@@ -56,10 +60,6 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   );
 
   const typeListTemplate = createTypeListTemplate();
-
-  const pointDestinationName = destinations
-    .find(({ id }) => id === pointDestinationId)
-    ?.name;
 
   const pointDestinationPhotos = destinations
     .find(({ id }) => id === pointDestinationId)
@@ -252,7 +252,7 @@ export default class EventEditView extends AbstractStatefulView {
     { onCloseClick }
   ) {
     super();
-    this._setState(EventEditView.parsePointToState(point));
+    this._setState(EventEditView.parsePointToState(point, destinations));
     this.#destinations = destinations;
     this.#offers = offers;
 
@@ -325,11 +325,7 @@ export default class EventEditView extends AbstractStatefulView {
     evt.preventDefault();
     const datalist = evt.target.nextElementSibling;
 
-    const getPointDestinationName = (destinationId) => this.#destinations
-      .find(({ id: pointDestinationId }) => pointDestinationId === destinationId)
-      ?.name;
-
-    const prevDestinationOption = getPointDestinationName(this._state.destination);
+    const prevDestinationOption = this._state.pointDestinationName;
     const selectedDestinationOption = Array.from(datalist.options).find((option) => option.value === evt.target.value);
 
     if (!selectedDestinationOption) {
@@ -392,20 +388,22 @@ export default class EventEditView extends AbstractStatefulView {
 
   };
 
-  static parsePointToState(point) {
+  static parsePointToState(point, destinations) {
+
     return {
       ...point,
+      pointDestinationName: getPointDestinationName(point.destination, destinations)
     };
   }
 
   static parseStateToPoint(state) {
     const point = { ...state };
 
-    // if (!point.isDueDate) {
-    //   point.dueDate = null;
-    // }
+    if (!point.pointDestinationName) {
+      point.pointDestinationName = null;
+    }
 
-    // delete point.isRepeating;
+    delete point.pointDestinationName;
 
     return point;
   }
