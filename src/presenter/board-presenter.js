@@ -1,4 +1,4 @@
-import { render } from '../framework/render.js';
+import { render, remove } from '../framework/render.js';
 import BoardView from '../view/board-view.js';
 import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
@@ -28,11 +28,13 @@ export default class BoardPresenter {
 
   constructor({ boardContainer, pointsModel, destinationsModel, offersModel }) {
     this.#boardContainer = boardContainer;
+
     this.#pointsModel = pointsModel;
+    this.#pointsModel.addObserver(this.#handleModelEvent);
+
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
 
-    this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
@@ -84,9 +86,13 @@ export default class BoardPresenter {
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
+        this.#clearBoard();
+        this.#renderBoard();
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
+        this.#clearBoard({ resetSortType: true });
+        this.#renderBoard();
         break;
     }
   };
@@ -96,13 +102,14 @@ export default class BoardPresenter {
       return;
     }
     this.#currentSortType = sortType;
-    this.#clearEventsList();
-    this.#renderEventsList();
+    this.#clearBoard();
+    this.#renderBoard();
 
   };
 
   #renderSort() {
     this.#sortComponent = new SortView({
+      currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange
     });
 
@@ -110,7 +117,6 @@ export default class BoardPresenter {
   }
 
   #renderPoint(point, destinations, offers) {
-
     const pointPresenter = new PointPresenter({
       eventListContainer: this.#eventsListComponent.element,
       onDataChange: this.#handleViewAction,
@@ -136,28 +142,51 @@ export default class BoardPresenter {
     render(this.#noEventComponent, this.#boardComponent.element);
   }
 
-  #clearEventsList() {
+
+  #clearEventList() {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
   }
 
-  #renderEventsList() {
+
+  #renderEventList() {
+
     const points = this.points;
-
     render(this.#eventsListComponent, this.#boardComponent.element);
-
     this.#renderPoints(points);
+  }
+
+
+  #clearBoard({ resetSortType = false } = {}) {
+
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#noEventComponent);
+
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
+    }
   }
 
   #renderBoard() {
     render(this.#boardComponent, this.#boardContainer);
 
-    if (this.points.length) {
-      this.#renderSort();
-      this.#renderEventsList();
-    } else {
+    const points = this.points;
+    const pointCount = points.length;
+
+
+    if (pointCount === 0) {
       this.#renderNoEvents();
+      return;
     }
+
+    this.#renderSort();
+    render(this.#eventsListComponent, this.#boardComponent.element);
+
+    this.#renderPoints(points);
 
   }
 
