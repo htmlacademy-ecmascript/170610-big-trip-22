@@ -1,7 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {
   humanizePointInputDateTimeType,
-  getDestinationName,
 } from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
@@ -28,7 +27,6 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     type: pointType,
     destination: pointDestinationId,
     offers: pointOffersIds,
-    destinationName,
   } = point;
 
   const pointTypeOffers = offers
@@ -63,6 +61,10 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   );
 
   const typeListTemplate = createTypeListTemplate();
+
+  const destinationName = destinations
+    .find(({ id }) => id === pointDestinationId)
+    ?.name;
 
   const pointDestinationPhotos = destinations
     .find(({ id }) => id === pointDestinationId)
@@ -461,22 +463,21 @@ export default class EventEditView extends AbstractStatefulView {
     this.#handleDeleteClick(EventEditView.parseStateToPoint(this._state));
   };
 
-  static parsePointToState(point, destinations) {
+  static parsePointToState(point) {
 
     return {
       ...point,
-      destinationName: getDestinationName(point.destination, destinations)
     };
   }
 
   static parseStateToPoint(state) {
     const point = { ...state };
 
-    if (!point.destinationName) {
-      point.destinationName = null;
-    }
+    // if (!point.destinationName) {
+    //   point.destinationName = null;
+    // }
 
-    delete point.destinationName;
+    // delete point.destinationName;
 
     return point;
   }

@@ -5,7 +5,6 @@ import {
   humanizePointDateTimeType,
   humanizePointTimeDate,
   getFormattedDiffDuration,
-  getDestinationName,
 } from '../utils/point.js';
 
 const createEventViewTemplate = (point, destinations, offers) => {
@@ -24,7 +23,9 @@ const createEventViewTemplate = (point, destinations, offers) => {
     ? 'event__favorite-btn--active'
     : '';
 
-  const destinationName = getDestinationName(pointDestinationId, destinations);
+  const destinationName = destinations
+    .find(({ id }) => id === pointDestinationId)
+    ?.name;
 
   const isSelectedOffers = () => Boolean(pointOffersIds.length);
 
