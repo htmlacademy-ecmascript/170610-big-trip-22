@@ -4,7 +4,6 @@ import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import PointPresenter from './point-presenter.js';
-import { updateItem } from '../utils/common.js';
 import { sortByDuration, sortByBasePrice } from '../utils/point.js';
 import { SortType } from '../const.js';
 
@@ -21,13 +20,11 @@ export default class BoardPresenter {
   #noEventComponent = new NoEventView();
   #sortComponent = null;
 
-  #boardPoints = [];
   #boardDestinations = [];
   #boardOffers = [];
 
   #eventPresenters = new Map();
   #currentSortType = SortType.DEFAULT;
-  #sourcedBoardPoints = [];
 
   constructor({ boardContainer, pointsModel, destinationsModel, offersModel }) {
     this.#boardContainer = boardContainer;
@@ -37,13 +34,19 @@ export default class BoardPresenter {
   }
 
   get points() {
+
+    switch (this.#currentSortType) {
+      case SortType.TIME:
+        return [...this.#pointsModel.points].sort(sortByDuration);
+      case SortType.PRICE:
+        return [...this.#pointsModel.points].sort(sortByBasePrice);
+    }
+
     return this.#pointsModel.points;
+
   }
 
   init() {
-
-    this.#boardPoints = [...this.#pointsModel.points];
-    this.#sourcedBoardPoints = [...this.#pointsModel.points];
 
     this.#boardDestinations = [...this.#destinationsModel.destinations];
     this.#boardOffers = [...this.#offersModel.offers];
@@ -52,40 +55,24 @@ export default class BoardPresenter {
 
   }
 
-  #handlePointChange = (updatedPoint, destinations, offers) => {
-    this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
-    this.#sourcedBoardPoints = updateItem(this.#sourcedBoardPoints, updatedPoint);
-
-    this.#eventPresenters.get(updatedPoint.id).init(updatedPoint, destinations, offers);
-  };
-
   #handleModeChange = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #sortPoints(sortType) {
+  #handlePointChange = (updatedPoint, destinations, offers) => {
+    // Здесь будем вызывать обновление модели
 
-    switch (sortType) {
-      case SortType.TIME:
-        this.#boardPoints.sort(sortByDuration);
-        break;
-      case SortType.PRICE:
-        this.#boardPoints.sort(sortByBasePrice);
-        break;
-      default:
-        this.#boardPoints = [...this.#sourcedBoardPoints];
-    }
-
-    this.#currentSortType = sortType;
-  }
+    this.#eventPresenters.get(updatedPoint.id).init(updatedPoint, destinations, offers);
+  };
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
+    this.#currentSortType = sortType;
     this.#clearEventsList();
     this.#renderEventsList();
-    this.#sortPoints(sortType);
+
   };
 
   #renderSort() {
@@ -119,7 +106,7 @@ export default class BoardPresenter {
       ));
   }
 
-  #renderNoEvent() {
+  #renderNoEvents() {
     render(this.#noEventComponent, this.#boardComponent.element);
   }
 
@@ -129,21 +116,21 @@ export default class BoardPresenter {
   }
 
   #renderEventsList() {
+    const points = this.points;
+
     render(this.#eventsListComponent, this.#boardComponent.element);
 
-    this.#renderPoints(
-      this.#boardPoints
-    );
+    this.#renderPoints(points);
   }
 
   #renderBoard() {
     render(this.#boardComponent, this.#boardContainer);
 
-    if (this.#boardPoints.length) {
+    if (this.points.length) {
       this.#renderSort();
       this.#renderEventsList();
     } else {
-      this.#renderNoEvent();
+      this.#renderNoEvents();
     }
 
   }
