@@ -5,7 +5,7 @@ import {
   humanizePointDateTimeType,
   humanizePointTimeDate,
   getFormattedDiffDuration,
-  getPointDestinationName,
+  getDestinationName,
 } from '../utils/point.js';
 
 const createEventViewTemplate = (point, destinations, offers) => {
@@ -24,7 +24,7 @@ const createEventViewTemplate = (point, destinations, offers) => {
     ? 'event__favorite-btn--active'
     : '';
 
-  const pointDestinationName = getPointDestinationName(pointDestinationId, destinations);
+  const destinationName = getDestinationName(pointDestinationId, destinations);
 
   const isSelectedOffers = () => Boolean(pointOffersIds.length);
 
@@ -57,7 +57,7 @@ const createEventViewTemplate = (point, destinations, offers) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${pointType}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${pointType} ${pointDestinationName}</h3>
+        <h3 class="event__title">${pointType} ${destinationName}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${humanizePointDateTimeType(dateFrom)}">${humanizePointTimeDate(dateFrom)}</time>

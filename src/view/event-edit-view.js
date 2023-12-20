@@ -1,7 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {
   humanizePointInputDateTimeType,
-  getPointDestinationName
+  getDestinationName,
 } from '../utils/point.js';
 
 const BLANK_POINT = {
@@ -25,7 +25,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     type: pointType,
     destination: pointDestinationId,
     offers: pointOffersIds,
-    pointDestinationName,
+    destinationName,
   } = point;
 
   const pointTypeOffers = offers
@@ -177,7 +177,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               id="event-destination-${pointDestinationId}"
               type="text"
               name="event-destination"
-              value="${pointDestinationName}"
+              value="${destinationName}"
               list="destination-list-${pointDestinationId}">
 
               ${destinationListTemplate}
@@ -325,7 +325,7 @@ export default class EventEditView extends AbstractStatefulView {
     evt.preventDefault();
     const datalist = evt.target.nextElementSibling;
 
-    const prevDestinationOption = this._state.pointDestinationName;
+    const prevDestinationOption = this._state.destinationName;
     const selectedDestinationOption = Array.from(datalist.options).find((option) => option.value === evt.target.value);
 
     if (!selectedDestinationOption) {
@@ -392,18 +392,18 @@ export default class EventEditView extends AbstractStatefulView {
 
     return {
       ...point,
-      pointDestinationName: getPointDestinationName(point.destination, destinations)
+      destinationName: getDestinationName(point.destination, destinations)
     };
   }
 
   static parseStateToPoint(state) {
     const point = { ...state };
 
-    if (!point.pointDestinationName) {
-      point.pointDestinationName = null;
+    if (!point.destinationName) {
+      point.destinationName = null;
     }
 
-    delete point.pointDestinationName;
+    delete point.destinationName;
 
     return point;
   }

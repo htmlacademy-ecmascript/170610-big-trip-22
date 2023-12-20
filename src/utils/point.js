@@ -59,7 +59,7 @@ const sortByBasePrice = (pointA, pointB) =>
   pointB.basePrice - pointA.basePrice;
 
 
-const getPointDestinationName = (destinationId, destinations) => destinations
+const getDestinationName = (destinationId, destinations) => destinations
   .find(({ id: pointDestinationId }) => pointDestinationId === destinationId)
   ?.name;
 
@@ -76,5 +76,5 @@ export {
   isEventPast,
   sortByDuration,
   sortByBasePrice,
-  getPointDestinationName,
+  getDestinationName,
 };
