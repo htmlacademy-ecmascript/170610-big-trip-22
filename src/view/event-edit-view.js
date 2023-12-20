@@ -240,7 +240,6 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
 export default class EventEditView extends AbstractStatefulView {
 
-  #point = null;
   #destinations = null;
   #offers = null;
 
@@ -265,8 +264,6 @@ export default class EventEditView extends AbstractStatefulView {
     this.#handleCloseClick = onCloseClick;
 
     this._restoreHandlers();
-
-    console.log(this._state);
 
   }
 
@@ -412,34 +409,47 @@ export default class EventEditView extends AbstractStatefulView {
       this.#datepicker = flatpickr(
         this.element.querySelector('input[name="event-start-time"]'),
         {
+          enableTime: true,
           dateFormat: 'd/m/y H:i',
+          // eslint-disable-next-line camelcase
+          time_24hr: true,
           defaultDate: this._state.dateFrom,
+          maxDate: this._state.dateTo,
           onChange: this.#dateFromChangeHandler,
         },
       );
     }
   }
 
-  #dateFromChangeHandler() {
-    console.log('dateFromChangeHandler');
-  }
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate.toISOString(),
+    });
+  };
 
   #setDateToDatepicker() {
     if (this._state.dateTo) {
       this.#datepicker = flatpickr(
         this.element.querySelector('input[name="event-end-time"]'),
         {
+          enableTime: true,
           dateFormat: 'd/m/y H:i',
+          // eslint-disable-next-line camelcase
+          time_24hr: true,
           defaultDate: this._state.dateTo,
+          minDate: this._state.dateFrom,
           onChange: this.#dateToChangeHandler,
         },
       );
     }
   }
 
-  #dateToChangeHandler() {
-    console.log('dateToChangeHandler');
-  }
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate.toISOString(),
+    });
+  };
 
 
   static parsePointToState(point, destinations) {
