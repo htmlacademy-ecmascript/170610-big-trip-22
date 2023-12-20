@@ -1,5 +1,11 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { humanizePointInputDateTimeType } from '../utils/point.js';
+import {
+  humanizePointInputDateTimeType,
+  getDestinationName,
+} from '../utils/point.js';
+
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   'id': '',
@@ -22,6 +28,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     type: pointType,
     destination: pointDestinationId,
     offers: pointOffersIds,
+    destinationName,
   } = point;
 
   const pointTypeOffers = offers
@@ -56,10 +63,6 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   );
 
   const typeListTemplate = createTypeListTemplate();
-
-  const pointDestinationName = destinations
-    .find(({ id }) => id === pointDestinationId)
-    ?.name;
 
   const pointDestinationPhotos = destinations
     .find(({ id }) => id === pointDestinationId)
@@ -177,7 +180,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               id="event-destination-${pointDestinationId}"
               type="text"
               name="event-destination"
-              value="${pointDestinationName}"
+              value="${destinationName}"
               list="destination-list-${pointDestinationId}">
 
               ${destinationListTemplate}
@@ -237,12 +240,13 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
 export default class EventEditView extends AbstractStatefulView {
 
-  #point = null;
   #destinations = null;
   #offers = null;
 
   #handleFormSubmit = null;
   #handleCloseClick = null;
+
+  #datepicker = null;
 
   constructor(
     { point = BLANK_POINT },
@@ -252,7 +256,7 @@ export default class EventEditView extends AbstractStatefulView {
     { onCloseClick }
   ) {
     super();
-    this._setState(EventEditView.parsePointToState(point));
+    this._setState(EventEditView.parsePointToState(point, destinations));
     this.#destinations = destinations;
     this.#offers = offers;
 
@@ -269,6 +273,15 @@ export default class EventEditView extends AbstractStatefulView {
       this.#destinations,
       this.#offers,
     );
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
   }
 
   reset(point) {
@@ -294,6 +307,9 @@ export default class EventEditView extends AbstractStatefulView {
     });
     this.element.querySelector('.event__input--price')
       .addEventListener('change', this.#priceInputChangeHandler);
+
+    this.#setDateFromDatepicker();
+    this.#setDateToDatepicker();
 
   }
 
@@ -325,11 +341,7 @@ export default class EventEditView extends AbstractStatefulView {
     evt.preventDefault();
     const datalist = evt.target.nextElementSibling;
 
-    const getPointDestinationName = (destinationId) => this.#destinations
-      .find(({ id: pointDestinationId }) => pointDestinationId === destinationId)
-      ?.name;
-
-    const prevDestinationOption = getPointDestinationName(this._state.destination);
+    const prevDestinationOption = this._state.destinationName;
     const selectedDestinationOption = Array.from(datalist.options).find((option) => option.value === evt.target.value);
 
     if (!selectedDestinationOption) {
@@ -392,20 +404,70 @@ export default class EventEditView extends AbstractStatefulView {
 
   };
 
-  static parsePointToState(point) {
+  #setDateFromDatepicker() {
+    if (this._state.dateFrom) {
+      this.#datepicker = flatpickr(
+        this.element.querySelector('input[name="event-start-time"]'),
+        {
+          enableTime: true,
+          dateFormat: 'd/m/y H:i',
+          // eslint-disable-next-line camelcase
+          time_24hr: true,
+          defaultDate: this._state.dateFrom,
+          maxDate: this._state.dateTo,
+          onChange: this.#dateFromChangeHandler,
+        },
+      );
+    }
+  }
+
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate.toISOString(),
+    });
+  };
+
+  #setDateToDatepicker() {
+    if (this._state.dateTo) {
+      this.#datepicker = flatpickr(
+        this.element.querySelector('input[name="event-end-time"]'),
+        {
+          enableTime: true,
+          dateFormat: 'd/m/y H:i',
+          // eslint-disable-next-line camelcase
+          time_24hr: true,
+          defaultDate: this._state.dateTo,
+          minDate: this._state.dateFrom,
+          onChange: this.#dateToChangeHandler,
+        },
+      );
+    }
+  }
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate.toISOString(),
+    });
+  };
+
+
+  static parsePointToState(point, destinations) {
+
     return {
       ...point,
+      destinationName: getDestinationName(point.destination, destinations)
     };
   }
 
   static parseStateToPoint(state) {
     const point = { ...state };
 
-    // if (!point.isDueDate) {
-    //   point.dueDate = null;
-    // }
+    if (!point.destinationName) {
+      point.destinationName = null;
+    }
 
-    // delete point.isRepeating;
+    delete point.destinationName;
 
     return point;
   }
