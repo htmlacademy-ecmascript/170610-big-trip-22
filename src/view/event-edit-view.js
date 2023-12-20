@@ -245,6 +245,7 @@ export default class EventEditView extends AbstractStatefulView {
 
   #handleFormSubmit = null;
   #handleCloseClick = null;
+  #handleDeleteClick = null;
 
   #datepicker = null;
 
@@ -253,7 +254,8 @@ export default class EventEditView extends AbstractStatefulView {
     { destinations },
     { offers },
     { onFormSubmit },
-    { onCloseClick }
+    { onCloseClick },
+    { onDeleteClick },
   ) {
     super();
     this._setState(EventEditView.parsePointToState(point, destinations));
@@ -262,6 +264,7 @@ export default class EventEditView extends AbstractStatefulView {
 
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
+    this.#handleDeleteClick = onDeleteClick;
 
     this._restoreHandlers();
 
@@ -307,6 +310,8 @@ export default class EventEditView extends AbstractStatefulView {
     });
     this.element.querySelector('.event__input--price')
       .addEventListener('change', this.#priceInputChangeHandler);
+    this.element.querySelector('.event__reset-btn')
+      .addEventListener('click', this.#formDeleteClickHandler);
 
     this.#setDateFromDatepicker();
     this.#setDateToDatepicker();
@@ -451,6 +456,10 @@ export default class EventEditView extends AbstractStatefulView {
     });
   };
 
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EventEditView.parseStateToPoint(this._state));
+  };
 
   static parsePointToState(point, destinations) {
 

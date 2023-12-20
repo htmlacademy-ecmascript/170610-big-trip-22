@@ -51,6 +51,7 @@ export default class PointPresenter {
       { offers: this.#offers },
       { onFormSubmit: this.#handleFormSubmit },
       { onCloseClick: this.#handleCloseClick },
+      { onDeleteClick: this.#handleDeleteClick },
     );
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
@@ -133,5 +134,13 @@ export default class PointPresenter {
 
   #handleCloseClick = () => {
     this.#replaceFormToCard();
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 }
