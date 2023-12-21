@@ -1,6 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {
   humanizePointInputDateTimeType,
+  getDestinationName,
 } from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
@@ -27,6 +28,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     type: pointType,
     destination: pointDestinationId,
     offers: pointOffersIds,
+    destinationName
   } = point;
 
   const pointTypeOffers = offers
@@ -61,10 +63,6 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   );
 
   const typeListTemplate = createTypeListTemplate();
-
-  const destinationName = destinations
-    .find(({ id }) => id === pointDestinationId)
-    ?.name;
 
   const pointDestinationPhotos = destinations
     .find(({ id }) => id === pointDestinationId)
@@ -259,7 +257,10 @@ export default class EventEditView extends AbstractStatefulView {
     { onDeleteClick },
   ) {
     super();
-    this._setState(EventEditView.parsePointToState(point));
+    this._setState(EventEditView.parsePointToState(
+      point,
+      destinations,
+    ));
     this.#destinations = destinations;
     this.#offers = offers;
 
@@ -345,26 +346,36 @@ export default class EventEditView extends AbstractStatefulView {
 
   #destinationInputChangeHandler = (evt) => {
     evt.preventDefault();
-    const datalist = evt.target.nextElementSibling;
 
-    const prevDestinationOption = this._state.destinationName;
-    const selectedDestinationOption = Array.from(datalist.options).find((option) => option.value === evt.target.value);
+    let previousValue = this._state.destinationName;
+    let inputValue = evt.target.value;
 
-    if (!selectedDestinationOption) {
-      evt.target.value = prevDestinationOption;
+    // Преобразуем введенное значение в нижний регистр для регистронезависимой проверки
+    const inputCityName = inputValue.toLowerCase();
+
+    // Проверяем, входит ли введенное имя в список городов
+    const isValidCity = this.#destinations.some((city) => city.name.toLowerCase() === inputCityName);
+
+    if (!isValidCity) {
+      // Если введенное значение не допустимо, возвращаем предыдущее значение
+      inputValue = previousValue;
+    } else {
+      // Если введенное значение допустимо, обновляем предыдущее значение
+      previousValue = inputValue;
     }
 
-    const targetDestinationArray = this.#destinations.filter((destination) => destination.name === evt.target.value);
+    // Устанавливаем значение инпута
+    evt.target.value = inputValue;
 
-    const [{ id }] = targetDestinationArray;
+    const foundCity = this.#destinations.find((city) => city.name === inputValue);
 
-    if (selectedDestinationOption) {
-      this.updateElement({
-        destination: id,
-      });
-    }
+    this.updateElement({
+      destination: foundCity.id,
+      destinationName: foundCity.name
+    });
 
   };
+
 
   #priceInputChangeHandler = (evt) => {
 
@@ -462,21 +473,23 @@ export default class EventEditView extends AbstractStatefulView {
     this.#handleDeleteClick(EventEditView.parseStateToPoint(this._state));
   };
 
-  static parsePointToState(point) {
+
+  static parsePointToState(point, destinations) {
 
     return {
       ...point,
+      destinationName: getDestinationName(point.destination, destinations)
     };
   }
 
   static parseStateToPoint(state) {
     const point = { ...state };
 
-    // if (!point.destinationName) {
-    //   point.destinationName = null;
-    // }
+    if (!point.destinationName) {
+      point.destinationName = null;
+    }
 
-    // delete point.destinationName;
+    delete point.destinationName;
 
     return point;
   }
