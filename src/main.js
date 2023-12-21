@@ -6,7 +6,13 @@ import PointsModel from './model/points-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
 import FilterModel from './model/filter-model.js';
-import { generateFilter } from './mock/filter.js';
+
+const filters = [
+  {
+    type: 'all',
+    count: 0,
+  },
+];
 
 const pageBodyElement = document.querySelector('.page-body');
 
@@ -22,9 +28,15 @@ const tripControlsFormElement = tripMainElement.querySelector('.trip-controls__f
 const pageMainElement = pageBodyElement.querySelector('.page-main');
 render(new InfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
 
-const filters = generateFilter(pointsModel.points);
-render(new FiltersView({ filters }), tripControlsFormElement, RenderPosition.BEFOREEND);
+// const filters = generateFilter(pointsModel.points);
 
+// render(new FiltersView({ filters }), tripControlsFormElement, RenderPosition.BEFOREEND);
+
+render(new FiltersView({
+  filters,
+  currentFilterType: 'all',
+  onFilterTypeChange: () => { }
+}), tripControlsFormElement, RenderPosition.BEFOREEND);
 
 const tripEventsSectionElement = pageMainElement.querySelector('.trip-events');
 
