@@ -9,7 +9,7 @@ import FilterModel from './model/filter-model.js';
 
 const filters = [
   {
-    type: 'all',
+    type: 'everything',
     count: 0,
   },
 ];
@@ -20,6 +20,8 @@ const pointsModel = new PointsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 const filterModel = new FilterModel();
+
+console.log('filterModel', filterModel);
 
 const pageHeaderElement = pageBodyElement.querySelector('.page-header');
 const tripMainElement = pageHeaderElement.querySelector('.trip-main');
@@ -34,7 +36,7 @@ render(new InfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
 
 render(new FiltersView({
   filters,
-  currentFilterType: 'all',
+  currentFilterType: 'everything',
   onFilterTypeChange: () => { }
 }), tripControlsFormElement, RenderPosition.BEFOREEND);
 
