@@ -264,7 +264,6 @@ export default class EventEditView extends AbstractStatefulView {
     this._setState(EventEditView.parsePointToState(
       point,
       destinations,
-      offers
     ));
 
     // console.log('this._state', this._state);
@@ -299,7 +298,6 @@ export default class EventEditView extends AbstractStatefulView {
       EventEditView.parsePointToState(
         point,
         this.#destinations,
-        this.#offers,
       ),
     );
   }
