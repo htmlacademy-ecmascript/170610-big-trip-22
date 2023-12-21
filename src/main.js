@@ -5,6 +5,7 @@ import BoardPresenter from './presenter/board-presenter.js';
 import PointsModel from './model/points-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
+import FilterModel from './model/filter-model.js';
 import { generateFilter } from './mock/filter.js';
 
 const pageBodyElement = document.querySelector('.page-body');
@@ -12,6 +13,7 @@ const pageBodyElement = document.querySelector('.page-body');
 const pointsModel = new PointsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
+const filterModel = new FilterModel();
 
 const pageHeaderElement = pageBodyElement.querySelector('.page-header');
 const tripMainElement = pageHeaderElement.querySelector('.trip-main');
