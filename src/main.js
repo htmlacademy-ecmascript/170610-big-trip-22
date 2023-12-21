@@ -10,7 +10,19 @@ import FilterModel from './model/filter-model.js';
 const filters = [
   {
     type: 'everything',
-    count: 0,
+    count: 1,
+  },
+  {
+    type: 'future',
+    count: 2,
+  },
+  {
+    type: 'present',
+    count: 3,
+  },
+  {
+    type: 'past',
+    count: 4,
   },
 ];
 
