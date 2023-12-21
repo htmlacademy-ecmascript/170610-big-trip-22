@@ -1,5 +1,6 @@
 import { render, RenderPosition } from './framework/render.js';
 import InfoView from './view/info-view.js';
+import NewEventButtonView from './view/new-event-button-view.js';
 import BoardPresenter from './presenter/board-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import PointsModel from './model/points-model.js';
@@ -25,7 +26,18 @@ const filterPresenter = new FilterPresenter({
   filterContainer: tripControlsFormElement,
   filterModel,
   pointsModel,
+  onNewEventDestroy: handleNewEventFormClose
 });
+
+const newEventButtonComponent = new NewEventButtonView({
+  onClick: handleNewEventButtonClick
+});
+
+function handleNewEventFormClose() {
+  newEventButtonComponent.element.disabled = false;
+}
+
+render(newEventButtonComponent, tripMainElement);
 
 const tripEventsSectionElement = pageMainElement.querySelector('.trip-events');
 
@@ -36,6 +48,11 @@ const boardPresenter = new BoardPresenter({
   offersModel,
   filterModel,
 });
+
+function handleNewEventButtonClick() {
+  boardPresenter.createTask();
+  newEventButtonComponent.element.disabled = true;
+}
 
 filterPresenter.init();
 boardPresenter.init();
