@@ -127,6 +127,7 @@ export default class PointPresenter {
 
     // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
     // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+
     const isMinorUpdate =
       !isDatesEqual(this.#point.dateFrom, update.dateFrom);
 

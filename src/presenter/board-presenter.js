@@ -5,6 +5,7 @@ import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import PointPresenter from './point-presenter.js';
 import { sortByDuration, sortByBasePrice } from '../utils/point.js';
+import { filter } from '../utils/filter.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
 
 export default class BoardPresenter {
@@ -14,6 +15,7 @@ export default class BoardPresenter {
   #pointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+  #filterModel = null;
 
   #boardComponent = new BoardView();
   #eventsListComponent = new EventsListView();
@@ -23,28 +25,33 @@ export default class BoardPresenter {
   #eventPresenters = new Map();
   #currentSortType = SortType.DEFAULT;
 
-  constructor({ boardContainer, pointsModel, destinationsModel, offersModel }) {
+  constructor({ boardContainer, pointsModel, destinationsModel, offersModel, filterModel }) {
     this.#boardContainer = boardContainer;
 
     this.#pointsModel = pointsModel;
-    this.#pointsModel.addObserver(this.#handleModelEvent);
-
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#filterModel = filterModel;
 
+    this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
 
   }
 
   get points() {
 
+    const filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filter[filterType](points);
+
     switch (this.#currentSortType) {
       case SortType.TIME:
-        return [...this.#pointsModel.points].sort(sortByDuration);
+        return filteredPoints.sort(sortByDuration);
       case SortType.PRICE:
-        return [...this.#pointsModel.points].sort(sortByBasePrice);
+        return filteredPoints.sort(sortByBasePrice);
     }
 
-    return this.#pointsModel.points;
+    return filteredPoints;
 
   }
 
