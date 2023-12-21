@@ -20,9 +20,6 @@ export default class BoardPresenter {
   #noEventComponent = new NoEventView();
   #sortComponent = null;
 
-  #boardDestinations = [];
-  #boardOffers = [];
-
   #eventPresenters = new Map();
   #currentSortType = SortType.DEFAULT;
 
@@ -34,6 +31,7 @@ export default class BoardPresenter {
 
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+
 
   }
 
@@ -50,10 +48,16 @@ export default class BoardPresenter {
 
   }
 
-  init() {
+  get destinations() {
+    return this.#destinationsModel.destinations;
+  }
 
-    this.#boardDestinations = [...this.#destinationsModel.destinations];
-    this.#boardOffers = [...this.#offersModel.offers];
+  get offers() {
+    return this.#offersModel.offers;
+  }
+
+
+  init() {
 
     this.#renderBoard();
 
@@ -79,13 +83,14 @@ export default class BoardPresenter {
 
   #handleModelEvent = (updateType, data) => {
     // console.log(updateType, data);
+
     switch (updateType) {
       case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
         this.#eventPresenters.get(data.id).init(
           data,
-          this.#boardDestinations,
-          this.#boardOffers
+          this.destinations,
+          this.offers,
         );
         break;
       case UpdateType.MINOR:
@@ -133,12 +138,12 @@ export default class BoardPresenter {
 
   }
 
-  #renderPoints(points) {
+  #renderPoints(points, destinations, offers) {
     points
       .forEach((point) => this.#renderPoint(
         point,
-        this.#boardDestinations,
-        this.#boardOffers,
+        destinations,
+        offers,
       ));
   }
 
@@ -165,8 +170,10 @@ export default class BoardPresenter {
     render(this.#boardComponent, this.#boardContainer);
 
     const points = this.points;
-    const pointCount = points.length;
+    const destinations = this.destinations;
+    const offers = this.offers;
 
+    const pointCount = points.length;
 
     if (pointCount === 0) {
       this.#renderNoEvents();
@@ -176,7 +183,11 @@ export default class BoardPresenter {
     this.#renderSort();
     render(this.#eventsListComponent, this.#boardComponent.element);
 
-    this.#renderPoints(points);
+    this.#renderPoints(
+      points,
+      destinations,
+      offers
+    );
 
   }
 

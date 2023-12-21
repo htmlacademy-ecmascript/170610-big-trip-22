@@ -124,6 +124,7 @@ export default class PointPresenter {
 
 
   #handleFormSubmit = (update) => {
+
     // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
     // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
     const isMinorUpdate =
@@ -138,6 +139,7 @@ export default class PointPresenter {
   };
 
   #handleCloseClick = () => {
+    this.#eventEditComponent.reset(this.#point);
     this.#replaceFormToCard();
   };
 

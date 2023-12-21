@@ -28,7 +28,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     type: pointType,
     destination: pointDestinationId,
     offers: pointOffersIds,
-    destinationName
+    destinationName,
   } = point;
 
   const pointTypeOffers = offers
@@ -257,12 +257,17 @@ export default class EventEditView extends AbstractStatefulView {
     { onDeleteClick },
   ) {
     super();
+
+    this.#destinations = destinations;
+    this.#offers = offers;
+
     this._setState(EventEditView.parsePointToState(
       point,
       destinations,
+      offers
     ));
-    this.#destinations = destinations;
-    this.#offers = offers;
+
+    // console.log('this._state', this._state);
 
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
@@ -291,7 +296,11 @@ export default class EventEditView extends AbstractStatefulView {
 
   reset(point) {
     this.updateElement(
-      EventEditView.parsePointToState(point),
+      EventEditView.parsePointToState(
+        point,
+        this.#destinations,
+        this.#offers,
+      ),
     );
   }
 
@@ -323,9 +332,11 @@ export default class EventEditView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit(
-      EventEditView.parseStateToPoint(this._state),
-      this.#destinations,
-      this.#offers,
+      EventEditView.parseStateToPoint(
+        this._state,
+        this.#destinations,
+        this.#offers,
+      ),
     );
   };
 
