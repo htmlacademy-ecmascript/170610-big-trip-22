@@ -122,16 +122,6 @@ export default class PointPresenter {
 
   };
 
-  // #handleFormSubmit = (point) => {
-
-  //   this.#handleDataChange(
-  //     UserAction.UPDATE_POINT,
-  //     UpdateType.MINOR,
-  //     point,
-  //   );
-
-  //   this.#replaceFormToCard();
-  // };
 
   #handleFormSubmit = (update) => {
     // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,

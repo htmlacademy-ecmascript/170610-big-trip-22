@@ -83,14 +83,13 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   const hasPointDestinationPhotos = Boolean(pointDestinationPhotos.length);
 
   const createDestinationPhotosTemplate = () => (
-    `<div class="event__photos-container">
-      <div class="event__photos-tape">
-        ${hasPointDestinationPhotos ? pointDestinationPhotos.map(({ src, description }) =>
-      `<img class="event__photo" src="${src}" alt="${description}">`
-    ).join('')
-      : ''}
-      </div>
-    </div`
+    `${hasPointDestinationPhotos ?
+      `<div class="event__photos-container">
+        <div class="event__photos-tape">
+          ${pointDestinationPhotos.map(({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`).join('')}
+        </div>
+      </div>`
+      : ''}`
   );
 
   const destinationPhotosTemplate = createDestinationPhotosTemplate();
@@ -260,7 +259,7 @@ export default class EventEditView extends AbstractStatefulView {
     { onDeleteClick },
   ) {
     super();
-    this._setState(EventEditView.parsePointToState(point, destinations));
+    this._setState(EventEditView.parsePointToState(point));
     this.#destinations = destinations;
     this.#offers = offers;
 
