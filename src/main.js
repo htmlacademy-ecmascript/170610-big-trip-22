@@ -2,29 +2,30 @@ import { render, RenderPosition } from './framework/render.js';
 import InfoView from './view/info-view.js';
 import FiltersView from './view/filters-view.js';
 import BoardPresenter from './presenter/board-presenter.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 import PointsModel from './model/points-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
 import FilterModel from './model/filter-model.js';
 
-const filters = [
-  {
-    type: 'everything',
-    count: 1,
-  },
-  {
-    type: 'future',
-    count: 2,
-  },
-  {
-    type: 'present',
-    count: 3,
-  },
-  {
-    type: 'past',
-    count: 4,
-  },
-];
+// const filters = [
+//   {
+//     type: 'everything',
+//     count: 1,
+//   },
+//   {
+//     type: 'future',
+//     count: 2,
+//   },
+//   {
+//     type: 'present',
+//     count: 3,
+//   },
+//   {
+//     type: 'past',
+//     count: 4,
+//   },
+// ];
 
 const pageBodyElement = document.querySelector('.page-body');
 
@@ -46,11 +47,17 @@ render(new InfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
 
 // render(new FiltersView({ filters }), tripControlsFormElement, RenderPosition.BEFOREEND);
 
-render(new FiltersView({
-  filters,
-  currentFilterType: 'everything',
-  onFilterTypeChange: () => { }
-}), tripControlsFormElement, RenderPosition.BEFOREEND);
+// render(new FiltersView({
+//   filters,
+//   currentFilterType: 'everything',
+//   onFilterTypeChange: () => { }
+// }), tripControlsFormElement, RenderPosition.BEFOREEND);
+
+const filterPresenter = new FilterPresenter({
+  filterContainer: tripControlsFormElement,
+  filterModel,
+  pointsModel
+});
 
 const tripEventsSectionElement = pageMainElement.querySelector('.trip-events');
 
@@ -61,6 +68,6 @@ const boardPresenter = new BoardPresenter({
   offersModel,
 });
 
-
+filterPresenter.init();
 boardPresenter.init();
 
