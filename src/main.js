@@ -30,14 +30,13 @@ const boardPresenter = new BoardPresenter({
   destinationsModel,
   offersModel,
   filterModel,
-  onNewTaskDestroy: handleNewEventFormClose,
+  onNewEventDestroy: handleNewEventFormClose,
 });
 
 const filterPresenter = new FilterPresenter({
   filterContainer: tripControlsFormElement,
   filterModel,
   pointsModel,
-  onNewEventDestroy: handleNewEventFormClose
 });
 
 const newEventButtonComponent = new NewEventButtonView({

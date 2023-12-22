@@ -15,7 +15,6 @@ const createNewEventViewTemplate = (point = BLANK_POINT) => {
 
   console.log('point', point);
 
-
   return (
     `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -197,7 +196,6 @@ export default class NewEventView extends AbstractStatefulView {
     this.#handleFormSubmit = onFormSubmit;
     this.#handleDeleteClick = onDeleteClick;
 
-
   }
 
   get template() {
@@ -208,26 +206,17 @@ export default class NewEventView extends AbstractStatefulView {
   _restoreHandlers() {
     this.element.querySelector('.event')
       .addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#formDeleteClickHandler);
     this.element.querySelector('.event__reset-btn')
       .addEventListener('click', this.#formDeleteClickHandler);
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(
-      NewEventView.parseStateToPoint(
-        this._state,
-      ),
-    );
+    this.#handleFormSubmit();
   };
 
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleDeleteClick(
-      NewEventView.parseStateToPoint(
-        this._state
-      ));
+    this.#handleDeleteClick();
   };
 }
