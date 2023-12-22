@@ -39,6 +39,8 @@ export default class BoardPresenter {
     this.#filterModel = filterModel;
 
     this.#newEventPresenter = new NewEventPresenter({
+      destinations: this.#destinationsModel,
+      offers: this.#offersModel,
       eventListContainer: this.#eventsListComponent.element,
       onDataChange: this.#handleViewAction,
       onDestroy: onNewEventDestroy

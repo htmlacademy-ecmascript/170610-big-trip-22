@@ -3,6 +3,18 @@ import NewEventView from '../view/new-event-view.js';
 import { nanoid } from 'nanoid';
 import { UserAction, UpdateType } from '../const.js';
 
+
+const BLANK_POINT = {
+  'id': '',
+  'base_price': 0,
+  'date_from': '',
+  'date_to': '',
+  'destination': '',
+  'is_favorite': false,
+  'offers': [],
+  'type': ''
+};
+
 export default class NewEventPresenter {
   #eventListContainer = null;
   #handleDataChange = null;
@@ -10,21 +22,30 @@ export default class NewEventPresenter {
 
   #newEventComponent = null;
 
-  constructor({ eventListContainer, onDataChange, onDestroy }) {
+  #destinations = null;
+  #offers = null;
+
+  constructor({ destinations, offers, eventListContainer, onDataChange, onDestroy }) {
+    this.#destinations = destinations;
+    this.#offers = offers;
     this.#eventListContainer = eventListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
   }
 
   init() {
+
     if (this.#newEventComponent !== null) {
       return;
     }
 
-    this.#newEventComponent = new NewEventView({
-      onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick
-    });
+    this.#newEventComponent = new NewEventView(
+      { point: BLANK_POINT },
+      { destinations: this.#destinations },
+      { offers: this.#offers },
+      { onFormSubmit: this.#handleFormSubmit },
+      { onDeleteClick: this.#handleDeleteClick }
+    );
 
     render(this.#newEventComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);
 
@@ -45,6 +66,7 @@ export default class NewEventPresenter {
   }
 
   #handleFormSubmit = (point) => {
+    console.log('handleFormSubmit', point);
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
@@ -56,6 +78,7 @@ export default class NewEventPresenter {
   };
 
   #handleDeleteClick = () => {
+    console.log('destroy');
     this.destroy();
   };
 

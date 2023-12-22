@@ -1,19 +1,10 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
-const BLANK_POINT = {
-  'id': '',
-  'base_price': 0,
-  'date_from': '',
-  'date_to': '',
-  'destination': '',
-  'is_favorite': false,
-  'offers': [],
-  'type': ''
-};
-
-const createNewEventViewTemplate = (point = BLANK_POINT) => {
+const createNewEventViewTemplate = (point, { destinations }, { offers }) => {
 
   console.log('point', point);
+  console.log('destinations', destinations);
+  console.log('offers', offers);
 
   return (
     `<li class="trip-events__item">
@@ -183,23 +174,40 @@ const createNewEventViewTemplate = (point = BLANK_POINT) => {
 
 export default class NewEventView extends AbstractStatefulView {
 
+  #destinations = null;
+  #offers = null;
+
   #handleFormSubmit = null;
   #handleDeleteClick = null;
 
-  constructor({
-    onFormSubmit,
-    onDeleteClick
-  },
+  constructor(
+    { point },
+    { destinations },
+    { offers },
+    { onFormSubmit },
+    { onDeleteClick },
   ) {
     super();
 
+    this.#destinations = destinations;
+    this.#offers = offers;
+
+    this._setState(NewEventView.parsePointToState(
+      point,
+    ));
+
     this.#handleFormSubmit = onFormSubmit;
     this.#handleDeleteClick = onDeleteClick;
+
+    this._restoreHandlers();
 
   }
 
   get template() {
     return createNewEventViewTemplate(
+      this._state,
+      this.#destinations,
+      this.#offers,
     );
   }
 
@@ -210,13 +218,42 @@ export default class NewEventView extends AbstractStatefulView {
       .addEventListener('click', this.#formDeleteClickHandler);
   }
 
+
   #formSubmitHandler = (evt) => {
+    console.log('formSubmitHandler');
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(
+      NewEventView.parseStateToPoint(
+        this._state,
+      ),
+    );
   };
 
   #formDeleteClickHandler = (evt) => {
+    console.log('formDeleteClickHandler');
     evt.preventDefault();
-    this.#handleDeleteClick();
+    this.#handleDeleteClick(
+      NewEventView.parseStateToPoint(
+        this._state,
+      ));
   };
+
+  static parsePointToState(point) {
+
+    return {
+      ...point,
+    };
+  }
+
+  static parseStateToPoint(state) {
+    const point = { ...state };
+
+    // if (!point.destinationName) {
+    //   point.destinationName = null;
+    // }
+
+    // delete point.destinationName;
+
+    return point;
+  }
 }
