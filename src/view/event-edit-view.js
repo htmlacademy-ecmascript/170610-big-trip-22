@@ -266,8 +266,6 @@ export default class EventEditView extends AbstractStatefulView {
       destinations,
     ));
 
-    // console.log('this._state', this._state);
-
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
     this.#handleDeleteClick = onDeleteClick;

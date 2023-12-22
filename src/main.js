@@ -22,6 +22,17 @@ const tripControlsFormElement = tripMainElement.querySelector('.trip-controls__f
 const pageMainElement = pageBodyElement.querySelector('.page-main');
 render(new InfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
 
+const tripEventsSectionElement = pageMainElement.querySelector('.trip-events');
+
+const boardPresenter = new BoardPresenter({
+  boardContainer: tripEventsSectionElement,
+  pointsModel,
+  destinationsModel,
+  offersModel,
+  filterModel,
+  onNewTaskDestroy: handleNewEventFormClose,
+});
+
 const filterPresenter = new FilterPresenter({
   filterContainer: tripControlsFormElement,
   filterModel,
@@ -37,22 +48,13 @@ function handleNewEventFormClose() {
   newEventButtonComponent.element.disabled = false;
 }
 
-render(newEventButtonComponent, tripMainElement);
-
-const tripEventsSectionElement = pageMainElement.querySelector('.trip-events');
-
-const boardPresenter = new BoardPresenter({
-  boardContainer: tripEventsSectionElement,
-  pointsModel,
-  destinationsModel,
-  offersModel,
-  filterModel,
-});
-
 function handleNewEventButtonClick() {
-  boardPresenter.createTask();
+  boardPresenter.createEvent();
   newEventButtonComponent.element.disabled = true;
 }
+
+render(newEventButtonComponent, tripMainElement);
+
 
 filterPresenter.init();
 boardPresenter.init();

@@ -1,18 +1,14 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
-import EventEditView from '../view/event-edit-view.js';
+import NewEventView from '../view/new-event-view.js';
 import { nanoid } from 'nanoid';
 import { UserAction, UpdateType } from '../const.js';
 
-export default class NewPointPresenter {
+export default class NewEventPresenter {
   #eventListContainer = null;
   #handleDataChange = null;
   #handleDestroy = null;
 
-  #eventEditComponent = null;
-
-  #point = null;
-  #destinations = null;
-  #offers = null;
+  #newEventComponent = null;
 
   constructor({ eventListContainer, onDataChange, onDestroy }) {
     this.#eventListContainer = eventListContainer;
@@ -21,33 +17,29 @@ export default class NewPointPresenter {
   }
 
   init() {
-    if (this.#eventEditComponent !== null) {
+    if (this.#newEventComponent !== null) {
       return;
     }
 
-    this.#eventEditComponent = new EventEditView(
-      { point: this.#point },
-      { destinations: this.#destinations },
-      { offers: this.#offers },
-      { onFormSubmit: this.#handleFormSubmit },
-      { onCloseClick: this.#handleCloseClick },
-      { onDeleteClick: this.#handleDeleteClick },
-    );
+    this.#newEventComponent = new NewEventView({
+      onFormSubmit: this.#handleFormSubmit,
+      onDeleteClick: this.#handleDeleteClick
+    });
 
-    render(this.#eventEditComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);
+    render(this.#newEventComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
   destroy() {
-    if (this.#eventEditComponent === null) {
+    if (this.#newEventComponent === null) {
       return;
     }
 
     this.#handleDestroy();
 
-    remove(this.#eventEditComponent);
-    this.#eventEditComponent = null;
+    remove(this.#newEventComponent);
+    this.#newEventComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
@@ -62,11 +54,6 @@ export default class NewPointPresenter {
     );
     this.destroy();
   };
-
-  #handleCloseClick = () => {
-    this.destroy();
-  };
-
 
   #handleDeleteClick = () => {
     this.destroy();

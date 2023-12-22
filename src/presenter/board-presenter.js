@@ -4,6 +4,7 @@ import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import PointPresenter from './point-presenter.js';
+import NewEventPresenter from './new-event-presenter.js';
 import { sortByDuration, sortByBasePrice } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
@@ -24,16 +25,24 @@ export default class BoardPresenter {
   #noEventComponent = null;
 
   #eventPresenters = new Map();
+  #newEventPresenter = null;
+
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
 
-  constructor({ boardContainer, pointsModel, destinationsModel, offersModel, filterModel }) {
+  constructor({ boardContainer, pointsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
     this.#boardContainer = boardContainer;
 
     this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#filterModel = filterModel;
+
+    this.#newEventPresenter = new NewEventPresenter({
+      eventListContainer: this.#eventsListComponent.element,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewEventDestroy
+    });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -72,7 +81,14 @@ export default class BoardPresenter {
 
   }
 
+  createEvent() {
+    this.#currentSortType = SortType.DEFAULT;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newEventPresenter.init();
+  }
+
   #handleModeChange = () => {
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -167,6 +183,7 @@ export default class BoardPresenter {
 
   #clearBoard({ resetSortType = false } = {}) {
 
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
 
