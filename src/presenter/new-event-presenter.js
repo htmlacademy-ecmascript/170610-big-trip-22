@@ -63,7 +63,6 @@ export default class NewEventPresenter {
   }
 
   #handleFormSubmit = (point) => {
-    console.log('handleFormSubmit', point);
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
@@ -75,7 +74,6 @@ export default class NewEventPresenter {
   };
 
   #handleDeleteClick = () => {
-    console.log('destroy');
     this.destroy();
   };
 

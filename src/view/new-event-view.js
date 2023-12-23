@@ -17,10 +17,6 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 const createNewEventViewTemplate = (point, destinations, offers) => {
 
-  console.log('point', point);
-  console.log('destinations', destinations);
-  console.log('offers', offers);
-
   const {
     id: pointId,
     basePrice,
@@ -40,8 +36,6 @@ const createNewEventViewTemplate = (point, destinations, offers) => {
 
   } = point;
 
-
-  console.log('hasPointType', hasPointType);
 
   const typeListTemplate = createTypeListTemplate(offers, pointType);
 
@@ -128,7 +122,7 @@ const createNewEventViewTemplate = (point, destinations, offers) => {
             id="event-price-${pointId}"
             type="text"
             name="event-price"
-            value="0">
+            value="${basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -220,7 +214,6 @@ export default class NewEventView extends AbstractStatefulView {
   }
 
   #formSubmitHandler = (evt) => {
-    console.log('formSubmitHandler');
     evt.preventDefault();
 
     const destinationValue = this._state.destination?.trim();
@@ -286,9 +279,6 @@ export default class NewEventView extends AbstractStatefulView {
     let previousValue = this._state.destinationName;
     let inputValue = evt.target.value;
 
-    console.log('previousValue', previousValue);
-    console.log('inputValue', inputValue);
-
     // Преобразуем введенное значение в нижний регистр для регистронезависимой проверки
     const inputCityName = inputValue.toLowerCase();
 
@@ -347,7 +337,7 @@ export default class NewEventView extends AbstractStatefulView {
 
     if (nextBasePrice !== '' && nextBasePrice >= 0) {
       this._setState({
-        basePrice: nextBasePrice,
+        basePrice: Number(nextBasePrice),
       });
     }
 
@@ -373,20 +363,20 @@ export default class NewEventView extends AbstractStatefulView {
   };
 
   #setDateFromDatepicker() {
-    if (this._state.dateFrom) {
-      this.#datepicker = flatpickr(
-        this.element.querySelector('input[name="event-start-time"]'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y H:i',
-          // eslint-disable-next-line camelcase
-          time_24hr: true,
-          defaultDate: this._state.dateFrom,
-          maxDate: this._state.dateTo,
-          onChange: this.#dateFromChangeHandler,
-        },
-      );
-    }
+
+    this.#datepicker = flatpickr(
+      this.element.querySelector('input[name="event-start-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        defaultDate: this._state.dateFrom,
+        maxDate: this._state.dateTo,
+        onChange: this.#dateFromChangeHandler,
+      },
+    );
+
   }
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -408,20 +398,20 @@ export default class NewEventView extends AbstractStatefulView {
   };
 
   #setDateToDatepicker() {
-    if (this._state.dateTo) {
-      this.#datepicker = flatpickr(
-        this.element.querySelector('input[name="event-end-time"]'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y H:i',
-          // eslint-disable-next-line camelcase
-          time_24hr: true,
-          defaultDate: this._state.dateTo,
-          minDate: this._state.dateFrom,
-          onChange: this.#dateToChangeHandler,
-        },
-      );
-    }
+
+    this.#datepicker = flatpickr(
+      this.element.querySelector('input[name="event-end-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onChange: this.#dateToChangeHandler,
+      },
+    );
+
   }
 
   #dateToChangeHandler = ([userDate]) => {

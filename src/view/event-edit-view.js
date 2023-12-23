@@ -360,7 +360,7 @@ export default class EventEditView extends AbstractStatefulView {
 
     if (nextBasePrice !== '' && nextBasePrice >= 0) {
       this._setState({
-        basePrice: nextBasePrice,
+        basePrice: Number(nextBasePrice),
       });
     }
 
