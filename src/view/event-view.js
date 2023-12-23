@@ -5,6 +5,8 @@ import {
   humanizePointDateTimeType,
   humanizePointTimeDate,
   getFormattedDiffDuration,
+  getTypeOffers,
+  getDestinationName,
 } from '../utils/point.js';
 
 const createEventViewTemplate = (point, destinations, offers) => {
@@ -23,22 +25,18 @@ const createEventViewTemplate = (point, destinations, offers) => {
     ? 'event__favorite-btn--active'
     : '';
 
-  const destinationName = destinations
-    .find(({ id }) => id === pointDestinationId)
-    ?.name;
+  const destinationName = getDestinationName(pointDestinationId, destinations);
 
   const isSelectedOffers = () => Boolean(pointOffersIds.length);
 
-  const pointTypeOffers = offers
-    .find(({ type }) => type === pointType)
-    ?.offers;
+  const typeOffers = getTypeOffers(pointType, offers);
 
-  const pointSelectedOffers = pointTypeOffers.filter((offer) => pointOffersIds.includes(offer.id));
+  const selectedOffers = typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
 
-  const createEventSelectedOffersTemplate = (selectedOffers) => (
+  const createEventSelectedOffersTemplate = (pointSelectedOffers) => (
     `${isSelectedOffers(pointOffersIds) ? `
             <ul class="event__selected-offers">
-                ${selectedOffers.map(({ title, price }) =>
+                ${pointSelectedOffers.map(({ title, price }) =>
       `<li class="event__offer">
                 <span class="event__offer-title">${title}</span>
                 +€
@@ -48,7 +46,7 @@ const createEventViewTemplate = (point, destinations, offers) => {
       : ''}`
   );
 
-  const selectedOffersTemplate = createEventSelectedOffersTemplate(pointSelectedOffers);
+  const selectedOffersTemplate = createEventSelectedOffersTemplate(selectedOffers);
 
 
   return (

@@ -23,7 +23,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     typeOffers,
   } = point;
 
-  console.log('typeOffers', typeOffers);
+  // console.log('typeOffers', typeOffers);
 
   const createTypeListTemplate = () => (
     `<div class="event__type-list">
