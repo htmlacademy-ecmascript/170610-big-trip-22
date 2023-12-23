@@ -8,6 +8,7 @@ import {
   getTypeOffers,
   getDestinationName,
   getSelectedOffers,
+  createSelectedOffersTemplate,
 } from '../utils/point.js';
 
 const createEventViewTemplate = (point, destinations, offers) => {
@@ -25,20 +26,7 @@ const createEventViewTemplate = (point, destinations, offers) => {
   } = point;
 
 
-  const createSelectedOffersTemplate = (pointSelectedOffers) => (
-    `${hasSelectedOffers ? `
-            <ul class="event__selected-offers">
-                ${pointSelectedOffers.map(({ title, price }) =>
-      `<li class="event__offer">
-                <span class="event__offer-title">${title}</span>
-                +€
-                <span class="event__offer-price">${price}</span>
-              </li>`).join('')}
-            </ul>`
-      : ''}`
-  );
-
-  const selectedOffersTemplate = createSelectedOffersTemplate(selectedOffers);
+  const selectedOffersTemplate = createSelectedOffersTemplate(hasSelectedOffers, selectedOffers);
 
   return (
     `<li class="trip-events__item">
