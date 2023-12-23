@@ -220,9 +220,9 @@ export default class NewEventView extends AbstractStatefulView {
     evt.preventDefault();
 
     const destinationValue = this._state.destination?.trim();
-    const dateFromValue = this._state.date_from?.trim();
-    const dateToValue = this._state.date_to?.trim();
-    const basePriceValue = typeof this._state.base_price === 'string' ? this._state.base_price.trim() : this._state.base_price;
+    const dateFromValue = this._state.dateFrom?.trim();
+    const dateToValue = this._state.dateTo?.trim();
+    const basePriceValue = typeof this._state.basePrice === 'string' ? this._state.basePrice.trim() : this._state.basePrice;
 
     if (!destinationValue) {
       console.error('Поле "destination" не может быть пустым.');
@@ -230,17 +230,17 @@ export default class NewEventView extends AbstractStatefulView {
     }
 
     if (!dateFromValue) {
-      console.error('Поле "date_from" не может быть пустым.');
+      console.error('Поле "dateFrom" не может быть пустым.');
       return;
     }
 
     if (!dateToValue) {
-      console.error('Поле "date_to" не может быть пустым.');
+      console.error('Поле "dateTo" не может быть пустым.');
       return;
     }
 
     if (!basePriceValue) {
-      console.error('Поле "base_price" не может быть пустым.');
+      console.error('Поле "basePrice" не может быть пустым.');
       return;
     }
 
