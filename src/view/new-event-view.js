@@ -223,22 +223,22 @@ export default class NewEventView extends AbstractStatefulView {
     const basePriceValue = typeof this._state.basePrice === 'string' ? this._state.basePrice.trim() : this._state.basePrice;
 
     if (!destinationValue) {
-      console.error('Поле "destination" не может быть пустым.');
+      // console.error('Поле "destination" не может быть пустым.');
       return;
     }
 
     if (!dateFromValue) {
-      console.error('Поле "dateFrom" не может быть пустым.');
+      // console.error('Поле "dateFrom" не может быть пустым.');
       return;
     }
 
     if (!dateToValue) {
-      console.error('Поле "dateTo" не может быть пустым.');
+      // console.error('Поле "dateTo" не может быть пустым.');
       return;
     }
 
     if (!basePriceValue) {
-      console.error('Поле "basePrice" не может быть пустым.');
+      // console.error('Поле "basePrice" не может быть пустым.');
       return;
     }
 
@@ -252,7 +252,6 @@ export default class NewEventView extends AbstractStatefulView {
   };
 
   #formDeleteClickHandler = (evt) => {
-    console.log('formDeleteClickHandler');
     evt.preventDefault();
     this.#handleDeleteClick(
       NewEventView.parseStateToPoint(
@@ -382,14 +381,14 @@ export default class NewEventView extends AbstractStatefulView {
 
   #dateFromChangeHandler = ([userDate]) => {
     if (!userDate) {
-      console.error('Неверный формат даты.');
+      // console.error('Неверный формат даты.');
       return;
     }
 
     const formattedDate = userDate.toISOString();
 
     if (formattedDate.trim() === '') {
-      console.error('Дата не может быть пустой.');
+      // console.error('Дата не может быть пустой.');
       return;
     }
 
@@ -417,14 +416,14 @@ export default class NewEventView extends AbstractStatefulView {
 
   #dateToChangeHandler = ([userDate]) => {
     if (!userDate) {
-      console.error('Неверный формат даты.');
+      // console.error('Неверный формат даты.');
       return;
     }
 
     const formattedDate = userDate.toISOString();
 
     if (formattedDate.trim() === '') {
-      console.error('Дата не может быть пустой.');
+      // console.error('Дата не может быть пустой.');
       return;
     }
 
