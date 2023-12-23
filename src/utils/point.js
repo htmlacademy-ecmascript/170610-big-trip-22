@@ -172,6 +172,8 @@ const createOffersSectionTemplateTemplate = (hasTypeOffers, typeOffers, pointOff
   } `
 );
 
+const getSelectedOffers = (typeOffers, pointOffersIds) => typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
+
 
 export {
   humanizePointDateTime,
@@ -196,4 +198,5 @@ export {
   createDestinationPhotosTemplate,
   createDestinationDescriptionTemplate,
   createOffersSectionTemplateTemplate,
+  getSelectedOffers,
 };

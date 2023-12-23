@@ -7,6 +7,7 @@ import {
   getFormattedDiffDuration,
   getTypeOffers,
   getDestinationName,
+  getSelectedOffers,
 } from '../utils/point.js';
 
 const createEventViewTemplate = (point, destinations, offers) => {
@@ -19,13 +20,11 @@ const createEventViewTemplate = (point, destinations, offers) => {
     offers: pointOffersIds,
     destinationName,
     favoriteClassName,
-    typeOffers,
+    selectedOffers,
   } = point;
 
 
   const isSelectedOffers = () => Boolean(pointOffersIds.length);
-
-  const selectedOffers = typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
 
   const createSelectedOffersTemplate = (pointSelectedOffers) => (
     `${isSelectedOffers(pointOffersIds) ? `
@@ -135,18 +134,18 @@ export default class EventView extends AbstractStatefulView {
   static parsePointToState(point, destinations, offers) {
 
     const destinationName = getDestinationName(point.destination, destinations);
-
     const favoriteClassName = point.isFavorite
       ? 'event__favorite-btn--active'
       : '';
-
     const typeOffers = getTypeOffers(point.type, offers);
+    const selectedOffers = getSelectedOffers(typeOffers, point.offers);
 
     return {
       ...point,
       destinationName,
       favoriteClassName,
       typeOffers,
+      selectedOffers,
     };
   }
 
@@ -165,9 +164,14 @@ export default class EventView extends AbstractStatefulView {
       point.typeOffers = null;
     }
 
+    if (!point.selectedOffers) {
+      point.selectedOffers = null;
+    }
+
     delete point.destinationName;
     delete point.favoriteClassName;
     delete point.typeOffers;
+    delete point.selectedOffers;
 
     return point;
   }
