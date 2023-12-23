@@ -11,14 +11,13 @@ import {
   createSelectedOffersTemplate,
 } from '../utils/point.js';
 
-const createEventViewTemplate = (point, destinations, offers) => {
+const createEventViewTemplate = (point) => {
 
   const {
     basePrice,
     dateFrom,
     dateTo,
     type: pointType,
-    offers: pointOffersIds,
     destinationName,
     favoriteClassName,
     selectedOffers,
@@ -67,9 +66,6 @@ const createEventViewTemplate = (point, destinations, offers) => {
 
 export default class EventView extends AbstractStatefulView {
 
-  #destinations = null;
-  #offers = null;
-
   #handleEditClick = null;
   #handleFavoriteClick = null;
 
@@ -81,9 +77,6 @@ export default class EventView extends AbstractStatefulView {
     { onFavoriteClick }
   ) {
     super();
-
-    this.#destinations = destinations;
-    this.#offers = offers;
 
     this._setState(EventView.parsePointToState(
       point,
@@ -103,8 +96,6 @@ export default class EventView extends AbstractStatefulView {
   get template() {
     return createEventViewTemplate(
       this._state,
-      this.#destinations,
-      this.#offers,
     );
   }
 
