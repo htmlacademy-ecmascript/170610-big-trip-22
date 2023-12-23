@@ -66,6 +66,10 @@ const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || day
 
 const toUpperCaseFirstLetter = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
+const getTypeOffers = (pointType, offers) => offers
+  .find(({ type }) => type === pointType)
+  ?.offers;
+
 
 export {
   humanizePointDateTime,
@@ -82,5 +86,6 @@ export {
   sortByBasePrice,
   getDestinationName,
   isDatesEqual,
-  toUpperCaseFirstLetter
+  toUpperCaseFirstLetter,
+  getTypeOffers
 };
