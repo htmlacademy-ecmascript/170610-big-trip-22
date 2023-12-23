@@ -36,11 +36,11 @@ const UpdateType = {
 };
 
 const BLANK_POINT = {
-  'base_price': 0,
-  'date_from': '',
-  'date_to': '',
+  'basePrice': 0,
+  'dateFrom': '',
+  'dateTo': '',
   'destination': '',
-  'is_favorite': false,
+  'isFavorite': false,
   'offers': [],
   'type': 'flight'
 };
