@@ -219,22 +219,28 @@ export default class NewEventView extends AbstractStatefulView {
     console.log('formSubmitHandler');
     evt.preventDefault();
 
-    const destinationValue = this._state.destination.trim();
-    const dateFromValue = this._state.date_from.trim();
-    const dateToValue = this._state.date_to.trim();
+    const destinationValue = this._state.destination?.trim();
+    const dateFromValue = this._state.date_from?.trim();
+    const dateToValue = this._state.date_to?.trim();
+    const basePriceValue = typeof this._state.base_price === 'string' ? this._state.base_price.trim() : this._state.base_price;
 
-    if (destinationValue === '') {
+    if (!destinationValue) {
       console.error('Поле "destination" не может быть пустым.');
       return;
     }
 
-    if (dateFromValue === '') {
+    if (!dateFromValue) {
       console.error('Поле "date_from" не может быть пустым.');
       return;
     }
 
-    if (dateToValue === '') {
+    if (!dateToValue) {
       console.error('Поле "date_to" не может быть пустым.');
+      return;
+    }
+
+    if (!basePriceValue) {
+      console.error('Поле "base_price" не может быть пустым.');
       return;
     }
 
@@ -246,7 +252,6 @@ export default class NewEventView extends AbstractStatefulView {
       ),
     );
   };
-
 
   #formDeleteClickHandler = (evt) => {
     console.log('formDeleteClickHandler');
