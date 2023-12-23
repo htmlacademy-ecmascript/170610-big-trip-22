@@ -74,6 +74,9 @@ const getDestinationPhotos = (destinationId, pointDestinations) => pointDestinat
   .find(({ id }) => id === destinationId)
   ?.pictures;
 
+const getDestinationObject = (destinationId, pointDestinations) => pointDestinations
+  .find(({ id }) => id === destinationId);
+
 
 export {
   humanizePointDateTime,
@@ -92,5 +95,6 @@ export {
   isDatesEqual,
   toUpperCaseFirstLetter,
   getTypeOffers,
-  getDestinationPhotos
+  getDestinationPhotos,
+  getDestinationObject,
 };

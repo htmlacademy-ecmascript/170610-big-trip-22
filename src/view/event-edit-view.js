@@ -5,6 +5,7 @@ import {
   toUpperCaseFirstLetter,
   getTypeOffers,
   getDestinationPhotos,
+  getDestinationObject,
 } from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
@@ -80,12 +81,13 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const destinationPhotosTemplate = createDestinationPhotosTemplate();
 
-  const pointDestination = destinations
-    .find(({ id }) => id === pointDestinationId);
+  const destinationObject = getDestinationObject(pointDestinationId, destinations);
 
-  const hasDestinationDescription = Boolean(pointDestination.description);
+  console.log('destinationObject', destinationObject);
 
-  const pointDestinationDescription = pointDestination.description;
+  const hasDestinationDescription = Boolean(destinationObject.description);
+
+  const pointDestinationDescription = destinationObject.description;
 
   const createDestinationDescriptionTemplate = () => (
     `${hasDestinationDescription || hasDestinationPhotos ? `
