@@ -24,6 +24,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     typeOffers,
     hasTypeOffers,
     destinationPhotos,
+    hasDestinationPhotos,
   } = point;
 
   console.log('state', point);
@@ -66,8 +67,6 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   );
 
   const destinationListTemplate = createDestinationListTemplate();
-
-  const hasDestinationPhotos = Boolean(destinationPhotos.length);
 
   const createDestinationPhotosTemplate = () => (
     `${hasDestinationPhotos ?
@@ -344,7 +343,6 @@ export default class EventEditView extends AbstractStatefulView {
     });
   };
 
-
   #destinationInputChangeHandler = (evt) => {
     evt.preventDefault();
 
@@ -371,11 +369,13 @@ export default class EventEditView extends AbstractStatefulView {
     const foundCity = this.#destinations.find((city) => city.name === inputValue);
 
     const destinationPhotos = getDestinationPhotos(foundCity.id, this.#destinations);
+    const hasDestinationPhotos = Boolean(destinationPhotos.length);
 
     this.updateElement({
       destination: foundCity.id,
       destinationName: foundCity.name,
       destinationPhotos,
+      hasDestinationPhotos,
     });
 
   };
@@ -482,6 +482,7 @@ export default class EventEditView extends AbstractStatefulView {
     const typeOffers = getTypeOffers(point.type, offers);
     const hasTypeOffers = Boolean(typeOffers.length);
     const destinationPhotos = getDestinationPhotos(point.destination, destinations);
+    const hasDestinationPhotos = Boolean(destinationPhotos.length);
 
     return {
       ...point,
@@ -489,6 +490,7 @@ export default class EventEditView extends AbstractStatefulView {
       typeOffers,
       hasTypeOffers,
       destinationPhotos,
+      hasDestinationPhotos,
     };
   }
 
@@ -508,9 +510,14 @@ export default class EventEditView extends AbstractStatefulView {
       point.destinationPhotos = null;
     }
 
+    if (!point.hasDestinationPhotos) {
+      point.hasDestinationPhotos = null;
+    }
+
     delete point.destinationName;
     delete point.typeOffers;
     delete point.destinationPhotos;
+    delete point.hasDestinationPhotos;
 
     return point;
   }
