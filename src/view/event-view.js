@@ -16,17 +16,14 @@ const createEventViewTemplate = (point, destinations, offers) => {
     dateFrom,
     dateTo,
     type: pointType,
-    destination: pointDestinationId,
     offers: pointOffersIds,
+    destinationName,
     favoriteClassName,
+    typeOffers,
   } = point;
 
 
-  const destinationName = getDestinationName(pointDestinationId, destinations);
-
   const isSelectedOffers = () => Boolean(pointOffersIds.length);
-
-  const typeOffers = getTypeOffers(pointType, offers);
 
   const selectedOffers = typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
 
@@ -136,24 +133,41 @@ export default class EventView extends AbstractStatefulView {
   };
 
   static parsePointToState(point, destinations, offers) {
+
+    const destinationName = getDestinationName(point.destination, destinations);
+
     const favoriteClassName = point.isFavorite
       ? 'event__favorite-btn--active'
       : '';
 
+    const typeOffers = getTypeOffers(point.type, offers);
+
     return {
       ...point,
+      destinationName,
       favoriteClassName,
+      typeOffers,
     };
   }
 
   static parseStateToPoint(state) {
     const point = { ...state };
 
+    if (!point.destinationName) {
+      point.destinationName = null;
+    }
+
     if (!point.favoriteClassName) {
       point.favoriteClassName = null;
     }
 
+    if (!point.typeOffers) {
+      point.typeOffers = null;
+    }
+
+    delete point.destinationName;
     delete point.favoriteClassName;
+    delete point.typeOffers;
 
     return point;
   }
