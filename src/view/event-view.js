@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {
   humanizePointDateTime,
   humanizePointDateDate,
@@ -33,7 +33,7 @@ const createEventViewTemplate = (point, destinations, offers) => {
 
   const selectedOffers = typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
 
-  const createEventSelectedOffersTemplate = (pointSelectedOffers) => (
+  const createSelectedOffersTemplate = (pointSelectedOffers) => (
     `${isSelectedOffers(pointOffersIds) ? `
             <ul class="event__selected-offers">
                 ${pointSelectedOffers.map(({ title, price }) =>
@@ -46,7 +46,7 @@ const createEventViewTemplate = (point, destinations, offers) => {
       : ''}`
   );
 
-  const selectedOffersTemplate = createEventSelectedOffersTemplate(selectedOffers);
+  const selectedOffersTemplate = createSelectedOffersTemplate(selectedOffers);
 
   return (
     `<li class="trip-events__item">
@@ -85,20 +85,31 @@ const createEventViewTemplate = (point, destinations, offers) => {
   );
 };
 
-export default class EventView extends AbstractView {
+export default class EventView extends AbstractStatefulView {
 
-  #point = null;
   #destinations = null;
   #offers = null;
 
   #handleEditClick = null;
   #handleFavoriteClick = null;
 
-  constructor({ point }, { destinations }, { offers }, { onEditClick }, { onFavoriteClick }) {
+  constructor(
+    { point },
+    { destinations },
+    { offers },
+    { onEditClick },
+    { onFavoriteClick }
+  ) {
     super();
-    this.#point = point;
+
     this.#destinations = destinations;
     this.#offers = offers;
+
+    this._setState(EventView.parsePointToState(
+      point,
+      destinations,
+      offers,
+    ));
 
     this.#handleEditClick = onEditClick;
     this.#handleFavoriteClick = onFavoriteClick;
@@ -111,7 +122,7 @@ export default class EventView extends AbstractView {
 
   get template() {
     return createEventViewTemplate(
-      this.#point,
+      this._state,
       this.#destinations,
       this.#offers,
     );
@@ -126,4 +137,17 @@ export default class EventView extends AbstractView {
     evt.preventDefault();
     this.#handleEditClick();
   };
+
+  static parsePointToState(point, destinations, offers) {
+
+    return {
+      ...point,
+    };
+  }
+
+  static parseStateToPoint(state) {
+    const point = { ...state };
+
+    return point;
+  }
 }
