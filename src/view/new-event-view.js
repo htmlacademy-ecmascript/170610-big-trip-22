@@ -91,7 +91,7 @@ const createNewEventViewTemplate = (point, destinations, offers) => {
         id="event-destination-${destinationId}"
         type="text"
         name="event-destination"
-        value=""
+        value="${destinationName}"
         list="destination-list-${destinationId}">
 
         ${destinationListTemplate}
@@ -285,6 +285,9 @@ export default class NewEventView extends AbstractStatefulView {
 
     let previousValue = this._state.destinationName;
     let inputValue = evt.target.value;
+
+    console.log('previousValue', previousValue);
+    console.log('inputValue', inputValue);
 
     // Преобразуем введенное значение в нижний регистр для регистронезависимой проверки
     const inputCityName = inputValue.toLowerCase();

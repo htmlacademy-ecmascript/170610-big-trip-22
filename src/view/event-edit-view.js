@@ -233,7 +233,6 @@ export default class EventEditView extends AbstractStatefulView {
   }
 
   #formSubmitHandler = (evt) => {
-    console.log('formSubmitHandler');
     evt.preventDefault();
 
     const destinationValue = this._state.destination?.trim();
