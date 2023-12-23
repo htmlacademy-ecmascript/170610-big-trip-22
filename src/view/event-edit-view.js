@@ -1,3 +1,4 @@
+import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {
   humanizePointInputDateTimeType,
@@ -84,7 +85,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               id="event-destination-${destinationId}"
               type="text"
               name="event-destination"
-              value="${destinationName}"
+              value="${he.encode(destinationName)}"
               list="destination-list-${destinationId}">
 
               ${destinationListTemplate}
