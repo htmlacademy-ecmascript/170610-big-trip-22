@@ -439,7 +439,6 @@ export default class EventEditView extends AbstractStatefulView {
       point.typeOffers = null;
     }
 
-
     if (!point.destinationObject) {
       point.destinationObject = null;
     }
