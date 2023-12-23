@@ -218,6 +218,26 @@ export default class NewEventView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     console.log('formSubmitHandler');
     evt.preventDefault();
+
+    const destinationValue = this._state.destination.trim();
+    const dateFromValue = this._state.date_from.trim();
+    const dateToValue = this._state.date_to.trim();
+
+    if (destinationValue === '') {
+      console.error('Поле "destination" не может быть пустым.');
+      return;
+    }
+
+    if (dateFromValue === '') {
+      console.error('Поле "date_from" не может быть пустым.');
+      return;
+    }
+
+    if (dateToValue === '') {
+      console.error('Поле "date_to" не может быть пустым.');
+      return;
+    }
+
     this.#handleFormSubmit(
       NewEventView.parseStateToPoint(
         this._state,
@@ -226,6 +246,7 @@ export default class NewEventView extends AbstractStatefulView {
       ),
     );
   };
+
 
   #formDeleteClickHandler = (evt) => {
     console.log('formDeleteClickHandler');
@@ -357,8 +378,20 @@ export default class NewEventView extends AbstractStatefulView {
   }
 
   #dateFromChangeHandler = ([userDate]) => {
+    if (!userDate) {
+      console.error('Неверный формат даты.');
+      return;
+    }
+
+    const formattedDate = userDate.toISOString();
+
+    if (formattedDate.trim() === '') {
+      console.error('Дата не может быть пустой.');
+      return;
+    }
+
     this.updateElement({
-      dateFrom: userDate.toISOString(),
+      dateFrom: formattedDate,
     });
   };
 
@@ -380,8 +413,20 @@ export default class NewEventView extends AbstractStatefulView {
   }
 
   #dateToChangeHandler = ([userDate]) => {
+    if (!userDate) {
+      console.error('Неверный формат даты.');
+      return;
+    }
+
+    const formattedDate = userDate.toISOString();
+
+    if (formattedDate.trim() === '') {
+      console.error('Дата не может быть пустой.');
+      return;
+    }
+
     this.updateElement({
-      dateTo: userDate.toISOString(),
+      dateTo: formattedDate,
     });
   };
 
