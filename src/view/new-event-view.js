@@ -64,12 +64,12 @@ const createNewEventViewTemplate = (point, destinations, offers) => {
         <header class="event__header">
           <div class="event__type-wrapper">
 
-          <label class="event__type  event__type-btn" for="event-type-toggle-1">
+          <label class="event__type  event__type-btn" for="event-type-toggle-${pointId}">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType}.png" alt="Event type icon">
             </label>
 
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointId}" type="checkbox">
 
             ${typeListTemplate}
 
@@ -77,19 +77,19 @@ const createNewEventViewTemplate = (point, destinations, offers) => {
 
           <div class="event__field-group  event__field-group--destination">
 
-          <label class="event__label  event__type-output" for="event-destination-${destinationId}">
-          ${pointType}
-        </label>
+              <label class="event__label  event__type-output" for="event-destination-${destinationId}">
+              ${pointType}
+            </label>
 
-        <input
-        class="event__input  event__input--destination"
-        id="event-destination-${destinationId}"
-        type="text"
-        name="event-destination"
-        value="${he.encode(destinationName)}"
-        list="destination-list-${destinationId}">
+              <input
+              class="event__input  event__input--destination"
+              id="event-destination-${destinationId}"
+              type="text"
+              name="event-destination"
+              value="${he.encode(destinationName)}"
+              list="destination-list-${destinationId}">
 
-        ${destinationListTemplate}
+              ${destinationListTemplate}
 
           </div>
 
@@ -97,20 +97,20 @@ const createNewEventViewTemplate = (point, destinations, offers) => {
 
           <label class="visually-hidden" for="event-start-time-${pointId}">From</label>
 
-          <input
-          class="event__input event__input--time"
-          id="event-start-time-${pointId}"
-          type="text"
-          name="event-start-time"
-          value="${humanizePointInputDateTimeType(dateFrom)}">
-          —
-          <label class="visually-hidden" for="event-end-time-${pointId}">To</label>
-          <input
-            class="event__input event__input--time"
-            id="event-end-time-${pointId}"
-            type="text"
-            name="event-end-time"
-            value="${humanizePointInputDateTimeType(dateTo)}">
+              <input
+              class="event__input event__input--time"
+              id="event-start-time-${pointId}"
+              type="text"
+              name="event-start-time"
+              value="${humanizePointInputDateTimeType(dateFrom)}">
+              —
+              <label class="visually-hidden" for="event-end-time-${pointId}">To</label>
+              <input
+                class="event__input event__input--time"
+                id="event-end-time-${pointId}"
+                type="text"
+                name="event-end-time"
+                value="${humanizePointInputDateTimeType(dateTo)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
