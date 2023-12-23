@@ -55,7 +55,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const typeListTemplate = createTypeListTemplate();
 
-  const pointDestinationPhotos = destinations
+  const destinationPhotos = destinations
     .find(({ id }) => id === pointDestinationId)
     ?.pictures;
 
@@ -69,13 +69,13 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const destinationListTemplate = createDestinationListTemplate();
 
-  const hasPointDestinationPhotos = Boolean(pointDestinationPhotos.length);
+  const hasDestinationPhotos = Boolean(destinationPhotos.length);
 
   const createDestinationPhotosTemplate = () => (
-    `${hasPointDestinationPhotos ?
+    `${hasDestinationPhotos ?
       `<div class="event__photos-container">
         <div class="event__photos-tape">
-          ${pointDestinationPhotos.map(({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`).join('')}
+          ${destinationPhotos.map(({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`).join('')}
         </div>
       </div>`
       : ''}`
@@ -91,11 +91,11 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   const pointDestinationDescription = pointDestination.description;
 
   const createDestinationDescriptionTemplate = () => (
-    `${hasDestinationDescription || hasPointDestinationPhotos ? `
+    `${hasDestinationDescription || hasDestinationPhotos ? `
       <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${pointDestinationDescription}</p>
-           ${pointDestinationPhotos ? destinationPhotosTemplate : ''}
+           ${destinationPhotos ? destinationPhotosTemplate : ''}
         </section>
       </section>
     ` : ''
@@ -336,13 +336,13 @@ export default class EventEditView extends AbstractStatefulView {
     evt.preventDefault();
     const type = evt.target.value;
     const typeOffers = getTypeOffers(type, this.#offers);
-    const hasPointTypeOffers = Boolean(typeOffers.length);
+    const hasTypeOffers = Boolean(typeOffers.length);
 
     this.updateElement({
       type,
       offers: [],
       typeOffers,
-      hasPointTypeOffers,
+      hasTypeOffers,
     });
   };
 
