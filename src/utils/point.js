@@ -59,9 +59,157 @@ const sortByBasePrice = (pointA, pointB) =>
   pointB.basePrice - pointA.basePrice;
 
 
-const getDestinationName = (destinationId, destinations) => destinations
-  .find(({ id: pointDestinationId }) => pointDestinationId === destinationId)
-  ?.name;
+const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+
+const toUpperCaseFirstLetter = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+
+const getDestinationName = (destinationId, destinations) => {
+  if (!destinationId) {
+    return '';
+  }
+
+  const foundDestination = destinations.find(({ id: pointDestinationId }) => pointDestinationId === destinationId);
+
+  return foundDestination?.name || ''; // Если foundDestination равно undefined, вернем пустую строку
+};
+
+const getTypeOffers = (pointType, offers) => offers
+  .find(({ type }) => type === pointType)
+  ?.offers;
+
+const getDestinationPhotos = (destinationId, pointDestinations) => {
+  if (!destinationId) {
+    return '';
+  }
+
+  const foundDestination = pointDestinations.find(({ id }) => id === destinationId);
+
+  return foundDestination?.pictures || null;
+};
+
+
+const getDestinationObject = (destinationId, pointDestinations) => {
+  if (!destinationId) {
+    return '';
+  }
+
+  return pointDestinations.find(({ id }) => id === destinationId) || null;
+};
+
+
+const createTypeListTemplate = (offers, pointType) => (
+  `<div class="event__type-list">
+      <fieldset class="event__type-group">
+        <legend class="visually-hidden">Event type</legend>
+          ${offers.map(({ type }, index) =>
+    `<div class="event__type-item">
+        <input
+          id="event-type-${type}-${index}"
+          class="event__type-input visually-hidden"
+          type="radio"
+          name="event-type"
+          value="${type}"
+          ${type === pointType ? 'checked' : ''}>
+        <label
+          class="event__type-label event__type-label--${type}"
+          for="event-type-${type}-${index}">
+            ${toUpperCaseFirstLetter(type)}
+        </label>
+          </div>`
+  ).join('')}
+
+      </fieldset >
+  </div > `
+);
+
+const createDestinationListTemplate = (hasPointType, destinations, destinationId) => {
+  if (!hasPointType) {
+    return '';
+  }
+
+  return `<datalist id="destination-list-${destinationId}">
+    ${destinations.map(({ name }) => `<option value="${name}"</option>`).join('')}
+   </datalist>`;
+};
+
+
+const createDestinationPhotosTemplate = (hasDestinationPhotos, destinationPhotos) => (
+  `${hasDestinationPhotos ?
+    `<div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${destinationPhotos.map(({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`).join('')}
+      </div>
+    </div>`
+    : ''}`
+);
+
+const createDestinationDescriptionTemplate = (
+  hasDestinationDescription,
+  hasDestinationPhotos,
+  destinationDescription,
+  destinationPhotos,
+  destinationPhotosTemplate
+) => (
+  `${hasDestinationDescription || hasDestinationPhotos ? `
+    <section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">${destinationDescription}</p>
+         ${destinationPhotos ? destinationPhotosTemplate : ''}
+      </section>
+    </section>
+  ` : ''
+  } `
+);
+
+const createOffersSectionTemplateTemplate = (hasTypeOffers, typeOffers, pointOffersIds) => (
+  `${hasTypeOffers ? `
+      <section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+
+    ${typeOffers.map(({ id, title, price }) => {
+
+    const offerLastWord = title.split(' ').pop().replace(/-/g, '');
+    const checked = pointOffersIds.includes(id) ? 'checked' : '';
+
+    return `
+        <div class="event__offer-selector">
+          <input
+            class="event__offer-checkbox visually-hidden"
+            id="event-offer-${offerLastWord}-${id}"
+            type="checkbox"
+            name="event-offer-${offerLastWord}"
+            ${checked}
+          >
+          <label class="event__offer-label"
+            for="event-offer-${offerLastWord}-${id}">
+            <span class="event__offer-title">${title}</span>
+            +€&nbsp;
+            <span class="event__offer-price">${price}</span>
+          </label>
+      </div>`;
+  }).join('')}
+        </div>
+    </section>
+  ` : ''
+  } `
+);
+
+const getSelectedOffers = (typeOffers, pointOffersIds) => typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
+
+const createSelectedOffersTemplate = (hasSelectedOffers, selectedOffers) => (
+  `${hasSelectedOffers ? `
+          <ul class="event__selected-offers">
+              ${selectedOffers.map(({ title, price }) =>
+    `<li class="event__offer">
+              <span class="event__offer-title">${title}</span>
+              +€
+              <span class="event__offer-price">${price}</span>
+            </li>`).join('')}
+          </ul>`
+    : ''}`
+);
+
 
 export {
   humanizePointDateTime,
@@ -77,4 +225,15 @@ export {
   sortByDuration,
   sortByBasePrice,
   getDestinationName,
+  isDatesEqual,
+  getTypeOffers,
+  getDestinationPhotos,
+  getDestinationObject,
+  createTypeListTemplate,
+  createDestinationListTemplate,
+  createDestinationPhotosTemplate,
+  createDestinationDescriptionTemplate,
+  createOffersSectionTemplateTemplate,
+  getSelectedOffers,
+  createSelectedOffersTemplate
 };

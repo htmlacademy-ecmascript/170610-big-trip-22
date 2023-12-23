@@ -16,7 +16,7 @@ import {
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const createEventEditViewTemplate = (point, destinations, offers) => {
+const createNewEventViewTemplate = (point, destinations, offers) => {
 
   const {
     id: pointId,
@@ -34,6 +34,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     hasDestinationDescription,
     destinationPhotos,
     hasDestinationPhotos,
+
   } = point;
 
 
@@ -58,29 +59,29 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   );
 
   return (
-    `<li class="trip-events__item" >
+    `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
 
-            <label class="event__type  event__type-btn" for="event-type-toggle-${pointId}">
+          <label class="event__type  event__type-btn" for="event-type-toggle-${pointId}">
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType}.png" alt="Event type icon">
             </label>
 
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointId}" type="checkbox">
 
-              ${typeListTemplate}
+            ${typeListTemplate}
 
           </div>
 
           <div class="event__field-group  event__field-group--destination">
 
-            <label class="event__label  event__type-output" for="event-destination-${destinationId}">
+              <label class="event__label  event__type-output" for="event-destination-${destinationId}">
               ${pointType}
             </label>
 
-            <input
+              <input
               class="event__input  event__input--destination"
               id="event-destination-${destinationId}"
               type="text"
@@ -94,9 +95,9 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
           <div class="event__field-group  event__field-group--time">
 
-            <label class="visually-hidden" for="event-start-time-${pointId}">From</label>
+          <label class="visually-hidden" for="event-start-time-${pointId}">From</label>
 
-            <input
+              <input
               class="event__input event__input--time"
               id="event-start-time-${pointId}"
               type="text"
@@ -110,71 +111,64 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
                 type="text"
                 name="event-end-time"
                 value="${humanizePointInputDateTimeType(dateTo)}">
-              </div>
+          </div>
 
-              <div class="event__field-group event__field-group--price">
-                <label class="event__label" for="event-price-${pointId}">
-                  <span class="visually-hidden">Price</span>
-                  €
-                </label>
-                <input
-                  class="event__input event__input--price"
-                  id="event-price-${pointId}"
-                  type="text"
-                  name="event-price"
-                  value="${basePrice}">
-              </div>
+          <div class="event__field-group  event__field-group--price">
+          <label class="event__label" for="event-price-${pointId}">
+              <span class="visually-hidden">Price</span>
+              €
+            </label>
+            <input
+            class="event__input event__input--price"
+            id="event-price-${pointId}"
+            type="text"
+            name="event-price"
+            value="${basePrice}">
+          </div>
 
-              <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-              <button class="event__reset-btn" type="reset">Delete</button>
-              <button class="event__rollup-btn" type="button">
-                <span class="visually-hidden">Open event</span>
-              </button>
-            </header>
+          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__reset-btn" type="reset">Cancel</button>
+        </header>
+        <section class="event__details">
+        ${offersSectionTemplate}
 
-            <section class="event__details">
+        ${destinationDescriptionTemplate}
 
-              ${offersSectionTemplate}
-
-              ${destinationDescriptionTemplate}
-
-        </form>
-      </>`
+      </form>
+  </li>`
   );
 };
 
-export default class EventEditView extends AbstractStatefulView {
+export default class NewEventView extends AbstractStatefulView {
 
   #destinations = null;
   #offers = null;
 
   #handleFormSubmit = null;
-  #handleCloseClick = null;
   #handleDeleteClick = null;
 
   #datepicker = null;
 
-  constructor(
-    { point },
-    { destinations },
-    { offers },
-    { onFormSubmit },
-    { onCloseClick },
-    { onDeleteClick },
+  constructor({
+    point,
+    destinations,
+    offers,
+    onFormSubmit,
+    onDeleteClick,
+  }
   ) {
     super();
 
     this.#destinations = destinations;
     this.#offers = offers;
 
-    this._setState(EventEditView.parsePointToState(
+    this._setState(NewEventView.parsePointToState(
       point,
       destinations,
       offers,
     ));
 
     this.#handleFormSubmit = onFormSubmit;
-    this.#handleCloseClick = onCloseClick;
     this.#handleDeleteClick = onDeleteClick;
 
     this._restoreHandlers();
@@ -182,7 +176,7 @@ export default class EventEditView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEventEditViewTemplate(
+    return createNewEventViewTemplate(
       this._state,
       this.#destinations,
       this.#offers,
@@ -198,21 +192,11 @@ export default class EventEditView extends AbstractStatefulView {
     }
   }
 
-  reset(point) {
-    this.updateElement(
-      EventEditView.parsePointToState(
-        point,
-        this.#destinations,
-        this.#offers,
-      ),
-    );
-  }
-
   _restoreHandlers() {
     this.element.querySelector('.event')
       .addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#closeClickHandler);
+    this.element.querySelector('.event__reset-btn')
+      .addEventListener('click', this.#formDeleteClickHandler);
     this.element.querySelectorAll('.event__type-input').forEach((inputElement) => {
       inputElement.addEventListener('click', (evt) => {
         this.#eventTypeInputClickHandler(evt);
@@ -225,12 +209,9 @@ export default class EventEditView extends AbstractStatefulView {
     });
     this.element.querySelector('.event__input--price')
       .addEventListener('change', this.#priceInputChangeHandler);
-    this.element.querySelector('.event__reset-btn')
-      .addEventListener('click', this.#formDeleteClickHandler);
 
     this.#setDateFromDatepicker();
     this.#setDateToDatepicker();
-
   }
 
   #formSubmitHandler = (evt) => {
@@ -262,7 +243,7 @@ export default class EventEditView extends AbstractStatefulView {
     }
 
     this.#handleFormSubmit(
-      EventEditView.parseStateToPoint(
+      NewEventView.parseStateToPoint(
         this._state,
         this.#destinations,
         this.#offers,
@@ -270,15 +251,10 @@ export default class EventEditView extends AbstractStatefulView {
     );
   };
 
-  #closeClickHandler = (evt) => {
-    evt.preventDefault();
-    this.#handleCloseClick();
-  };
-
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleDeleteClick(
-      EventEditView.parseStateToPoint(
+      NewEventView.parseStateToPoint(
         this._state,
       ));
   };
@@ -387,20 +363,20 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   #setDateFromDatepicker() {
-    if (this._state.dateFrom) {
-      this.#datepicker = flatpickr(
-        this.element.querySelector('input[name="event-start-time"]'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y H:i',
-          // eslint-disable-next-line camelcase
-          time_24hr: true,
-          defaultDate: this._state.dateFrom,
-          maxDate: this._state.dateTo,
-          onChange: this.#dateFromChangeHandler,
-        },
-      );
-    }
+
+    this.#datepicker = flatpickr(
+      this.element.querySelector('input[name="event-start-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        defaultDate: this._state.dateFrom,
+        maxDate: this._state.dateTo,
+        onChange: this.#dateFromChangeHandler,
+      },
+    );
+
   }
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -422,20 +398,20 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   #setDateToDatepicker() {
-    if (this._state.dateTo) {
-      this.#datepicker = flatpickr(
-        this.element.querySelector('input[name="event-end-time"]'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y H:i',
-          // eslint-disable-next-line camelcase
-          time_24hr: true,
-          defaultDate: this._state.dateTo,
-          minDate: this._state.dateFrom,
-          onChange: this.#dateToChangeHandler,
-        },
-      );
-    }
+
+    this.#datepicker = flatpickr(
+      this.element.querySelector('input[name="event-end-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onChange: this.#dateToChangeHandler,
+      },
+    );
+
   }
 
   #dateToChangeHandler = ([userDate]) => {
@@ -530,5 +506,4 @@ export default class EventEditView extends AbstractStatefulView {
 
     return point;
   }
-
 }

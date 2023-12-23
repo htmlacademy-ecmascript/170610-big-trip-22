@@ -1,54 +1,31 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {
   humanizePointDateTime,
   humanizePointDateDate,
   humanizePointDateTimeType,
   humanizePointTimeDate,
   getFormattedDiffDuration,
+  getTypeOffers,
   getDestinationName,
+  getSelectedOffers,
+  createSelectedOffersTemplate,
 } from '../utils/point.js';
 
-const createEventViewTemplate = (point, destinations, offers) => {
+const createEventViewTemplate = (point) => {
 
   const {
     basePrice,
     dateFrom,
     dateTo,
     type: pointType,
-    isFavorite,
-    destination: pointDestinationId,
-    offers: pointOffersIds,
+    destinationName,
+    favoriteClassName,
+    selectedOffers,
+    hasSelectedOffers,
   } = point;
 
-  const favoriteClassName = isFavorite
-    ? 'event__favorite-btn--active'
-    : '';
 
-  const destinationName = getDestinationName(pointDestinationId, destinations);
-
-  const isSelectedOffers = () => Boolean(pointOffersIds.length);
-
-  const pointTypeOffers = offers
-    .find(({ type }) => type === pointType)
-    ?.offers;
-
-  const pointSelectedOffers = pointTypeOffers.filter((offer) => pointOffersIds.includes(offer.id));
-
-  const createEventSelectedOffersTemplate = (selectedOffers) => (
-    `${isSelectedOffers(pointOffersIds) ? `
-            <ul class="event__selected-offers">
-                ${selectedOffers.map(({ title, price }) =>
-      `<li class="event__offer">
-                <span class="event__offer-title">${title}</span>
-                +€
-                <span class="event__offer-price">${price}</span>
-              </li>`).join('')}
-            </ul>`
-      : ''}`
-  );
-
-  const selectedOffersTemplate = createEventSelectedOffersTemplate(pointSelectedOffers);
-
+  const selectedOffersTemplate = createSelectedOffersTemplate(hasSelectedOffers, selectedOffers);
 
   return (
     `<li class="trip-events__item">
@@ -87,20 +64,25 @@ const createEventViewTemplate = (point, destinations, offers) => {
   );
 };
 
-export default class EventView extends AbstractView {
-
-  #point = null;
-  #destinations = null;
-  #offers = null;
+export default class EventView extends AbstractStatefulView {
 
   #handleEditClick = null;
   #handleFavoriteClick = null;
 
-  constructor({ point }, { destinations }, { offers }, { onEditClick }, { onFavoriteClick }) {
+  constructor(
+    { point },
+    { destinations },
+    { offers },
+    { onEditClick },
+    { onFavoriteClick }
+  ) {
     super();
-    this.#point = point;
-    this.#destinations = destinations;
-    this.#offers = offers;
+
+    this._setState(EventView.parsePointToState(
+      point,
+      destinations,
+      offers,
+    ));
 
     this.#handleEditClick = onEditClick;
     this.#handleFavoriteClick = onFavoriteClick;
@@ -113,9 +95,7 @@ export default class EventView extends AbstractView {
 
   get template() {
     return createEventViewTemplate(
-      this.#point,
-      this.#destinations,
-      this.#offers,
+      this._state,
     );
   }
 
@@ -128,4 +108,56 @@ export default class EventView extends AbstractView {
     evt.preventDefault();
     this.#handleEditClick();
   };
+
+  static parsePointToState(point, destinations, offers) {
+
+    const destinationName = getDestinationName(point.destination, destinations);
+    const favoriteClassName = point.isFavorite
+      ? 'event__favorite-btn--active'
+      : '';
+    const typeOffers = getTypeOffers(point.type, offers);
+    const selectedOffers = getSelectedOffers(typeOffers, point.offers);
+    const hasSelectedOffers = Boolean(selectedOffers.length);
+
+    return {
+      ...point,
+      destinationName,
+      favoriteClassName,
+      typeOffers,
+      selectedOffers,
+      hasSelectedOffers,
+    };
+  }
+
+  static parseStateToPoint(state) {
+    const point = { ...state };
+
+    if (!point.destinationName) {
+      point.destinationName = null;
+    }
+
+    if (!point.favoriteClassName) {
+      point.favoriteClassName = null;
+    }
+
+    if (!point.typeOffers) {
+      point.typeOffers = null;
+    }
+
+    if (!point.selectedOffers) {
+      point.selectedOffers = null;
+    }
+
+    if (!point.hasSelectedOffers) {
+      point.hasSelectedOffers = null;
+    }
+
+    delete point.destinationName;
+    delete point.favoriteClassName;
+    delete point.typeOffers;
+    delete point.selectedOffers;
+    delete point.hasSelectedOffers;
+
+    return point;
+  }
 }

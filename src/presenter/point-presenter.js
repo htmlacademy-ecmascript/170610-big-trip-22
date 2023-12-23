@@ -1,6 +1,8 @@
 import { render, replace, remove } from '../framework/render.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
+import { UserAction, UpdateType } from '../const.js';
+import { isDatesEqual } from '../utils/point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -50,6 +52,7 @@ export default class PointPresenter {
       { offers: this.#offers },
       { onFormSubmit: this.#handleFormSubmit },
       { onCloseClick: this.#handleCloseClick },
+      { onDeleteClick: this.#handleDeleteClick },
     );
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
@@ -108,24 +111,44 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
+
     this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+
       { ...this.#point, isFavorite: !this.#point.isFavorite },
-      this.#destinations,
-      this.#offers,
+
     );
+
   };
 
-  #handleFormSubmit = (point, destinations, offers) => {
+
+  #handleFormSubmit = (update) => {
+
+    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
+    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+
+    const isMinorUpdate =
+      !isDatesEqual(this.#point.dateFrom, update.dateFrom);
 
     this.#handleDataChange(
-      point,
-      destinations,
-      offers,
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update,
     );
     this.#replaceFormToCard();
   };
 
   #handleCloseClick = () => {
+    this.#eventEditComponent.reset(this.#point);
     this.#replaceFormToCard();
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 }

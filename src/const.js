@@ -23,4 +23,33 @@ const SortType = {
   PRICE: 'sort-price',
 };
 
-export { OFFERS_TYPES, FilterType, SortType };
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const BLANK_POINT = {
+  'basePrice': 0,
+  'dateFrom': '',
+  'dateTo': '',
+  'destination': '',
+  'isFavorite': false,
+  'offers': [],
+  'type': 'flight'
+};
+
+export {
+  OFFERS_TYPES,
+  FilterType,
+  SortType,
+  UserAction,
+  UpdateType,
+  BLANK_POINT
+};

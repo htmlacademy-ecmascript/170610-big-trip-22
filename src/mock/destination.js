@@ -1,4 +1,5 @@
-import { getRandomInteger, getRandomArrayElement } from './utils/common.js';
+import { getRandomInteger } from './utils/common.js';
+import { getRandomArrayElement } from '../utils/common.js';
 import { TEXT } from './const.js';
 import { nanoid } from 'nanoid';
 
