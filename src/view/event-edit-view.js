@@ -25,6 +25,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     type: pointType,
     destination: destinationId,
     offers: pointOffersIds,
+    hasPointType,
     destinationName,
     typeOffers,
     hasTypeOffers,
@@ -37,7 +38,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const typeListTemplate = createTypeListTemplate(offers, pointType);
 
-  const destinationListTemplate = createDestinationListTemplate(destinations, destinationId);
+  const destinationListTemplate = createDestinationListTemplate(hasPointType, destinations, destinationId);
 
   const destinationPhotosTemplate = createDestinationPhotosTemplate(hasDestinationPhotos, destinationPhotos);
 
@@ -456,6 +457,8 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   static parsePointToState(point, destinations, offers) {
+    const hasPointType = Boolean(point.type);
+
     const typeOffers = getTypeOffers(point.type, offers);
     const hasTypeOffers = Boolean(typeOffers.length);
 
@@ -468,6 +471,7 @@ export default class EventEditView extends AbstractStatefulView {
 
     return {
       ...point,
+      hasPointType,
       destinationName: getDestinationName(point.destination, destinations),
       typeOffers,
       hasTypeOffers,
@@ -481,6 +485,10 @@ export default class EventEditView extends AbstractStatefulView {
 
   static parseStateToPoint(state) {
     const point = { ...state };
+
+    if (!point.hasPointType) {
+      point.hasPointType = null;
+    }
 
     if (!point.destinationName) {
       point.destinationName = null;
@@ -510,6 +518,7 @@ export default class EventEditView extends AbstractStatefulView {
       point.hasDestinationPhotos = null;
     }
 
+    delete point.hasPointType;
     delete point.destinationName;
     delete point.typeOffers;
     delete point.destinationObject;

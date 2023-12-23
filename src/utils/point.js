@@ -122,8 +122,8 @@ const createTypeListTemplate = (offers, pointType) => (
   </div > `
 );
 
-const createDestinationListTemplate = (destinations, destinationId) => {
-  if (!destinationId) {
+const createDestinationListTemplate = (hasPointType, destinations, destinationId) => {
+  if (!hasPointType) {
     return '';
   }
 
