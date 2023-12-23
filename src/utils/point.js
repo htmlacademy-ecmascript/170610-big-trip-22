@@ -102,6 +102,14 @@ const createTypeListTemplate = (offers, pointType) => (
   </div > `
 );
 
+const createDestinationListTemplate = (destinations, destinationId) => (
+  `<datalist id="destination-list-${destinationId}">
+    ${destinations.map(({ name }) =>
+    `<option value="${name}"</option>`
+  ).join('')}
+   </datalist > `
+);
+
 
 export {
   humanizePointDateTime,
@@ -122,4 +130,5 @@ export {
   getDestinationPhotos,
   getDestinationObject,
   createTypeListTemplate,
+  createDestinationListTemplate,
 };

@@ -6,6 +6,7 @@ import {
   getDestinationPhotos,
   getDestinationObject,
   createTypeListTemplate,
+  createDestinationListTemplate,
 } from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
@@ -33,15 +34,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const typeListTemplate = createTypeListTemplate(offers, pointType);
 
-  const createDestinationListTemplate = () => (
-    `<datalist id="destination-list-${destinationId}">
-      ${destinations.map(({ name }) =>
-      `<option value="${name}"</option>`
-    ).join('')}
-     </datalist > `
-  );
-
-  const destinationListTemplate = createDestinationListTemplate();
+  const destinationListTemplate = createDestinationListTemplate(destinations, destinationId);
 
   const createDestinationPhotosTemplate = () => (
     `${hasDestinationPhotos ?
