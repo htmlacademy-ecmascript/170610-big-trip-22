@@ -58,24 +58,44 @@ const sortByDuration = (pointA, pointB) => {
 const sortByBasePrice = (pointA, pointB) =>
   pointB.basePrice - pointA.basePrice;
 
-const getDestinationName = (destinationId, destinations) => destinations
-  .find(({ id: pointDestinationId }) => pointDestinationId === destinationId)
-  ?.name;
 
 const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
 
 const toUpperCaseFirstLetter = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
+const getDestinationName = (destinationId, destinations) => {
+  if (!destinationId) {
+    return '';
+  }
+
+  const foundDestination = destinations.find(({ id: pointDestinationId }) => pointDestinationId === destinationId);
+
+  return foundDestination?.name || ''; // Если foundDestination равно undefined, вернем пустую строку
+};
+
 const getTypeOffers = (pointType, offers) => offers
   .find(({ type }) => type === pointType)
   ?.offers;
 
-const getDestinationPhotos = (destinationId, pointDestinations) => pointDestinations
-  .find(({ id }) => id === destinationId)
-  ?.pictures;
+const getDestinationPhotos = (destinationId, pointDestinations) => {
+  if (!destinationId) {
+    return '';
+  }
 
-const getDestinationObject = (destinationId, pointDestinations) => pointDestinations
-  .find(({ id }) => id === destinationId);
+  const foundDestination = pointDestinations.find(({ id }) => id === destinationId);
+
+  return foundDestination?.pictures || null;
+};
+
+
+const getDestinationObject = (destinationId, pointDestinations) => {
+  if (!destinationId) {
+    return '';
+  }
+
+  return pointDestinations.find(({ id }) => id === destinationId) || null;
+};
+
 
 const createTypeListTemplate = (offers, pointType) => (
   `<div class="event__type-list">
@@ -102,13 +122,16 @@ const createTypeListTemplate = (offers, pointType) => (
   </div > `
 );
 
-const createDestinationListTemplate = (destinations, destinationId) => (
-  `<datalist id="destination-list-${destinationId}">
-    ${destinations.map(({ name }) =>
-    `<option value="${name}"</option>`
-  ).join('')}
-   </datalist > `
-);
+const createDestinationListTemplate = (destinations, destinationId) => {
+  if (!destinationId) {
+    return '';
+  }
+
+  return `<datalist id="destination-list-${destinationId}">
+    ${destinations.map(({ name }) => `<option value="${name}"</option>`).join('')}
+   </datalist>`;
+};
+
 
 const createDestinationPhotosTemplate = (hasDestinationPhotos, destinationPhotos) => (
   `${hasDestinationPhotos ?

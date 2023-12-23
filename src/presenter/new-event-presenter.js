@@ -16,11 +16,16 @@ export default class NewEventPresenter {
   #offers = null;
 
   constructor({ destinations, offers, eventListContainer, onDataChange, onDestroy }) {
-    this.#destinations = destinations;
-    this.#offers = offers;
+
+    const { destinations: alldestinations } = destinations;
+    const { offers: alloffers } = offers;
+
+    this.#destinations = alldestinations;
+    this.#offers = alloffers;
     this.#eventListContainer = eventListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
+
   }
 
   init() {
@@ -30,11 +35,13 @@ export default class NewEventPresenter {
     }
 
     this.#newEventComponent = new NewEventView(
-      { point: BLANK_POINT },
-      { destinations: this.#destinations },
-      { offers: this.#offers },
-      { onFormSubmit: this.#handleFormSubmit },
-      { onDeleteClick: this.#handleDeleteClick }
+      {
+        point: BLANK_POINT,
+        destinations: this.#destinations,
+        offers: this.#offers,
+        onFormSubmit: this.#handleFormSubmit,
+        onDeleteClick: this.#handleDeleteClick
+      }
     );
 
     render(this.#newEventComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);
