@@ -247,6 +247,14 @@ export default class EventEditView extends AbstractStatefulView {
     this.#handleCloseClick();
   };
 
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(
+      EventEditView.parseStateToPoint(
+        this._state,
+      ));
+  };
+
   #eventTypeInputClickHandler = (evt) => {
     evt.preventDefault();
     const type = evt.target.value;
@@ -394,14 +402,6 @@ export default class EventEditView extends AbstractStatefulView {
     this.updateElement({
       dateTo: userDate.toISOString(),
     });
-  };
-
-  #formDeleteClickHandler = (evt) => {
-    evt.preventDefault();
-    this.#handleDeleteClick(
-      EventEditView.parseStateToPoint(
-        this._state,
-      ));
   };
 
   static parsePointToState(point, destinations, offers) {
