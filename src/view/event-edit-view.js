@@ -19,7 +19,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     dateFrom,
     dateTo,
     type: pointType,
-    destination: pointDestinationId,
+    destination: destinationId,
     offers: pointOffersIds,
     destinationName,
     typeOffers,
@@ -59,7 +59,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   const typeListTemplate = createTypeListTemplate();
 
   const createDestinationListTemplate = () => (
-    `<datalist id="destination-list-${pointDestinationId}">
+    `<datalist id="destination-list-${destinationId}">
       ${destinations.map(({ name }) =>
       `<option value="${name}"</option>`
     ).join('')}
@@ -150,17 +150,17 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
           <div class="event__field-group  event__field-group--destination">
 
-            <label class="event__label  event__type-output" for="event-destination-${pointDestinationId}">
+            <label class="event__label  event__type-output" for="event-destination-${destinationId}">
               ${pointType}
             </label>
 
             <input
               class="event__input  event__input--destination"
-              id="event-destination-${pointDestinationId}"
+              id="event-destination-${destinationId}"
               type="text"
               name="event-destination"
               value="${destinationName}"
-              list="destination-list-${pointDestinationId}">
+              list="destination-list-${destinationId}">
 
               ${destinationListTemplate}
 
@@ -503,7 +503,6 @@ export default class EventEditView extends AbstractStatefulView {
       hasDestinationPhotos,
     };
   }
-
 
   static parseStateToPoint(state) {
     const point = { ...state };
