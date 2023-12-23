@@ -3,6 +3,7 @@ import {
   humanizePointInputDateTimeType,
   getDestinationName,
   toUpperCaseFirstLetter,
+  getTypeOffers,
 } from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
@@ -48,9 +49,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const typeListTemplate = createTypeListTemplate();
 
-  const pointTypeOffers = offers
-    .find(({ type }) => type === pointType)
-    ?.offers;
+  const typeOffers = getTypeOffers(pointType, offers);
 
   const pointDestinationPhotos = destinations
     .find(({ id }) => id === pointDestinationId)
@@ -101,7 +100,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const destinationDescriptionTemplate = createDestinationDescriptionTemplate();
 
-  const hasPointTypeOffers = Boolean(pointTypeOffers.length);
+  const hasPointTypeOffers = Boolean(typeOffers.length);
 
   const createOffersSectionTemplateTemplate = () => (
     `${hasPointTypeOffers ? `
@@ -109,7 +108,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           <div class="event__available-offers">
 
-      ${pointTypeOffers.map(({ id, title, price }) => {
+      ${typeOffers.map(({ id, title, price }) => {
 
       const offerLastWord = title.split(' ').pop().replace(/-/g, '');
       const checked = pointOffersIds.includes(id) ? 'checked' : '';
