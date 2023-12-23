@@ -27,6 +27,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     destinationPhotos,
     hasDestinationPhotos,
     destinationObject,
+    destinationDescription,
   } = point;
 
   console.log('state', point);
@@ -84,13 +85,11 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const hasDestinationDescription = Boolean(destinationObject.description);
 
-  const pointDestinationDescription = destinationObject.description;
-
   const createDestinationDescriptionTemplate = () => (
     `${hasDestinationDescription || hasDestinationPhotos ? `
       <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${pointDestinationDescription}</p>
+          <p class="event__destination-description">${destinationDescription}</p>
            ${destinationPhotos ? destinationPhotosTemplate : ''}
         </section>
       </section>
@@ -370,6 +369,7 @@ export default class EventEditView extends AbstractStatefulView {
     const destinationPhotos = getDestinationPhotos(foundCity.id, this.#destinations);
     const hasDestinationPhotos = Boolean(destinationPhotos.length);
     const destinationObject = getDestinationObject(foundCity.id, this.#destinations);
+    const destinationDescription = destinationObject.description;
 
 
     this.updateElement({
@@ -378,6 +378,7 @@ export default class EventEditView extends AbstractStatefulView {
       destinationPhotos,
       hasDestinationPhotos,
       destinationObject,
+      destinationDescription,
     });
 
   };
@@ -486,6 +487,7 @@ export default class EventEditView extends AbstractStatefulView {
     const destinationPhotos = getDestinationPhotos(point.destination, destinations);
     const hasDestinationPhotos = Boolean(destinationPhotos.length);
     const destinationObject = getDestinationObject(point.destination, destinations);
+    const destinationDescription = destinationObject.description;
 
     return {
       ...point,
@@ -495,6 +497,7 @@ export default class EventEditView extends AbstractStatefulView {
       destinationPhotos,
       hasDestinationPhotos,
       destinationObject,
+      destinationDescription,
     };
   }
 
@@ -522,11 +525,16 @@ export default class EventEditView extends AbstractStatefulView {
       point.destinationObject = null;
     }
 
+    if (!point.destinationDescription) {
+      point.destinationDescription = null;
+    }
+
     delete point.destinationName;
     delete point.typeOffers;
     delete point.destinationPhotos;
     delete point.hasDestinationPhotos;
     delete point.destinationObject;
+    delete point.destinationDescription;
 
     return point;
   }
