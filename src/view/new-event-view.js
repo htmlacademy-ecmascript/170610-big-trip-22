@@ -441,6 +441,7 @@ export default class NewEventView extends AbstractStatefulView {
 
   static parsePointToState(point, destinations, offers) {
     const hasPointType = Boolean(point.type);
+    const destinationName = getDestinationName(point.destination, destinations);
 
     const typeOffers = getTypeOffers(point.type, offers);
     const hasTypeOffers = Boolean(typeOffers.length);
@@ -455,7 +456,7 @@ export default class NewEventView extends AbstractStatefulView {
     return {
       ...point,
       hasPointType,
-      destinationName: getDestinationName(point.destination, destinations),
+      destinationName,
       typeOffers,
       hasTypeOffers,
       destinationObject,
