@@ -64,6 +64,8 @@ const getDestinationName = (destinationId, destinations) => destinations
 
 const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
 
+const toUpperCaseFirstLetter = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+
 
 export {
   humanizePointDateTime,
@@ -79,5 +81,6 @@ export {
   sortByDuration,
   sortByBasePrice,
   getDestinationName,
-  isDatesEqual
+  isDatesEqual,
+  toUpperCaseFirstLetter
 };

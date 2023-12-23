@@ -2,6 +2,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {
   humanizePointInputDateTimeType,
   getDestinationName,
+  toUpperCaseFirstLetter,
 } from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
@@ -19,12 +20,6 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     offers: pointOffersIds,
     destinationName,
   } = point;
-
-  const pointTypeOffers = offers
-    .find(({ type }) => type === pointType)
-    ?.offers;
-
-  const toUpperCaseFirstLetter = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
   const createTypeListTemplate = () => (
     `<div class="event__type-list">
@@ -52,6 +47,10 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   );
 
   const typeListTemplate = createTypeListTemplate();
+
+  const pointTypeOffers = offers
+    .find(({ type }) => type === pointType)
+    ?.offers;
 
   const pointDestinationPhotos = destinations
     .find(({ id }) => id === pointDestinationId)
@@ -330,7 +329,6 @@ export default class EventEditView extends AbstractStatefulView {
     this.#handleCloseClick();
   };
 
-
   #eventTypeInputClickHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
@@ -338,7 +336,6 @@ export default class EventEditView extends AbstractStatefulView {
       offers: [],
     });
   };
-
 
   #destinationInputChangeHandler = (evt) => {
     evt.preventDefault();
@@ -371,7 +368,6 @@ export default class EventEditView extends AbstractStatefulView {
     });
 
   };
-
 
   #priceInputChangeHandler = (evt) => {
 
@@ -434,7 +430,6 @@ export default class EventEditView extends AbstractStatefulView {
     }
   }
 
-
   #dateFromChangeHandler = ([userDate]) => {
     this.updateElement({
       dateFrom: userDate.toISOString(),
@@ -471,7 +466,6 @@ export default class EventEditView extends AbstractStatefulView {
         this._state,
       ));
   };
-
 
   static parsePointToState(point, destinations) {
 
