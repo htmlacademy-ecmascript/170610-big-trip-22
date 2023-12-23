@@ -35,10 +35,21 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
+const BLANK_POINT = {
+  'base_price': 0,
+  'date_from': '',
+  'date_to': '',
+  'destination': '',
+  'is_favorite': false,
+  'offers': [],
+  'type': 'flight'
+};
+
 export {
   OFFERS_TYPES,
   FilterType,
   SortType,
   UserAction,
-  UpdateType
+  UpdateType,
+  BLANK_POINT
 };

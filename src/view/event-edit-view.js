@@ -7,17 +7,6 @@ import {
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const BLANK_POINT = {
-  'id': '',
-  'base_price': 0,
-  'date_from': '',
-  'date_to': '',
-  'destination': '',
-  'is_favorite': false,
-  'offers': [],
-  'type': ''
-};
-
 const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const {
@@ -249,7 +238,7 @@ export default class EventEditView extends AbstractStatefulView {
   #datepicker = null;
 
   constructor(
-    { point = BLANK_POINT },
+    { point },
     { destinations },
     { offers },
     { onFormSubmit },

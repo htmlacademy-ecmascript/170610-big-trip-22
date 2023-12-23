@@ -1,19 +1,9 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import NewEventView from '../view/new-event-view.js';
+import { BLANK_POINT } from '../const.js';
 import { nanoid } from 'nanoid';
 import { UserAction, UpdateType } from '../const.js';
 
-
-const BLANK_POINT = {
-  'id': '',
-  'base_price': 0,
-  'date_from': '',
-  'date_to': '',
-  'destination': '',
-  'is_favorite': false,
-  'offers': [],
-  'type': ''
-};
 
 export default class NewEventPresenter {
   #eventListContainer = null;
