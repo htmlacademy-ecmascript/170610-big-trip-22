@@ -48,7 +48,6 @@ const createEventViewTemplate = (point, destinations, offers) => {
 
   const selectedOffersTemplate = createEventSelectedOffersTemplate(selectedOffers);
 
-
   return (
     `<li class="trip-events__item">
       <div class="event">

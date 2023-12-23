@@ -21,9 +21,12 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     offers: pointOffersIds,
     destinationName,
     typeOffers,
+    hasTypeOffers,
   } = point;
 
-  // console.log('typeOffers', typeOffers);
+  console.log('state', point);
+  console.log('typeOffers', typeOffers);
+  console.log('hasPointTypeOffers', hasTypeOffers);
 
   const createTypeListTemplate = () => (
     `<div class="event__type-list">
@@ -101,10 +104,8 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const destinationDescriptionTemplate = createDestinationDescriptionTemplate();
 
-  const hasPointTypeOffers = Boolean(typeOffers.length);
-
   const createOffersSectionTemplateTemplate = () => (
-    `${hasPointTypeOffers ? `
+    `${hasTypeOffers ? `
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           <div class="event__available-offers">
@@ -333,12 +334,18 @@ export default class EventEditView extends AbstractStatefulView {
 
   #eventTypeInputClickHandler = (evt) => {
     evt.preventDefault();
+    const type = evt.target.value;
+    const typeOffers = getTypeOffers(type, this.#offers);
+    const hasPointTypeOffers = Boolean(typeOffers.length);
+
     this.updateElement({
-      type: evt.target.value,
+      type,
       offers: [],
-      typeOffers: getTypeOffers(evt.target.value, this.#offers),
+      typeOffers,
+      hasPointTypeOffers,
     });
   };
+
 
   #destinationInputChangeHandler = (evt) => {
     evt.preventDefault();
@@ -471,13 +478,17 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   static parsePointToState(point, destinations, offers) {
+    const typeOffers = getTypeOffers(point.type, offers);
+    const hasTypeOffers = Boolean(typeOffers.length);
 
     return {
       ...point,
       destinationName: getDestinationName(point.destination, destinations),
-      typeOffers: getTypeOffers(point.type, offers),
+      typeOffers,
+      hasTypeOffers,
     };
   }
+
 
   static parseStateToPoint(state) {
     const point = { ...state };
