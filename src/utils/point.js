@@ -70,6 +70,10 @@ const getTypeOffers = (pointType, offers) => offers
   .find(({ type }) => type === pointType)
   ?.offers;
 
+const getDestinationPhotos = (destinationId, pointDestinations) => pointDestinations
+  .find(({ id }) => id === destinationId)
+  ?.pictures;
+
 
 export {
   humanizePointDateTime,
@@ -87,5 +91,6 @@ export {
   getDestinationName,
   isDatesEqual,
   toUpperCaseFirstLetter,
-  getTypeOffers
+  getTypeOffers,
+  getDestinationPhotos
 };
