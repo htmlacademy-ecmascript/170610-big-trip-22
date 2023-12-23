@@ -20,7 +20,10 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     destination: pointDestinationId,
     offers: pointOffersIds,
     destinationName,
+    typeOffers,
   } = point;
+
+  console.log('typeOffers', typeOffers);
 
   const createTypeListTemplate = () => (
     `<div class="event__type-list">
@@ -48,8 +51,6 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
   );
 
   const typeListTemplate = createTypeListTemplate();
-
-  const typeOffers = getTypeOffers(pointType, offers);
 
   const pointDestinationPhotos = destinations
     .find(({ id }) => id === pointDestinationId)
@@ -251,6 +252,7 @@ export default class EventEditView extends AbstractStatefulView {
     this._setState(EventEditView.parsePointToState(
       point,
       destinations,
+      offers,
     ));
 
     this.#handleFormSubmit = onFormSubmit;
@@ -283,6 +285,7 @@ export default class EventEditView extends AbstractStatefulView {
       EventEditView.parsePointToState(
         point,
         this.#destinations,
+        this.#offers,
       ),
     );
   }
@@ -333,6 +336,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.updateElement({
       type: evt.target.value,
       offers: [],
+      typeOffers: getTypeOffers(evt.target.value, this.#offers),
     });
   };
 
@@ -466,11 +470,12 @@ export default class EventEditView extends AbstractStatefulView {
       ));
   };
 
-  static parsePointToState(point, destinations) {
+  static parsePointToState(point, destinations, offers) {
 
     return {
       ...point,
-      destinationName: getDestinationName(point.destination, destinations)
+      destinationName: getDestinationName(point.destination, destinations),
+      typeOffers: getTypeOffers(point.type, offers),
     };
   }
 
@@ -481,7 +486,12 @@ export default class EventEditView extends AbstractStatefulView {
       point.destinationName = null;
     }
 
+    if (!point.typeOffers) {
+      point.typeOffers = null;
+    }
+
     delete point.destinationName;
+    delete point.typeOffers;
 
     return point;
   }
