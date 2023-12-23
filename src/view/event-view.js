@@ -21,13 +21,12 @@ const createEventViewTemplate = (point, destinations, offers) => {
     destinationName,
     favoriteClassName,
     selectedOffers,
+    hasSelectedOffers,
   } = point;
 
 
-  const isSelectedOffers = () => Boolean(pointOffersIds.length);
-
   const createSelectedOffersTemplate = (pointSelectedOffers) => (
-    `${isSelectedOffers(pointOffersIds) ? `
+    `${hasSelectedOffers ? `
             <ul class="event__selected-offers">
                 ${pointSelectedOffers.map(({ title, price }) =>
       `<li class="event__offer">
@@ -139,6 +138,7 @@ export default class EventView extends AbstractStatefulView {
       : '';
     const typeOffers = getTypeOffers(point.type, offers);
     const selectedOffers = getSelectedOffers(typeOffers, point.offers);
+    const hasSelectedOffers = Boolean(selectedOffers.length);
 
     return {
       ...point,
@@ -146,6 +146,7 @@ export default class EventView extends AbstractStatefulView {
       favoriteClassName,
       typeOffers,
       selectedOffers,
+      hasSelectedOffers,
     };
   }
 
@@ -168,10 +169,15 @@ export default class EventView extends AbstractStatefulView {
       point.selectedOffers = null;
     }
 
+    if (!point.hasSelectedOffers) {
+      point.hasSelectedOffers = null;
+    }
+
     delete point.destinationName;
     delete point.favoriteClassName;
     delete point.typeOffers;
     delete point.selectedOffers;
+    delete point.hasSelectedOffers;
 
     return point;
   }
