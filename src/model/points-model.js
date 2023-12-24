@@ -3,7 +3,6 @@ import { UpdateType } from '../const.js';
 
 export default class PointsModel extends Observable {
   #pointsApiService = null;
-
   #points = [];
 
   constructor({ pointsApiService }) {
@@ -22,6 +21,8 @@ export default class PointsModel extends Observable {
     } catch (err) {
       this.#points = [];
     }
+
+    this._notify(UpdateType.INIT);
   }
 
   updatePoint(updateType, update) {
@@ -61,7 +62,7 @@ export default class PointsModel extends Observable {
       ...this.#points.slice(index + 1),
     ];
 
-    this._notify(UpdateType.INIT);
+    this._notify(updateType);
   }
 
   #adaptToClient(point) {
