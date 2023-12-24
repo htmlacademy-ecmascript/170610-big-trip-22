@@ -1,12 +1,9 @@
 import Observable from '../framework/observable.js';
-import { generatePoint } from '../mock/point.js';
-
-const POINT_COUNT = 3;
 
 export default class PointsModel extends Observable {
   #pointsApiService = null;
 
-  #points = Array.from({ length: POINT_COUNT }, generatePoint);
+  #points = [];
 
   constructor({ pointsApiService }) {
     super();
@@ -19,6 +16,15 @@ export default class PointsModel extends Observable {
 
   get points() {
     return this.#points;
+  }
+
+  async init() {
+    try {
+      const points = await this.#pointsApiService.points;
+      this.#points = points.map(this.#adaptToClient);
+    } catch (err) {
+      this.#points = [];
+    }
   }
 
   updatePoint(updateType, update) {

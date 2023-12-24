@@ -1,9 +1,8 @@
 import Observable from '../framework/observable.js';
-import { generatedDestinations } from '../mock/point';
 
 export default class DestinationsModel extends Observable {
   #destinationsApiService = null;
-  #destinations = generatedDestinations;
+  #destinations = [];
 
   constructor({ destinationsApiService }) {
     super();
@@ -11,14 +10,19 @@ export default class DestinationsModel extends Observable {
 
     this.#destinationsApiService.destinations.then((destinations) => {
       console.log(destinations);
-      // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-      // а ещё на сервере используется snake_case, а у нас camelCase.
-      // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-      // Есть вариант получше - паттерн "Адаптер"
     });
   }
 
   get destinations() {
     return this.#destinations;
+  }
+
+  async init() {
+    try {
+      const destinations = await this.#destinationsApiService.destinations;
+      this.#destinations = destinations;
+    } catch (err) {
+      this.#destinations = [];
+    }
   }
 }
