@@ -33,7 +33,14 @@ export default class BoardPresenter {
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
 
-  constructor({ boardContainer, pointsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
+  constructor({
+    boardContainer,
+    pointsModel,
+    destinationsModel,
+    offersModel,
+    filterModel,
+    onNewEventDestroy
+  }) {
     this.#boardContainer = boardContainer;
 
     this.#pointsModel = pointsModel;
@@ -55,7 +62,6 @@ export default class BoardPresenter {
   }
 
   get points() {
-
     this.#filterType = this.#filterModel.filter;
 
     const points = this.#pointsModel.points;
@@ -76,11 +82,15 @@ export default class BoardPresenter {
   }
 
   get destinations() {
-    return this.#destinationsModel.destinations;
+    const destinations = this.#destinationsModel.destinations;
+    console.log('destinations', destinations);
+    return destinations;
   }
 
   get offers() {
-    return this.#offersModel.offers;
+    const offers = this.#offersModel.offers;
+    console.log('offers', offers);
+    return offers;
   }
 
 
@@ -225,9 +235,6 @@ export default class BoardPresenter {
     }
 
     const points = this.points;
-
-    console.log('points', points);
-
     const destinations = this.destinations;
     const offers = this.offers;
 

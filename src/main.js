@@ -72,7 +72,6 @@ render(newEventButtonComponent, tripMainElement);
 
 filterPresenter.init();
 boardPresenter.init();
-pointsModel.init();
-destinationsModel.init();
-offersModel.init();
+pointsModel.init(destinationsModel.init(), offersModel.init());
+
 
