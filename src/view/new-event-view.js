@@ -437,14 +437,14 @@ export default class NewEventView extends AbstractStatefulView {
     const destinationName = getDestinationName(point.destination, destinations);
 
     const typeOffers = getTypeOffers(point.type, offers);
-    const hasTypeOffers = Boolean(typeOffers.length);
+    const hasTypeOffers = Boolean(typeOffers && typeOffers.length);
 
     const destinationObject = getDestinationObject(point.destination, destinations);
-    const destinationDescription = destinationObject.description;
-    const hasDestinationDescription = Boolean(destinationObject.description);
+    const destinationDescription = destinationObject ? destinationObject.description : null;
+    const hasDestinationDescription = Boolean(destinationObject && destinationObject.description);
 
     const destinationPhotos = getDestinationPhotos(point.destination, destinations);
-    const hasDestinationPhotos = Boolean(destinationPhotos.length);
+    const hasDestinationPhotos = Boolean(destinationPhotos && destinationPhotos.length);
 
     return {
       ...point,
