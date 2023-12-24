@@ -67,11 +67,12 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-render(newEventButtonComponent, tripMainElement);
-
-
 filterPresenter.init();
 boardPresenter.init();
-pointsModel.init(destinationsModel.init(), offersModel.init());
+
+pointsModel.init(destinationsModel.init(), offersModel.init())
+  .finally(() => {
+    render(newEventButtonComponent, tripMainElement);
+  });
 
 
