@@ -3,6 +3,7 @@ import BoardView from '../view/board-view.js';
 import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
+import LoadingView from '../view/loading-view.js';
 import PointPresenter from './point-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
 import { sortByDuration, sortByBasePrice } from '../utils/point.js';
@@ -20,6 +21,7 @@ export default class BoardPresenter {
 
   #boardComponent = new BoardView();
   #eventsListComponent = new EventsListView();
+  #loadingComponent = new LoadingView();
 
   #sortComponent = null;
   #noEventComponent = null;
@@ -29,6 +31,7 @@ export default class BoardPresenter {
 
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   constructor({ boardContainer, pointsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
     this.#boardContainer = boardContainer;
@@ -54,8 +57,12 @@ export default class BoardPresenter {
   get points() {
 
     this.#filterType = this.#filterModel.filter;
+
     const points = this.#pointsModel.points;
+    console.log('points', points);
+
     const filteredPoints = filter[this.#filterType](points);
+    console.log('filteredPoints', filteredPoints);
 
     switch (this.#currentSortType) {
       case SortType.TIME:
@@ -78,9 +85,7 @@ export default class BoardPresenter {
 
 
   init() {
-
     this.#renderBoard();
-
   }
 
   createEvent() {
@@ -130,6 +135,11 @@ export default class BoardPresenter {
         this.#clearBoard({ resetSortType: true });
         this.#renderBoard();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   };
 
@@ -174,6 +184,10 @@ export default class BoardPresenter {
       ));
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#boardComponent.element);
+  }
+
   #renderNoEvents() {
     this.#noEventComponent = new NoEventView({
       filterType: this.#filterType
@@ -190,6 +204,7 @@ export default class BoardPresenter {
     this.#eventPresenters.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noEventComponent) {
       remove(this.#noEventComponent);
@@ -204,7 +219,15 @@ export default class BoardPresenter {
   #renderBoard() {
     render(this.#boardComponent, this.#boardContainer);
 
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     const points = this.points;
+
+    console.log('points', points);
+
     const destinations = this.destinations;
     const offers = this.offers;
 

@@ -195,7 +195,14 @@ const createOffersSectionTemplateTemplate = (hasTypeOffers, typeOffers, pointOff
   } `
 );
 
-const getSelectedOffers = (typeOffers, pointOffersIds) => typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
+const getSelectedOffers = (typeOffers, pointOffersIds) => {
+  if (!typeOffers || !pointOffersIds) {
+    return [];
+  }
+
+  return typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
+};
+
 
 const createSelectedOffersTemplate = (hasSelectedOffers, selectedOffers) => (
   `${hasSelectedOffers ? `
