@@ -9,7 +9,7 @@ import PointPresenter from './point-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
 import { sortByDuration, sortByBasePrice } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
-import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType, BLANK_POINT } from '../const.js';
 
 export default class BoardPresenter {
 
@@ -53,8 +53,6 @@ export default class BoardPresenter {
     this.#filterModel = filterModel;
 
     this.#newEventPresenter = new NewEventPresenter({
-      destinations: this.#destinationsModel,
-      offers: this.#offersModel,
       eventListContainer: this.#eventsListComponent.element,
       onDataChange: this.#handleViewAction,
       onDestroy: onNewEventDestroy
@@ -92,15 +90,19 @@ export default class BoardPresenter {
     return offers;
   }
 
-
   init() {
     this.#renderBoard();
   }
 
   createEvent() {
+    const point = BLANK_POINT;
+    const destinations = this.destinations;
+    const offers = this.offers;
+
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newEventPresenter.init();
+
+    this.#newEventPresenter.init(point, destinations, offers);
   }
 
   #handleModeChange = () => {
