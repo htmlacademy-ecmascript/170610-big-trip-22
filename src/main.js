@@ -7,9 +7,9 @@ import PointsModel from './model/points-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
 import FilterModel from './model/filter-model.js';
-import PointsApiService from './points-api-service.js';
-import DestinationsApiService from './destinations-api-service.js';
-import OffersApiService from './offers-api-service.js';
+import PointsApiService from './api/points-api-service.js';
+import DestinationsApiService from './api/destinations-api-service.js';
+import OffersApiService from './api/offers-api-service.js';
 
 const AUTHORIZATION = 'Basic 1R21Yxa~x~Dp';
 const END_POINT = 'https://21.objects.pages.academy/big-trip';

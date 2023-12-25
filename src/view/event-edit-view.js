@@ -520,6 +520,10 @@ export default class EventEditView extends AbstractStatefulView {
       point.hasDestinationPhotos = null;
     }
 
+    if (!point.hasTypeOffers) {
+      point.hasTypeOffers = null;
+    }
+
     delete point.hasPointType;
     delete point.destinationName;
     delete point.typeOffers;
@@ -528,6 +532,7 @@ export default class EventEditView extends AbstractStatefulView {
     delete point.hasDestinationDescription;
     delete point.destinationPhotos;
     delete point.hasDestinationPhotos;
+    delete point.hasTypeOffers;
 
     return point;
   }

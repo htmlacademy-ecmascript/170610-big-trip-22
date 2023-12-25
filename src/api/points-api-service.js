@@ -1,4 +1,4 @@
-import ApiService from './framework/api-service.js';
+import ApiService from '../framework/api-service.js';
 
 const Method = {
   GET: 'GET',
@@ -51,7 +51,6 @@ export default class PointsApiService extends ApiService {
   #adaptToServer(point) {
     const adaptedPoint = {
       ...point,
-      // 'due_date': point.dueDate instanceof Date ? point.dueDate.toISOString() : null, // На сервере дата хранится в ISO формате
       'base_price': point.basePrice,
       'date_from': point.dateFrom,
       'date_to': point.dateTo,
@@ -59,12 +58,10 @@ export default class PointsApiService extends ApiService {
 
     };
 
-    // Ненужные ключи мы удаляем
     delete adaptedPoint.basePrice;
     delete adaptedPoint.dateFrom;
     delete adaptedPoint.dateTo;
     delete adaptedPoint.isFavorite;
-    delete adaptedPoint.hasTypeOffers;
 
     return adaptedPoint;
   }
