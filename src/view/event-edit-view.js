@@ -19,7 +19,6 @@ import 'flatpickr/dist/flatpickr.min.css';
 const createEventEditViewTemplate = (point, destinations, offers) => {
 
   const {
-    id: pointId,
     basePrice,
     dateFrom,
     dateTo,
@@ -63,12 +62,12 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
         <header class="event__header">
           <div class="event__type-wrapper">
 
-            <label class="event__type  event__type-btn" for="event-type-toggle-${pointId}">
+            <label class="event__type  event__type-btn" for="event-type-toggle-${destinationId}">
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType}.png" alt="Event type icon">
             </label>
 
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointId}" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${destinationId}" type="checkbox">
 
               ${typeListTemplate}
 
@@ -94,35 +93,37 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
 
           <div class="event__field-group  event__field-group--time">
 
-            <label class="visually-hidden" for="event-start-time-${pointId}">From</label>
+            <label class="visually-hidden" for="event-start-time-${destinationId}">From</label>
 
             <input
               class="event__input event__input--time"
-              id="event-start-time-${pointId}"
+              id="event-start-time-${destinationId}"
               type="text"
               name="event-start-time"
               value="${humanizePointInputDateTimeType(dateFrom)}">
               —
-              <label class="visually-hidden" for="event-end-time-${pointId}">To</label>
-              <input
-                class="event__input event__input--time"
-                id="event-end-time-${pointId}"
-                type="text"
-                name="event-end-time"
-                value="${humanizePointInputDateTimeType(dateTo)}">
-              </div>
 
-              <div class="event__field-group event__field-group--price">
-                <label class="event__label" for="event-price-${pointId}">
-                  <span class="visually-hidden">Price</span>
-                  €
-                </label>
-                <input
-                  class="event__input event__input--price"
-                  id="event-price-${pointId}"
-                  type="text"
-                  name="event-price"
-                  value="${basePrice}">
+              <label class="visually-hidden" for="event-end-time-${destinationId}">To</label>
+
+            <input
+              class="event__input event__input--time"
+              id="event-end-time-${destinationId}"
+              type="text"
+              name="event-end-time"
+              value="${humanizePointInputDateTimeType(dateTo)}">
+            </div>
+
+            <div class="event__field-group event__field-group--price">
+              <label class="event__label" for="event-price-${destinationId}">
+                <span class="visually-hidden">Price</span>
+                €
+              </label>
+              <input
+                class="event__input event__input--price"
+                id="event-price-${destinationId}"
+                type="text"
+                name="event-price"
+                value="${basePrice}">
               </div>
 
               <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -461,14 +462,14 @@ export default class EventEditView extends AbstractStatefulView {
     const destinationName = getDestinationName(point.destination, destinations);
 
     const typeOffers = getTypeOffers(point.type, offers);
-    const hasTypeOffers = Boolean(typeOffers.length);
+    const hasTypeOffers = Boolean(typeOffers && typeOffers.length);
 
     const destinationObject = getDestinationObject(point.destination, destinations);
-    const destinationDescription = destinationObject.description;
-    const hasDestinationDescription = Boolean(destinationObject.description);
+    const destinationDescription = destinationObject ? destinationObject.description : null;
+    const hasDestinationDescription = Boolean(destinationObject && destinationObject.description);
 
     const destinationPhotos = getDestinationPhotos(point.destination, destinations);
-    const hasDestinationPhotos = Boolean(destinationPhotos.length);
+    const hasDestinationPhotos = Boolean(destinationPhotos && destinationPhotos.length);
 
     return {
       ...point,

@@ -1,6 +1,5 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import NewEventView from '../view/new-event-view.js';
-import { BLANK_POINT } from '../const.js';
 import { nanoid } from 'nanoid';
 import { UserAction, UpdateType } from '../const.js';
 
@@ -12,36 +11,34 @@ export default class NewEventPresenter {
 
   #newEventComponent = null;
 
+  #point = null;
   #destinations = null;
   #offers = null;
 
-  constructor({ destinations, offers, eventListContainer, onDataChange, onDestroy }) {
+  constructor({ eventListContainer, onDataChange, onDestroy }) {
 
-    const { destinations: alldestinations } = destinations;
-    const { offers: alloffers } = offers;
-
-    this.#destinations = alldestinations;
-    this.#offers = alloffers;
     this.#eventListContainer = eventListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
 
   }
 
-  init() {
+  init(point, destinations, offers) {
+
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
 
     if (this.#newEventComponent !== null) {
       return;
     }
 
     this.#newEventComponent = new NewEventView(
-      {
-        point: BLANK_POINT,
-        destinations: this.#destinations,
-        offers: this.#offers,
-        onFormSubmit: this.#handleFormSubmit,
-        onDeleteClick: this.#handleDeleteClick
-      }
+      { point: this.#point },
+      { destinations: this.#destinations },
+      { offers: this.#offers },
+      { onFormSubmit: this.#handleFormSubmit },
+      { onDeleteClick: this.#handleDeleteClick },
     );
 
     render(this.#newEventComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);

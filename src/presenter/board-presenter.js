@@ -3,11 +3,13 @@ import BoardView from '../view/board-view.js';
 import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
+import LoadingView from '../view/loading-view.js';
+import ErrorLoadingView from '../view/error-loading-view.js';
 import PointPresenter from './point-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
 import { sortByDuration, sortByBasePrice } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
-import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType, BLANK_POINT } from '../const.js';
 
 export default class BoardPresenter {
 
@@ -21,6 +23,9 @@ export default class BoardPresenter {
   #boardComponent = new BoardView();
   #eventsListComponent = new EventsListView();
 
+  #loadingComponent = new LoadingView();
+  #errorLoadingComponent = new ErrorLoadingView();
+
   #sortComponent = null;
   #noEventComponent = null;
 
@@ -30,7 +35,16 @@ export default class BoardPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
 
-  constructor({ boardContainer, pointsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
+  #isLoading = true;
+
+  constructor({
+    boardContainer,
+    pointsModel,
+    destinationsModel,
+    offersModel,
+    filterModel,
+    onNewEventDestroy
+  }) {
     this.#boardContainer = boardContainer;
 
     this.#pointsModel = pointsModel;
@@ -39,8 +53,6 @@ export default class BoardPresenter {
     this.#filterModel = filterModel;
 
     this.#newEventPresenter = new NewEventPresenter({
-      destinations: this.#destinationsModel,
-      offers: this.#offersModel,
       eventListContainer: this.#eventsListComponent.element,
       onDataChange: this.#handleViewAction,
       onDestroy: onNewEventDestroy
@@ -52,8 +64,8 @@ export default class BoardPresenter {
   }
 
   get points() {
-
     this.#filterType = this.#filterModel.filter;
+
     const points = this.#pointsModel.points;
     const filteredPoints = filter[this.#filterType](points);
 
@@ -69,24 +81,28 @@ export default class BoardPresenter {
   }
 
   get destinations() {
-    return this.#destinationsModel.destinations;
+    const destinations = this.#destinationsModel.destinations;
+    return destinations;
   }
 
   get offers() {
-    return this.#offersModel.offers;
+    const offers = this.#offersModel.offers;
+    return offers;
   }
 
-
   init() {
-
     this.#renderBoard();
-
   }
 
   createEvent() {
+    const point = BLANK_POINT;
+    const destinations = this.destinations;
+    const offers = this.offers;
+
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newEventPresenter.init();
+
+    this.#newEventPresenter.init(point, destinations, offers);
   }
 
   #handleModeChange = () => {
@@ -128,6 +144,11 @@ export default class BoardPresenter {
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
         this.#clearBoard({ resetSortType: true });
+        this.#renderBoard();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderBoard();
         break;
     }
@@ -174,6 +195,10 @@ export default class BoardPresenter {
       ));
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#boardComponent.element);
+  }
+
   #renderNoEvents() {
     this.#noEventComponent = new NoEventView({
       filterType: this.#filterType
@@ -182,6 +207,9 @@ export default class BoardPresenter {
     render(this.#noEventComponent, this.#boardComponent.element);
   }
 
+  #renderErrorLoading() {
+    render(this.#errorLoadingComponent, this.#boardComponent.element);
+  }
 
   #clearBoard({ resetSortType = false } = {}) {
 
@@ -190,6 +218,8 @@ export default class BoardPresenter {
     this.#eventPresenters.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
+    remove(this.#errorLoadingComponent);
 
     if (this.#noEventComponent) {
       remove(this.#noEventComponent);
@@ -204,14 +234,26 @@ export default class BoardPresenter {
   #renderBoard() {
     render(this.#boardComponent, this.#boardContainer);
 
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     const points = this.points;
     const destinations = this.destinations;
     const offers = this.offers;
 
     const pointCount = points.length;
+    const destinationsCount = destinations.length;
+    const offersCount = offers.length;
 
     if (pointCount === 0) {
       this.#renderNoEvents();
+      return;
+    }
+
+    if (destinationsCount === 0 || offersCount === 0) {
+      this.#renderErrorLoading();
       return;
     }
 
