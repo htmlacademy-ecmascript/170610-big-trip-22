@@ -33,6 +33,9 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     hasDestinationDescription,
     destinationPhotos,
     hasDestinationPhotos,
+    isDisabled,
+    isSaving,
+    isDeleting,
   } = point;
 
 
@@ -85,7 +88,9 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               type="text"
               name="event-destination"
               value="${he.encode(destinationName)}"
-              list="destination-list-${destinationId}">
+              list="destination-list-${destinationId}"
+              ${isDisabled ? 'disabled' : ''}
+              >
 
               ${destinationListTemplate}
 
@@ -101,9 +106,10 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               type="text"
               name="event-start-time"
               value="${humanizePointInputDateTimeType(dateFrom)}">
+
               —
 
-              <label class="visually-hidden" for="event-end-time-${destinationId}">To</label>
+            <label class="visually-hidden" for="event-end-time-${destinationId}">To</label>
 
             <input
               class="event__input event__input--time"
@@ -124,10 +130,22 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
                 type="text"
                 name="event-price"
                 value="${basePrice}">
-              </div>
+            </div>
 
-              <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-              <button class="event__reset-btn" type="reset">Delete</button>
+              <button
+                class="event__save-btn  btn  btn--blue"
+                type="submit"
+                ${isDisabled ? 'disabled' : ''}>
+                ${isSaving ? 'Saving...' : 'Save'}
+              </button>
+
+              <button
+                class="event__reset-btn"
+                type="reset"
+                ${isDisabled ? 'disabled' : ''}>
+                ${isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+
               <button class="event__rollup-btn" type="button">
                 <span class="visually-hidden">Open event</span>
               </button>
@@ -482,6 +500,9 @@ export default class EventEditView extends AbstractStatefulView {
       hasDestinationDescription,
       destinationPhotos,
       hasDestinationPhotos,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     };
   }
 
@@ -533,6 +554,10 @@ export default class EventEditView extends AbstractStatefulView {
     delete point.destinationPhotos;
     delete point.hasDestinationPhotos;
     delete point.hasTypeOffers;
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   }
