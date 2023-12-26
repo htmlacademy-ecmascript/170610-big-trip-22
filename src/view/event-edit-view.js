@@ -382,7 +382,7 @@ export default class EventEditView extends AbstractStatefulView {
     if (nextBasePrice === '' || nextBasePrice < 1) {
       evt.target.value = prevBasePrice;
     } else {
-      this.updateElement({
+      this._setState({
         basePrice: Number(nextBasePrice),
       });
     }
