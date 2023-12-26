@@ -96,15 +96,6 @@ const getDestinationObject = (destinationId, pointDestinations) => {
   return pointDestinations.find(({ id }) => id === destinationId) || null;
 };
 
-const createDestinationPhotosTemplate = (hasDestinationPhotos, destinationPhotos) => (
-  `${hasDestinationPhotos ?
-    `<div class="event__photos-container">
-      <div class="event__photos-tape">
-        ${destinationPhotos.map(({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`).join('')}
-      </div>
-    </div>`
-    : ''}`
-);
 
 const createDestinationDescriptionTemplate = (
   hasDestinationDescription,
@@ -200,7 +191,6 @@ export {
   getTypeOffers,
   getDestinationPhotos,
   getDestinationObject,
-  createDestinationPhotosTemplate,
   createDestinationDescriptionTemplate,
   createOffersSectionTemplateTemplate,
   getSelectedOffers,
