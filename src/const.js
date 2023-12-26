@@ -46,11 +46,26 @@ const BLANK_POINT = {
   'type': 'flight'
 };
 
+const METHOD = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
+
+const URL = {
+  POINTS: 'points',
+  DESTINATIONS: 'destinations',
+  OFFERS: 'offers',
+};
+
 export {
   OFFERS_TYPES,
   FilterType,
   SortType,
   UserAction,
   UpdateType,
-  BLANK_POINT
+  BLANK_POINT,
+  METHOD,
+  URL,
 };

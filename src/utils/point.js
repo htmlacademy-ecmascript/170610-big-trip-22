@@ -132,7 +132,6 @@ const createDestinationListTemplate = (hasPointType, destinations, destinationId
    </datalist>`;
 };
 
-
 const createDestinationPhotosTemplate = (hasDestinationPhotos, destinationPhotos) => (
   `${hasDestinationPhotos ?
     `<div class="event__photos-container">
@@ -202,7 +201,6 @@ const getSelectedOffers = (typeOffers, pointOffersIds) => {
 
   return typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
 };
-
 
 const createSelectedOffersTemplate = (hasSelectedOffers, selectedOffers) => (
   `${hasSelectedOffers ? `
