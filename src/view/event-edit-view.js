@@ -4,6 +4,7 @@ import createTypeListTemplate from '../templates/type-list-template.js';
 import createDestinationListTemplate from '../templates/destination-list-template.js';
 import createDestinationPhotosTemplate from '../templates/destination-photos-template.js';
 import createDestinationDescriptionTemplate from '../templates/destination-description-template.js';
+import createOffersSectionTemplateTemplate from '../templates/offers-section-template.js';
 
 import {
   humanizePointInputDateTimeType,
@@ -11,7 +12,6 @@ import {
   getTypeOffers,
   getDestinationPhotos,
   getDestinationObject,
-  createOffersSectionTemplateTemplate,
 } from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
