@@ -3,6 +3,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import createTypeListTemplate from '../templates/type-list-template.js';
 import createDestinationListTemplate from '../templates/destination-list-template.js';
 import createDestinationPhotosTemplate from '../templates/destination-photos-template.js';
+import createDestinationDescriptionTemplate from '../templates/destination-description-template.js';
 
 import {
   humanizePointInputDateTimeType,
@@ -10,7 +11,6 @@ import {
   getTypeOffers,
   getDestinationPhotos,
   getDestinationObject,
-  createDestinationDescriptionTemplate,
   createOffersSectionTemplateTemplate,
 } from '../utils/point.js';
 

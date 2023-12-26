@@ -97,24 +97,6 @@ const getDestinationObject = (destinationId, pointDestinations) => {
 };
 
 
-const createDestinationDescriptionTemplate = (
-  hasDestinationDescription,
-  hasDestinationPhotos,
-  destinationDescription,
-  destinationPhotos,
-  destinationPhotosTemplate
-) => (
-  `${hasDestinationDescription || hasDestinationPhotos ? `
-    <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destinationDescription}</p>
-         ${destinationPhotos ? destinationPhotosTemplate : ''}
-      </section>
-    </section>
-  ` : ''
-  } `
-);
-
 const createOffersSectionTemplateTemplate = (hasTypeOffers, typeOffers, pointOffersIds, isDisabled) => (
 
   `${hasTypeOffers ? `
@@ -191,7 +173,6 @@ export {
   getTypeOffers,
   getDestinationPhotos,
   getDestinationObject,
-  createDestinationDescriptionTemplate,
   createOffersSectionTemplateTemplate,
   getSelectedOffers,
   createSelectedOffersTemplate,
