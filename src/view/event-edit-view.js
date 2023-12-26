@@ -61,6 +61,8 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     isDisabled,
   );
 
+  const isSaveButtonDisabled = !destinationName || !dateFrom || !dateTo || basePrice <= 0;
+
   return (
     `<li class="trip-events__item" >
       <form
@@ -143,7 +145,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               <button
                 class="event__save-btn  btn  btn--blue"
                 type="submit"
-                ${isDisabled ? 'disabled' : ''}>
+                ${isDisabled || isSaveButtonDisabled ? 'disabled' : ''}>
                 ${isSaving ? 'Saving...' : 'Save'}
               </button>
 
@@ -370,7 +372,6 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   #priceInputChangeHandler = (evt) => {
-
     evt.preventDefault();
 
     evt.target.value = evt.target.value.replace(/[^0-9]/g, '');
@@ -378,20 +379,13 @@ export default class EventEditView extends AbstractStatefulView {
     const prevBasePrice = this._state.basePrice;
     const nextBasePrice = evt.target.value;
 
-    if (nextBasePrice === '') {
+    if (nextBasePrice === '' || nextBasePrice < 1) {
       evt.target.value = prevBasePrice;
-    }
-
-    if (nextBasePrice < 0) {
-      evt.target.value = prevBasePrice;
-    }
-
-    if (nextBasePrice !== '' && nextBasePrice >= 0) {
-      this._setState({
+    } else {
+      this.updateElement({
         basePrice: Number(nextBasePrice),
       });
     }
-
   };
 
   #offerCheckboxChangeHandler = (evt) => {
