@@ -1,5 +1,5 @@
 import { render, RenderPosition } from './framework/render.js';
-import InfoView from './view/info-view.js';
+// import InfoView from './view/info-view.js';
 import NewEventButtonView from './view/new-event-button-view.js';
 import BoardPresenter from './presenter/board-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
@@ -35,7 +35,7 @@ const tripMainElement = pageHeaderElement.querySelector('.trip-main');
 const tripControlsFormElement = tripMainElement.querySelector('.trip-controls__filters');
 
 const pageMainElement = pageBodyElement.querySelector('.page-main');
-render(new InfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
+// render(new InfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
 
 const tripEventsSectionElement = pageMainElement.querySelector('.trip-events');
 
@@ -70,8 +70,8 @@ function handleNewEventButtonClick() {
 filterPresenter.init();
 boardPresenter.init();
 
-destinationsModel.init();
-offersModel.init();
+// destinationsModel.init();
+// offersModel.init();
 
 pointsModel.init()
   .finally(() => {

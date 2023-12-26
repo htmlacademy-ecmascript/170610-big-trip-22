@@ -5,7 +5,7 @@ import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import LoadingView from '../view/loading-view.js';
-import ErrorLoadingView from '../view/error-loading-view.js';
+// import ErrorLoadingView from '../view/error-loading-view.js';
 import PointPresenter from './point-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
 import { sortByDuration, sortByBasePrice } from '../utils/point.js';
@@ -30,7 +30,7 @@ export default class BoardPresenter {
   #eventsListComponent = new EventsListView();
 
   #loadingComponent = new LoadingView();
-  #errorLoadingComponent = new ErrorLoadingView();
+  // #errorLoadingComponent = new ErrorLoadingView();
 
   #sortComponent = null;
   #noEventComponent = null;
@@ -71,6 +71,9 @@ export default class BoardPresenter {
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+
+    this.#offersModel.init();
+    this.#destinationsModel.init();
 
   }
 
@@ -248,9 +251,9 @@ export default class BoardPresenter {
     render(this.#noEventComponent, this.#boardComponent.element);
   }
 
-  #renderErrorLoading() {
-    render(this.#errorLoadingComponent, this.#boardComponent.element);
-  }
+  // #renderErrorLoading() {
+  //   render(this.#errorLoadingComponent, this.#boardComponent.element);
+  // }
 
   #clearBoard({ resetSortType = false } = {}) {
 
@@ -260,7 +263,7 @@ export default class BoardPresenter {
 
     remove(this.#sortComponent);
     remove(this.#loadingComponent);
-    remove(this.#errorLoadingComponent);
+    // remove(this.#errorLoadingComponent);
 
     if (this.#noEventComponent) {
       remove(this.#noEventComponent);
@@ -285,18 +288,18 @@ export default class BoardPresenter {
     const offers = this.offers;
 
     const pointCount = points.length;
-    const destinationsCount = destinations.length;
-    const offersCount = offers.length;
+    // const destinationsCount = destinations.length;
+    // const offersCount = offers.length;
 
     if (pointCount === 0) {
       this.#renderNoEvents();
       return;
     }
 
-    if (destinationsCount === 0 || offersCount === 0) {
-      this.#renderErrorLoading();
-      return;
-    }
+    // if (destinationsCount === 0 || offersCount === 0) {
+    //   this.#renderErrorLoading();
+    //   return;
+    // }
 
     this.#renderSort();
     render(this.#eventsListComponent, this.#boardComponent.element);
