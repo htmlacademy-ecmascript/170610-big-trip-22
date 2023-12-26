@@ -1,12 +1,13 @@
 import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import createTypeListTemplate from '../templates/type-list-template.js';
+
 import {
   humanizePointInputDateTimeType,
   getDestinationName,
   getTypeOffers,
   getDestinationPhotos,
   getDestinationObject,
-  createTypeListTemplate,
   createDestinationListTemplate,
   createDestinationPhotosTemplate,
   createDestinationDescriptionTemplate,
