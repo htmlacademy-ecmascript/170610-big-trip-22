@@ -70,7 +70,10 @@ function handleNewEventButtonClick() {
 filterPresenter.init();
 boardPresenter.init();
 
-pointsModel.init(destinationsModel.init(), offersModel.init())
+destinationsModel.init();
+offersModel.init();
+
+pointsModel.init()
   .finally(() => {
     render(newEventButtonComponent, tripMainElement);
   });
