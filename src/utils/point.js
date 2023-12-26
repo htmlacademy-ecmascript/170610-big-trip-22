@@ -96,17 +96,6 @@ const getDestinationObject = (destinationId, pointDestinations) => {
   return pointDestinations.find(({ id }) => id === destinationId) || null;
 };
 
-
-const createDestinationListTemplate = (hasPointType, destinations, destinationId) => {
-  if (!hasPointType) {
-    return '';
-  }
-
-  return `<datalist id="destination-list-${destinationId}">
-    ${destinations.map(({ name }) => `<option value="${name}"</option>`).join('')}
-   </datalist>`;
-};
-
 const createDestinationPhotosTemplate = (hasDestinationPhotos, destinationPhotos) => (
   `${hasDestinationPhotos ?
     `<div class="event__photos-container">
@@ -211,7 +200,6 @@ export {
   getTypeOffers,
   getDestinationPhotos,
   getDestinationObject,
-  createDestinationListTemplate,
   createDestinationPhotosTemplate,
   createDestinationDescriptionTemplate,
   createOffersSectionTemplateTemplate,
