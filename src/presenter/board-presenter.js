@@ -108,7 +108,7 @@ export default class BoardPresenter {
     this.#renderBoard();
   }
 
-  createEvent() {
+  createPoint() {
     const point = BLANK_POINT;
     const destinations = this.destinations;
     const offers = this.offers;

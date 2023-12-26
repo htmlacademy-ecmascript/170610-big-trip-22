@@ -1,4 +1,5 @@
-import { render, RenderPosition } from './framework/render.js';
+// import { render, RenderPosition } from './framework/render.js';
+import { render } from './framework/render.js';
 // import InfoView from './view/info-view.js';
 import NewEventButtonView from './view/new-event-button-view.js';
 import BoardPresenter from './presenter/board-presenter.js';
@@ -63,7 +64,7 @@ function handleNewEventFormClose() {
 }
 
 function handleNewEventButtonClick() {
-  boardPresenter.createEvent();
+  boardPresenter.createPoint();
   newEventButtonComponent.element.disabled = true;
 }
 
