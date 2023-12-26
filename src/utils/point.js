@@ -132,7 +132,6 @@ const createDestinationListTemplate = (hasPointType, destinations, destinationId
    </datalist>`;
 };
 
-
 const createDestinationPhotosTemplate = (hasDestinationPhotos, destinationPhotos) => (
   `${hasDestinationPhotos ?
     `<div class="event__photos-container">
@@ -161,7 +160,8 @@ const createDestinationDescriptionTemplate = (
   } `
 );
 
-const createOffersSectionTemplateTemplate = (hasTypeOffers, typeOffers, pointOffersIds) => (
+const createOffersSectionTemplateTemplate = (hasTypeOffers, typeOffers, pointOffersIds, isDisabled) => (
+
   `${hasTypeOffers ? `
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -180,6 +180,7 @@ const createOffersSectionTemplateTemplate = (hasTypeOffers, typeOffers, pointOff
             type="checkbox"
             name="event-offer-${offerLastWord}"
             ${checked}
+            ${isDisabled ? 'disabled' : ''}
           >
           <label class="event__offer-label"
             for="event-offer-${offerLastWord}-${id}">
@@ -202,7 +203,6 @@ const getSelectedOffers = (typeOffers, pointOffersIds) => {
 
   return typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
 };
-
 
 const createSelectedOffersTemplate = (hasSelectedOffers, selectedOffers) => (
   `${hasSelectedOffers ? `

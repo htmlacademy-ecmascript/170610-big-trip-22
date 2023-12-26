@@ -1,20 +1,17 @@
-import ApiService from './framework/api-service.js';
+import ApiService from '../framework/api-service.js';
+import { METHOD, URL } from '../const.js';
 
-const Method = {
-  GET: 'GET',
-  PUT: 'PUT',
-};
 
 export default class PointsApiService extends ApiService {
   get points() {
-    return this._load({ url: 'points' })
+    return this._load({ url: `${URL.POINTS}` })
       .then(ApiService.parseResponse);
   }
 
   async updatePoint(point) {
     const response = await this._load({
-      url: `points/${point.id}`,
-      method: Method.PUT,
+      url: `${URL.POINTS}/${point.id}`,
+      method: METHOD.PUT,
       body: JSON.stringify(this.#adaptToServer(point)),
       headers: new Headers({ 'Content-Type': 'application/json' }),
     });
@@ -24,10 +21,31 @@ export default class PointsApiService extends ApiService {
     return parsedResponse;
   }
 
+  async addPoint(point) {
+    const response = await this._load({
+      url: `${URL.POINTS}`,
+      method: METHOD.POST,
+      body: JSON.stringify(this.#adaptToServer(point)),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    });
+
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
+  }
+
+  async deletePoint(point) {
+    const response = await this._load({
+      url: `${URL.POINTS}/${point.id}`,
+      method: METHOD.DELETE,
+    });
+
+    return response;
+  }
+
   #adaptToServer(point) {
     const adaptedPoint = {
       ...point,
-      // 'due_date': point.dueDate instanceof Date ? point.dueDate.toISOString() : null, // На сервере дата хранится в ISO формате
       'base_price': point.basePrice,
       'date_from': point.dateFrom,
       'date_to': point.dateTo,
@@ -35,12 +53,10 @@ export default class PointsApiService extends ApiService {
 
     };
 
-    // Ненужные ключи мы удаляем
     delete adaptedPoint.basePrice;
     delete adaptedPoint.dateFrom;
     delete adaptedPoint.dateTo;
     delete adaptedPoint.isFavorite;
-    delete adaptedPoint.hasTypeOffers;
 
     return adaptedPoint;
   }

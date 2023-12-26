@@ -33,6 +33,9 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     hasDestinationDescription,
     destinationPhotos,
     hasDestinationPhotos,
+    isDisabled,
+    isSaving,
+    isDeleting,
   } = point;
 
 
@@ -54,11 +57,16 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     hasTypeOffers,
     typeOffers,
     pointOffersIds,
+    isDisabled,
   );
 
   return (
     `<li class="trip-events__item" >
-      <form class="event event--edit" action="#" method="post">
+      <form
+        class="event event--edit"
+        action="#"
+        method="post"
+      >
         <header class="event__header">
           <div class="event__type-wrapper">
 
@@ -85,7 +93,8 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               type="text"
               name="event-destination"
               value="${he.encode(destinationName)}"
-              list="destination-list-${destinationId}">
+              list="destination-list-${destinationId}"
+              ${isDisabled ? 'disabled' : ''}>
 
               ${destinationListTemplate}
 
@@ -100,17 +109,20 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               id="event-start-time-${destinationId}"
               type="text"
               name="event-start-time"
-              value="${humanizePointInputDateTimeType(dateFrom)}">
+              value="${humanizePointInputDateTimeType(dateFrom)}"
+              ${isDisabled ? 'disabled' : ''}>
+
               —
 
-              <label class="visually-hidden" for="event-end-time-${destinationId}">To</label>
+            <label class="visually-hidden" for="event-end-time-${destinationId}">To</label>
 
             <input
               class="event__input event__input--time"
               id="event-end-time-${destinationId}"
               type="text"
               name="event-end-time"
-              value="${humanizePointInputDateTimeType(dateTo)}">
+              value="${humanizePointInputDateTimeType(dateTo)}"
+              ${isDisabled ? 'disabled' : ''}>
             </div>
 
             <div class="event__field-group event__field-group--price">
@@ -123,11 +135,24 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
                 id="event-price-${destinationId}"
                 type="text"
                 name="event-price"
-                value="${basePrice}">
-              </div>
+                value="${basePrice}"
+                ${isDisabled ? 'disabled' : ''}>
+            </div>
 
-              <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-              <button class="event__reset-btn" type="reset">Delete</button>
+              <button
+                class="event__save-btn  btn  btn--blue"
+                type="submit"
+                ${isDisabled ? 'disabled' : ''}>
+                ${isSaving ? 'Saving...' : 'Save'}
+              </button>
+
+              <button
+                class="event__reset-btn"
+                type="reset"
+                ${isDisabled ? 'disabled' : ''}>
+                ${isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+
               <button class="event__rollup-btn" type="button">
                 <span class="visually-hidden">Open event</span>
               </button>
@@ -482,6 +507,9 @@ export default class EventEditView extends AbstractStatefulView {
       hasDestinationDescription,
       destinationPhotos,
       hasDestinationPhotos,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     };
   }
 
@@ -520,6 +548,10 @@ export default class EventEditView extends AbstractStatefulView {
       point.hasDestinationPhotos = null;
     }
 
+    if (!point.hasTypeOffers) {
+      point.hasTypeOffers = null;
+    }
+
     delete point.hasPointType;
     delete point.destinationName;
     delete point.typeOffers;
@@ -528,6 +560,11 @@ export default class EventEditView extends AbstractStatefulView {
     delete point.hasDestinationDescription;
     delete point.destinationPhotos;
     delete point.hasDestinationPhotos;
+    delete point.hasTypeOffers;
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   }
