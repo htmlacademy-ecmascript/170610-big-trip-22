@@ -2,6 +2,7 @@
 import { render } from './framework/render.js';
 // import InfoView from './view/info-view.js';
 import NewEventButtonView from './view/new-event-button-view.js';
+import InfoPresenter from './presenter/info-presenter.js';
 import BoardPresenter from './presenter/board-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import PointsModel from './model/points-model.js';
@@ -40,6 +41,13 @@ const pageMainElement = pageBodyElement.querySelector('.page-main');
 
 const tripEventsSectionElement = pageMainElement.querySelector('.trip-events');
 
+const infoPresenter = new InfoPresenter({
+  infoContainer: tripMainElement,
+  pointsModel,
+  destinationsModel,
+  offersModel,
+});
+
 const boardPresenter = new BoardPresenter({
   boardContainer: tripEventsSectionElement,
   pointsModel,
@@ -68,6 +76,7 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
+infoPresenter.init();
 filterPresenter.init();
 boardPresenter.init();
 
