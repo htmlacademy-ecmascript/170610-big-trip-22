@@ -57,11 +57,16 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     hasTypeOffers,
     typeOffers,
     pointOffersIds,
+    isDisabled,
   );
 
   return (
     `<li class="trip-events__item" >
-      <form class="event event--edit" action="#" method="post">
+      <form
+        class="event event--edit"
+        action="#"
+        method="post"
+      >
         <header class="event__header">
           <div class="event__type-wrapper">
 
@@ -89,8 +94,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               name="event-destination"
               value="${he.encode(destinationName)}"
               list="destination-list-${destinationId}"
-              ${isDisabled ? 'disabled' : ''}
-              >
+              ${isDisabled ? 'disabled' : ''}>
 
               ${destinationListTemplate}
 
@@ -105,7 +109,8 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               id="event-start-time-${destinationId}"
               type="text"
               name="event-start-time"
-              value="${humanizePointInputDateTimeType(dateFrom)}">
+              value="${humanizePointInputDateTimeType(dateFrom)}"
+              ${isDisabled ? 'disabled' : ''}>
 
               —
 
@@ -116,7 +121,8 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               id="event-end-time-${destinationId}"
               type="text"
               name="event-end-time"
-              value="${humanizePointInputDateTimeType(dateTo)}">
+              value="${humanizePointInputDateTimeType(dateTo)}"
+              ${isDisabled ? 'disabled' : ''}>
             </div>
 
             <div class="event__field-group event__field-group--price">
@@ -129,7 +135,8 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
                 id="event-price-${destinationId}"
                 type="text"
                 name="event-price"
-                value="${basePrice}">
+                value="${basePrice}"
+                ${isDisabled ? 'disabled' : ''}>
             </div>
 
               <button

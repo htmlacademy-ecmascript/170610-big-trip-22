@@ -33,6 +33,8 @@ const createNewEventViewTemplate = (point, destinations, offers) => {
     hasDestinationDescription,
     destinationPhotos,
     hasDestinationPhotos,
+    isDisabled,
+    isSaving,
 
   } = point;
 
@@ -55,11 +57,16 @@ const createNewEventViewTemplate = (point, destinations, offers) => {
     hasTypeOffers,
     typeOffers,
     pointOffersIds,
+    isDisabled,
   );
 
   return (
     `<li class="trip-events__item">
-      <form class="event event--edit" action="#" method="post">
+      <form
+        class="event event--edit"
+        action="#"
+        method="post"
+      >
         <header class="event__header">
           <div class="event__type-wrapper">
 
@@ -86,7 +93,8 @@ const createNewEventViewTemplate = (point, destinations, offers) => {
               type="text"
               name="event-destination"
               value="${he.encode(destinationName)}"
-              list="destination-list-${destinationId}">
+              list="destination-list-${destinationId}"
+              ${isDisabled ? 'disabled' : ''}>
 
               ${destinationListTemplate}
 
@@ -94,40 +102,57 @@ const createNewEventViewTemplate = (point, destinations, offers) => {
 
           <div class="event__field-group  event__field-group--time">
 
-          <label class="visually-hidden" for="event-start-time-${destinationId}">From</label>
+            <label class="visually-hidden" for="event-start-time-${destinationId}">From</label>
 
-              <input
+            <input
+            class="event__input event__input--time"
+            id="event-start-time-${destinationId}"
+            type="text"
+            name="event-start-time"
+            value="${humanizePointInputDateTimeType(dateFrom)}"
+            ${isDisabled ? 'disabled' : ''}>
+
+            —
+
+            <label class="visually-hidden" for="event-end-time-${destinationId}">To</label>
+
+            <input
               class="event__input event__input--time"
-              id="event-start-time-${destinationId}"
+              id="event-end-time-${destinationId}"
               type="text"
-              name="event-start-time"
-              value="${humanizePointInputDateTimeType(dateFrom)}">
-              —
-              <label class="visually-hidden" for="event-end-time-${destinationId}">To</label>
-              <input
-                class="event__input event__input--time"
-                id="event-end-time-${destinationId}"
-                type="text"
-                name="event-end-time"
-                value="${humanizePointInputDateTimeType(dateTo)}">
+              name="event-end-time"
+              value="${humanizePointInputDateTimeType(dateTo)}"
+              ${isDisabled ? 'disabled' : ''}>
           </div>
 
           <div class="event__field-group  event__field-group--price">
-          <label class="event__label" for="event-price-${destinationId}">
-              <span class="visually-hidden">Price</span>
-              €
+
+            <label class="event__label" for="event-price-${destinationId}">
+                <span class="visually-hidden">Price</span>€
             </label>
+
             <input
-            class="event__input event__input--price"
-            id="event-price-${destinationId}"
-            type="text"
-            name="event-price"
-            value="${basePrice}">
+              class="event__input event__input--price"
+              id="event-price-${destinationId}"
+              type="text"
+              name="event-price"
+              value="${basePrice}"
+              ${isDisabled ? 'disabled' : ''}>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
-        </header>
+          <button
+            class="event__save-btn  btn  btn--blue"
+            type="submit"
+            ${isDisabled ? 'disabled' : ''}>
+            ${isSaving ? 'Saving...' : 'Save'}
+          </button>
+
+          <button
+            class="event__reset-btn"
+            type="reset">Cancel
+          </button>
+
+          </header>
         <section class="event__details">
         ${offersSectionTemplate}
 
@@ -457,6 +482,8 @@ export default class NewEventView extends AbstractStatefulView {
       hasDestinationDescription,
       destinationPhotos,
       hasDestinationPhotos,
+      isDisabled: false,
+      isSaving: false,
     };
   }
 
@@ -508,6 +535,9 @@ export default class NewEventView extends AbstractStatefulView {
     delete point.destinationPhotos;
     delete point.hasDestinationPhotos;
     delete point.hasTypeOffers;
+
+    delete point.isDisabled;
+    delete point.isSaving;
 
     return point;
   }

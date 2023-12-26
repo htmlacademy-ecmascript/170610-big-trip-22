@@ -65,7 +65,7 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#eventEditComponent, prevEventEditComponent);
+      replace(this.#eventComponent, prevEventEditComponent);
       this.#mode = Mode.DEFAULT;
     }
 
@@ -152,7 +152,7 @@ export default class PointPresenter {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update,
     );
-    // this.#replaceFormToCard();
+
   };
 
   #handleCloseClick = () => {
