@@ -96,13 +96,8 @@ const getDestinationObject = (destinationId, pointDestinations) => {
   return pointDestinations.find(({ id }) => id === destinationId) || null;
 };
 
-const getSelectedOffers = (typeOffers, pointOffersIds) => {
-  if (!typeOffers || !pointOffersIds) {
-    return [];
-  }
+const getSelectedOffers = (typeOffers, pointOffersIds) => typeOffers?.filter((offer) => pointOffersIds?.includes(offer?.id)) || [];
 
-  return typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
-};
 
 const getCheckedOffers = (offers, type) => offers.find((offer) => type === offer.type)?.offers;
 const getOffersPrice = (offerIDs = [], offers = []) => offerIDs.reduce((offerCost, id) => offerCost + (offers.find((offer) => offer.id === id)?.price ?? 0), 0);
