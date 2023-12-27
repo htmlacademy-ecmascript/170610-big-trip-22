@@ -137,7 +137,7 @@ const createNewEventViewTemplate = (point, destinations, offers) => {
             <input
               class="event__input event__input--price"
               id="event-price-${destinationId}"
-              type="text"
+              type="number"
               name="event-price"
               value="${basePrice}"
               ${isDisabled ? 'disabled' : ''}>

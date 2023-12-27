@@ -59,6 +59,7 @@ export default class InfoPresenter {
     replace(this.#infoComponent, prevInfoComponent);
     remove(prevInfoComponent);
 
+    render(this.#infoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
   }
 
   #handleModelEvent = () => {

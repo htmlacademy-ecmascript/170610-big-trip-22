@@ -104,6 +104,10 @@ const getSelectedOffers = (typeOffers, pointOffersIds) => {
   return typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
 };
 
+
+const getOffersPrice = (offerIDs = [], offers = []) => offerIDs.reduce((offerCost, id) => offerCost + (offers.find((offer) => offer.id === id)?.price ?? 0), 0);
+const getTotalPrice = (points = [], offers = []) => points.reduce((total, point) => total + point.basePrice + getOffersPrice(point.offers, getSelectedOffers(offers, point.type)), 0);
+
 export {
   humanizePointDateTime,
   humanizePointDateDate,
@@ -124,4 +128,6 @@ export {
   getDestinationObject,
   getSelectedOffers,
   toUpperCaseFirstLetter,
+  getOffersPrice,
+  getTotalPrice,
 };
