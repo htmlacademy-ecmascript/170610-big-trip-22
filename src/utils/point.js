@@ -109,6 +109,8 @@ const getRoute = (points = [], destinations = []) => {
   return destinationNames <= DESTINATIONS_ITEMS_COUNT ? destinationNames.join('&nbsp;&mdash;&nbsp;') : `${destinationNames.at(0)}&nbsp;&mdash;&nbsp;...&nbsp;&mdash;&nbsp;${destinationNames.at(-1)}`;
 };
 
+const getRouteDuration = (points = []) => points.length ? `${dayjs(points.at(0).dateFrom).format('DD MMM')}&nbsp;&mdash;&nbsp;${dayjs(points.at(-1).dateTo).format('DD MMM')}` : '';
+
 export {
   humanizePointDateTime,
   humanizePointDateDate,
@@ -132,4 +134,5 @@ export {
   getOffersPrice,
   getTotalPrice,
   getRoute,
+  getRouteDuration
 };
