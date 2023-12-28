@@ -47,12 +47,14 @@ export default class PointPresenter {
     );
 
     this.#eventEditComponent = new EventEditView(
-      { point: this.#point },
-      { destinations: this.#destinations },
-      { offers: this.#offers },
-      { onFormSubmit: this.#handleFormSubmit },
-      { onCloseClick: this.#handleCloseClick },
-      { onDeleteClick: this.#handleDeleteClick },
+      {
+        point: this.#point,
+        destinations: this.#destinations,
+        offers: this.#offers,
+        onFormSubmit: this.#handleFormSubmit,
+        onCloseClick: this.#handleCloseClick,
+        onDeleteClick: this.#handleDeleteClick
+      },
     );
 
     if (prevEventComponent === null || prevEventEditComponent === null) {

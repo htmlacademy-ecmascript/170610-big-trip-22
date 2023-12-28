@@ -13,8 +13,7 @@ import PointsApiService from './api/points-api-service.js';
 import DestinationsApiService from './api/destinations-api-service.js';
 import OffersApiService from './api/offers-api-service.js';
 
-
-const AUTHORIZATION = 'Basic 1R21Yxa~x~Dp';
+const AUTHORIZATION = 'Basic 1R21Yxa~x~2Dp';
 const END_POINT = 'https://21.objects.pages.academy/big-trip';
 
 const pageBodyElement = document.querySelector('.page-body');
@@ -80,9 +79,6 @@ function handleNewEventButtonClick() {
 infoPresenter.init();
 filterPresenter.init();
 boardPresenter.init();
-
-// destinationsModel.init();
-// offersModel.init();
 
 pointsModel.init()
   .finally(() => {

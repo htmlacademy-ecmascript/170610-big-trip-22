@@ -1,4 +1,5 @@
 import he from 'he';
+import { BLANK_POINT } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import createTypeListTemplate from '../templates/type-list-template.js';
 import createDestinationListTemplate from '../templates/destination-list-template.js';
@@ -38,7 +39,6 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     isSaving,
     isDeleting,
   } = point;
-
 
   const typeListTemplate = createTypeListTemplate(offers, pointType);
 
@@ -184,12 +184,14 @@ export default class EventEditView extends AbstractStatefulView {
   #datepicker = null;
 
   constructor(
-    { point },
-    { destinations },
-    { offers },
-    { onFormSubmit },
-    { onCloseClick },
-    { onDeleteClick },
+    {
+      point = BLANK_POINT,
+      destinations,
+      offers,
+      onFormSubmit,
+      onCloseClick,
+      onDeleteClick
+    },
   ) {
     super();
 
