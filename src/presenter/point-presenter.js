@@ -10,6 +10,7 @@ const Mode = {
 };
 
 export default class PointPresenter {
+
   #eventListContainer = null;
   #handleDataChange = null;
   #handleModeChange = null;

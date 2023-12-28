@@ -40,8 +40,6 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
     isDeleting,
   } = point;
 
-  console.log(isNewPoint);
-
 
   const typeListTemplate = createTypeListTemplate(offers, pointType);
 
@@ -159,9 +157,11 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
                 ${isDeleting ? 'Deleting...' : 'Delete'}
               </button>
 
-              <button class="event__rollup-btn" type="button">
-                <span class="visually-hidden">Open event</span>
-              </button>
+
+            <button class="event__rollup-btn" type="button" ${isNewPoint ? 'style="display: none;"' : ''}>
+              <span class="visually-hidden">Open event</span>
+            </button>
+
             </header>
 
             <section class="event__details">
