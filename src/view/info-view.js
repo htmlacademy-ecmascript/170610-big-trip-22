@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { getTotalPrice } from '../utils/point.js';
+import { getTotalPrice, getRoute } from '../utils/point.js';
 
-const createInfoViewTemplate = ({ isEmpty, totalPrice }) => isEmpty ?
+const createInfoViewTemplate = ({ isEmpty, totalPrice, route }) => isEmpty ?
   `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       <h1 class="trip-info__title">Loading...</h1>
@@ -14,7 +14,7 @@ const createInfoViewTemplate = ({ isEmpty, totalPrice }) => isEmpty ?
   </section>` : `
   <section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
-      <h1 class="trip-info__title" > Amsterdam & mdash; Chamonix & mdash; Geneva</h1>
+      <h1 class="trip-info__title" > ${route}</h1>
       <p class="trip-info__dates" > 18 & nbsp;& mdash;& nbsp; 20 Mar</p>
     </div>
     <p class="trip-info__cost">
@@ -39,8 +39,9 @@ export default class InfoView extends AbstractView {
 
   get template() {
     return createInfoViewTemplate({
-      isEmpty: this.#points.length === 0,
+      isEmpty: this.#points.length === 0 || this.#destinations.length === 0,
       totalPrice: getTotalPrice(this.#points, this.#offers),
+      route: getRoute(this.#points, this.#destinations),
     });
   }
 

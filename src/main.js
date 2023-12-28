@@ -13,6 +13,7 @@ import PointsApiService from './api/points-api-service.js';
 import DestinationsApiService from './api/destinations-api-service.js';
 import OffersApiService from './api/offers-api-service.js';
 
+
 const AUTHORIZATION = 'Basic 1R21Yxa~x~Dp';
 const END_POINT = 'https://21.objects.pages.academy/big-trip';
 
@@ -37,7 +38,6 @@ const tripMainElement = pageHeaderElement.querySelector('.trip-main');
 const tripControlsFormElement = tripMainElement.querySelector('.trip-controls__filters');
 
 const pageMainElement = pageBodyElement.querySelector('.page-main');
-// render(new InfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
 
 const tripEventsSectionElement = pageMainElement.querySelector('.trip-events');
 
@@ -46,6 +46,13 @@ const infoPresenter = new InfoPresenter({
   pointsModel,
   destinationsModel,
   offersModel,
+  filterModel,
+});
+
+const filterPresenter = new FilterPresenter({
+  filterContainer: tripControlsFormElement,
+  filterModel,
+  pointsModel,
 });
 
 const boardPresenter = new BoardPresenter({
@@ -55,12 +62,6 @@ const boardPresenter = new BoardPresenter({
   offersModel,
   filterModel,
   onNewEventDestroy: handleNewEventFormClose,
-});
-
-const filterPresenter = new FilterPresenter({
-  filterContainer: tripControlsFormElement,
-  filterModel,
-  pointsModel,
 });
 
 const newEventButtonComponent = new NewEventButtonView({
