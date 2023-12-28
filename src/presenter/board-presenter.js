@@ -63,7 +63,7 @@ export default class BoardPresenter {
     this.#newEventPresenter = new NewEventPresenter({
       eventListContainer: this.#eventsListComponent.element,
       onDataChange: this.#handleViewAction,
-      onDestroy: onNewEventDestroy
+      onDestroy: onNewEventDestroy,
     });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -71,7 +71,6 @@ export default class BoardPresenter {
 
     this.#offersModel.init();
     this.#destinationsModel.init();
-
   }
 
   get points() {
@@ -108,7 +107,7 @@ export default class BoardPresenter {
   createPoint() {
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newEventPresenter.init();
+    this.#newEventPresenter.init(this.destinations, this.offers);
   }
 
   #handleModeChange = () => {

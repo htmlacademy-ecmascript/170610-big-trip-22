@@ -4,13 +4,20 @@ import { UserAction, UpdateType } from '../const.js';
 
 
 export default class NewEventPresenter {
+
+
   #eventListContainer = null;
   #handleDataChange = null;
   #handleDestroy = null;
 
+
   #eventEditComponent = null;
 
-  constructor({ eventListContainer, onDataChange, onDestroy }) {
+  constructor({
+    eventListContainer,
+    onDataChange,
+    onDestroy,
+  }) {
 
     this.#eventListContainer = eventListContainer;
     this.#handleDataChange = onDataChange;
@@ -18,13 +25,15 @@ export default class NewEventPresenter {
 
   }
 
-  init() {
+  init(destinations, offers) {
 
     if (this.#eventEditComponent !== null) {
       return;
     }
 
     this.#eventEditComponent = new EventEditView({
+      destinations: destinations,
+      offers: offers,
       onFormSubmit: this.#handleFormSubmit,
       onCloseClick: this.#handleCloseClick,
       onDeleteClick: this.#handleDeleteClick
