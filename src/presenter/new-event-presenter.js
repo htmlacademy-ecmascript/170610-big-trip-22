@@ -1,5 +1,5 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
-import NewEventView from '../view/new-event-view.js';
+import EventEditView from '../view/event-edit-view.js';
 import { UserAction, UpdateType } from '../const.js';
 
 
@@ -8,7 +8,7 @@ export default class NewEventPresenter {
   #handleDataChange = null;
   #handleDestroy = null;
 
-  #newEventComponent = null;
+  #eventEditComponent = null;
 
   constructor({ eventListContainer, onDataChange, onDestroy }) {
 
@@ -20,35 +20,36 @@ export default class NewEventPresenter {
 
   init() {
 
-    if (this.#newEventComponent !== null) {
+    if (this.#eventEditComponent !== null) {
       return;
     }
 
-    this.#newEventComponent = new NewEventView(
-      { onFormSubmit: this.#handleFormSubmit },
-      { onDeleteClick: this.#handleDeleteClick },
-    );
+    this.#eventEditComponent = new EventEditView({
+      onFormSubmit: this.#handleFormSubmit,
+      onCloseClick: this.#handleCloseClick,
+      onDeleteClick: this.#handleDeleteClick
+    });
 
-    render(this.#newEventComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);
+    render(this.#eventEditComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
   destroy() {
-    if (this.#newEventComponent === null) {
+    if (this.#eventEditComponent === null) {
       return;
     }
 
     this.#handleDestroy();
 
-    remove(this.#newEventComponent);
-    this.#newEventComponent = null;
+    remove(this.#eventEditComponent);
+    this.#eventEditComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
   setSaving() {
-    this.#newEventComponent.updateElement({
+    this.#eventEditComponent.updateElement({
       isDisabled: true,
       isSaving: true,
     });
@@ -56,14 +57,14 @@ export default class NewEventPresenter {
 
   setAborting() {
     const resetFormState = () => {
-      this.#newEventComponent.updateElement({
+      this.#eventEditComponent.updateElement({
         isDisabled: false,
         isSaving: false,
         // isDeleting: false,
       });
     };
 
-    this.#newEventComponent.shake(resetFormState);
+    this.#eventEditComponent.shake(resetFormState);
   }
 
   #handleFormSubmit = (point) => {
@@ -72,6 +73,10 @@ export default class NewEventPresenter {
       UpdateType.MINOR,
       point,
     );
+  };
+
+  #handleCloseClick = () => {
+    this.destroy();
   };
 
   #handleDeleteClick = () => {

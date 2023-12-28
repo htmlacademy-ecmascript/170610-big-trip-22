@@ -39,11 +39,13 @@ export default class PointPresenter {
     const prevEventEditComponent = this.#eventEditComponent;
 
     this.#eventComponent = new EventView(
-      { point: this.#point },
-      { destinations: this.#destinations },
-      { offers: this.#offers },
-      { onEditClick: this.#handleEditClick },
-      { onFavoriteClick: this.#handleFavoriteClick },
+      {
+        point: this.#point,
+        destinations: this.#destinations,
+        offers: this.#offers,
+        onEditClick: this.#handleEditClick,
+        onFavoriteClick: this.#handleFavoriteClick
+      }
     );
 
     this.#eventEditComponent = new EventEditView(

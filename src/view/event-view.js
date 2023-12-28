@@ -71,11 +71,13 @@ export default class EventView extends AbstractStatefulView {
   #handleFavoriteClick = null;
 
   constructor(
-    { point },
-    { destinations },
-    { offers },
-    { onEditClick },
-    { onFavoriteClick }
+    {
+      point,
+      destinations,
+      offers,
+      onEditClick,
+      onFavoriteClick
+    }
   ) {
     super();
 
