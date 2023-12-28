@@ -18,7 +18,7 @@ import {
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const createEventEditViewTemplate = (point, destinations, offers) => {
+const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) => {
 
   const {
     basePrice,
@@ -39,6 +39,9 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     isSaving,
     isDeleting,
   } = point;
+
+  console.log(isNewPoint);
+
 
   const typeListTemplate = createTypeListTemplate(offers, pointType);
 
@@ -181,6 +184,8 @@ export default class EventEditView extends AbstractStatefulView {
   #handleCloseClick = null;
   #handleDeleteClick = null;
 
+  #isNewPoint = false;
+
   #datepicker = null;
 
   constructor(
@@ -190,13 +195,15 @@ export default class EventEditView extends AbstractStatefulView {
       offers,
       onFormSubmit,
       onCloseClick,
-      onDeleteClick
+      onDeleteClick,
+      isNewPoint = false,
     },
   ) {
     super();
 
     this.#destinations = destinations;
     this.#offers = offers;
+    this.#isNewPoint = isNewPoint;
 
     this._setState(EventEditView.parsePointToState(
       point,
@@ -217,6 +224,7 @@ export default class EventEditView extends AbstractStatefulView {
       this._state,
       this.#destinations,
       this.#offers,
+      this.#isNewPoint,
     );
   }
 
