@@ -1,10 +1,10 @@
 import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import createTypeListTemplate from '../templates/type-list-template.js';
-import createDestinationListTemplate from '../templates/destination-list-template.js';
-import createDestinationPhotosTemplate from '../templates/destination-photos-template.js';
-import createDestinationDescriptionTemplate from '../templates/destination-description-template.js';
-import createOffersSectionTemplateTemplate from '../templates/offers-section-template.js';
+import createTypeListTemplate from '../template/type-list-template.js';
+import createDestinationListTemplate from '../template/destination-list-template.js';
+import createDestinationPhotosTemplate from '../template/destination-photos-template.js';
+import createDestinationDescriptionTemplate from '../template/destination-description-template.js';
+import createOffersSectionTemplateTemplate from '../template/offers-section-template.js';
 import { BLANK_POINT } from '../const.js';
 
 import {
