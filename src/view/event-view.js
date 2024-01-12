@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import createSelectedOffersTemplate from '../templates/selected-offers-template.js';
+import createSelectedOffersTemplate from '../template/selected-offers-template.js';
 
 import {
   humanizePointDateTime,
