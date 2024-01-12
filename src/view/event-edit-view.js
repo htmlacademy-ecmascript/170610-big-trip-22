@@ -392,11 +392,12 @@ export default class EventEditView extends AbstractStatefulView {
     if (nextBasePrice === '' || nextBasePrice < 1) {
       evt.target.value = prevBasePrice;
     } else {
-      this._setState({
+      this.updateElement({
         basePrice: Number(nextBasePrice),
       });
     }
   };
+
 
   #offerCheckboxChangeHandler = (evt) => {
     evt.preventDefault();
