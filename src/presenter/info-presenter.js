@@ -34,13 +34,12 @@ export default class InfoPresenter {
   }
 
   get points() {
-    // const points = this.#pointsModel.points;
-    // return points;
-    this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    const filteredPoints = filter[this.#filterType](points);
+    return points;
 
-    return filteredPoints;
+    // this.#filterType = this.#filterModel.filter;
+    // const filteredPoints = filter[this.#filterType](points);
+    // return filteredPoints;
 
   }
 
