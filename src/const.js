@@ -59,6 +59,8 @@ const URL = {
   OFFERS: 'offers',
 };
 
+const DESTINATIONS_ITEMS_COUNT = 3;
+
 export {
   OFFERS_TYPES,
   FilterType,
@@ -68,4 +70,5 @@ export {
   BLANK_POINT,
   METHOD,
   URL,
+  DESTINATIONS_ITEMS_COUNT,
 };

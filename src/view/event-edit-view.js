@@ -1,22 +1,24 @@
 import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import createTypeListTemplate from '../template/type-list-template.js';
+import createDestinationListTemplate from '../template/destination-list-template.js';
+import createDestinationPhotosTemplate from '../template/destination-photos-template.js';
+import createDestinationDescriptionTemplate from '../template/destination-description-template.js';
+import createOffersSectionTemplateTemplate from '../template/offers-section-template.js';
+import { BLANK_POINT } from '../const.js';
+
 import {
   humanizePointInputDateTimeType,
   getDestinationName,
   getTypeOffers,
   getDestinationPhotos,
   getDestinationObject,
-  createTypeListTemplate,
-  createDestinationListTemplate,
-  createDestinationPhotosTemplate,
-  createDestinationDescriptionTemplate,
-  createOffersSectionTemplateTemplate,
 } from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const createEventEditViewTemplate = (point, destinations, offers) => {
+const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) => {
 
   const {
     basePrice,
@@ -59,6 +61,8 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
     pointOffersIds,
     isDisabled,
   );
+
+  const isSaveButtonDisabled = !destinationName || !dateFrom || !dateTo || basePrice <= 0;
 
   return (
     `<li class="trip-events__item" >
@@ -133,7 +137,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               <input
                 class="event__input event__input--price"
                 id="event-price-${destinationId}"
-                type="text"
+                type="number"
                 name="event-price"
                 value="${basePrice}"
                 ${isDisabled ? 'disabled' : ''}>
@@ -142,7 +146,7 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
               <button
                 class="event__save-btn  btn  btn--blue"
                 type="submit"
-                ${isDisabled ? 'disabled' : ''}>
+                ${isDisabled || isSaveButtonDisabled ? 'disabled' : ''}>
                 ${isSaving ? 'Saving...' : 'Save'}
               </button>
 
@@ -153,9 +157,11 @@ const createEventEditViewTemplate = (point, destinations, offers) => {
                 ${isDeleting ? 'Deleting...' : 'Delete'}
               </button>
 
-              <button class="event__rollup-btn" type="button">
-                <span class="visually-hidden">Open event</span>
-              </button>
+
+            <button class="event__rollup-btn" type="button" ${isNewPoint ? 'style="display: none;"' : ''}>
+              <span class="visually-hidden">Open event</span>
+            </button>
+
             </header>
 
             <section class="event__details">
@@ -178,20 +184,26 @@ export default class EventEditView extends AbstractStatefulView {
   #handleCloseClick = null;
   #handleDeleteClick = null;
 
+  #isNewPoint = false;
+
   #datepicker = null;
 
   constructor(
-    { point },
-    { destinations },
-    { offers },
-    { onFormSubmit },
-    { onCloseClick },
-    { onDeleteClick },
+    {
+      point = BLANK_POINT,
+      destinations,
+      offers,
+      onFormSubmit,
+      onCloseClick,
+      onDeleteClick,
+      isNewPoint = false,
+    },
   ) {
     super();
 
     this.#destinations = destinations;
     this.#offers = offers;
+    this.#isNewPoint = isNewPoint;
 
     this._setState(EventEditView.parsePointToState(
       point,
@@ -212,6 +224,7 @@ export default class EventEditView extends AbstractStatefulView {
       this._state,
       this.#destinations,
       this.#offers,
+      this.#isNewPoint,
     );
   }
 
@@ -369,7 +382,6 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   #priceInputChangeHandler = (evt) => {
-
     evt.preventDefault();
 
     evt.target.value = evt.target.value.replace(/[^0-9]/g, '');
@@ -377,21 +389,15 @@ export default class EventEditView extends AbstractStatefulView {
     const prevBasePrice = this._state.basePrice;
     const nextBasePrice = evt.target.value;
 
-    if (nextBasePrice === '') {
+    if (nextBasePrice === '' || nextBasePrice < 1) {
       evt.target.value = prevBasePrice;
-    }
-
-    if (nextBasePrice < 0) {
-      evt.target.value = prevBasePrice;
-    }
-
-    if (nextBasePrice !== '' && nextBasePrice >= 0) {
-      this._setState({
+    } else {
+      this.updateElement({
         basePrice: Number(nextBasePrice),
       });
     }
-
   };
+
 
   #offerCheckboxChangeHandler = (evt) => {
     evt.preventDefault();
@@ -413,20 +419,20 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   #setDateFromDatepicker() {
-    if (this._state.dateFrom) {
-      this.#datepicker = flatpickr(
-        this.element.querySelector('input[name="event-start-time"]'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y H:i',
-          // eslint-disable-next-line camelcase
-          time_24hr: true,
-          defaultDate: this._state.dateFrom,
-          maxDate: this._state.dateTo,
-          onChange: this.#dateFromChangeHandler,
-        },
-      );
-    }
+
+    this.#datepicker = flatpickr(
+      this.element.querySelector('input[name="event-start-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        defaultDate: this._state.dateFrom,
+        maxDate: this._state.dateTo,
+        onChange: this.#dateFromChangeHandler,
+      },
+    );
+
   }
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -448,20 +454,20 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   #setDateToDatepicker() {
-    if (this._state.dateTo) {
-      this.#datepicker = flatpickr(
-        this.element.querySelector('input[name="event-end-time"]'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y H:i',
-          // eslint-disable-next-line camelcase
-          time_24hr: true,
-          defaultDate: this._state.dateTo,
-          minDate: this._state.dateFrom,
-          onChange: this.#dateToChangeHandler,
-        },
-      );
-    }
+
+    this.#datepicker = flatpickr(
+      this.element.querySelector('input[name="event-end-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onChange: this.#dateToChangeHandler,
+      },
+    );
+
   }
 
   #dateToChangeHandler = ([userDate]) => {
@@ -483,6 +489,7 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   static parsePointToState(point, destinations, offers) {
+
     const hasPointType = offers.some((offer) => offer.type === point.type);
     const destinationName = getDestinationName(point.destination, destinations);
 

@@ -10,6 +10,7 @@ const Mode = {
 };
 
 export default class PointPresenter {
+
   #eventListContainer = null;
   #handleDataChange = null;
   #handleModeChange = null;
@@ -39,20 +40,24 @@ export default class PointPresenter {
     const prevEventEditComponent = this.#eventEditComponent;
 
     this.#eventComponent = new EventView(
-      { point: this.#point },
-      { destinations: this.#destinations },
-      { offers: this.#offers },
-      { onEditClick: this.#handleEditClick },
-      { onFavoriteClick: this.#handleFavoriteClick },
+      {
+        point: this.#point,
+        destinations: this.#destinations,
+        offers: this.#offers,
+        onEditClick: this.#handleEditClick,
+        onFavoriteClick: this.#handleFavoriteClick
+      }
     );
 
     this.#eventEditComponent = new EventEditView(
-      { point: this.#point },
-      { destinations: this.#destinations },
-      { offers: this.#offers },
-      { onFormSubmit: this.#handleFormSubmit },
-      { onCloseClick: this.#handleCloseClick },
-      { onDeleteClick: this.#handleDeleteClick },
+      {
+        point: this.#point,
+        destinations: this.#destinations,
+        offers: this.#offers,
+        onFormSubmit: this.#handleFormSubmit,
+        onCloseClick: this.#handleCloseClick,
+        onDeleteClick: this.#handleDeleteClick
+      },
     );
 
     if (prevEventComponent === null || prevEventEditComponent === null) {

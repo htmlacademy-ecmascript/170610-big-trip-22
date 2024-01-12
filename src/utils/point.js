@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { DESTINATIONS_ITEMS_COUNT } from '../const';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter.js';
 
 dayjs.extend(isSameOrAfter);
@@ -14,7 +15,6 @@ const humanizePointDateTime = (pointDate) => pointDate ? dayjs(pointDate).format
 const humanizePointDateDate = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_DATE_DATE_FORMAT) : '';
 const humanizePointTimeDate = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_TIME_FORMAT) : '';
 const humanizePointDateTimeType = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_DATE_TIME_TYPE_FORMAT) : '';
-
 const humanizePointInputDateTimeType = (pointDate) => pointDate ? dayjs(pointDate).format(POINT_INPUT_DATE_TIME_FORMAT) : '';
 
 const getFormattedDiffDuration = (dateTo, dateFrom) => {
@@ -38,6 +38,7 @@ const getFormattedDiffDuration = (dateTo, dateFrom) => {
 };
 
 const compareDates = (dateA, dateB) => dayjs(dateA).isBefore(dayjs(dateB)) ? -1 : 1;
+
 const isEventFuture = (date) => dayjs(date).isAfter(dayjs());
 const isEventPresent = (date) => dayjs(date).isSameOrAfter(dayjs(), 'day');
 const isEventPast = (date) => dayjs(date).isBefore(dayjs(), 'day');
@@ -57,7 +58,6 @@ const sortByDuration = (pointA, pointB) => {
 
 const sortByBasePrice = (pointA, pointB) =>
   pointB.basePrice - pointA.basePrice;
-
 
 const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
 
@@ -87,7 +87,6 @@ const getDestinationPhotos = (destinationId, pointDestinations) => {
   return foundDestination?.pictures || null;
 };
 
-
 const getDestinationObject = (destinationId, pointDestinations) => {
   if (!destinationId) {
     return '';
@@ -96,127 +95,21 @@ const getDestinationObject = (destinationId, pointDestinations) => {
   return pointDestinations.find(({ id }) => id === destinationId) || null;
 };
 
+const getSelectedOffers = (typeOffers, pointOffersIds) => typeOffers?.filter((offer) => pointOffersIds?.includes(offer?.id)) || [];
 
-const createTypeListTemplate = (offers, pointType) => (
-  `<div class="event__type-list">
-      <fieldset class="event__type-group">
-        <legend class="visually-hidden">Event type</legend>
-          ${offers.map(({ type }, index) =>
-    `<div class="event__type-item">
-        <input
-          id="event-type-${type}-${index}"
-          class="event__type-input visually-hidden"
-          type="radio"
-          name="event-type"
-          value="${type}"
-          ${type === pointType ? 'checked' : ''}>
-        <label
-          class="event__type-label event__type-label--${type}"
-          for="event-type-${type}-${index}">
-            ${toUpperCaseFirstLetter(type)}
-        </label>
-          </div>`
-  ).join('')}
+const getCheckedOffers = (offers, type) => offers.find((offer) => type === offer.type)?.offers;
+const getOffersPrice = (offerIDs = [], offers = []) => offerIDs.reduce((offerCost, id) => offerCost + (offers.find((offer) => offer.id === id)?.price ?? 0), 0);
+const getTotalPrice = (points = [], offers = []) => points.reduce((total, point) => total + point.basePrice + getOffersPrice(point.offers, getCheckedOffers(offers, point.type)), 0);
 
-      </fieldset >
-  </div > `
-);
+const getRoute = (points = [], destinations = []) => {
+  const destinationNames = [...points]
+    .map((point) => destinations
+      .find((destination) => destination.id === point.destination)?.name);
 
-const createDestinationListTemplate = (hasPointType, destinations, destinationId) => {
-  if (!hasPointType) {
-    return '';
-  }
-
-  return `<datalist id="destination-list-${destinationId}">
-    ${destinations.map(({ name }) => `<option value="${name}"</option>`).join('')}
-   </datalist>`;
+  return destinationNames <= DESTINATIONS_ITEMS_COUNT ? destinationNames.join('&nbsp;&mdash;&nbsp;') : `${destinationNames.at(0)}&nbsp;&mdash;&nbsp;...&nbsp;&mdash;&nbsp;${destinationNames.at(-1)}`;
 };
 
-const createDestinationPhotosTemplate = (hasDestinationPhotos, destinationPhotos) => (
-  `${hasDestinationPhotos ?
-    `<div class="event__photos-container">
-      <div class="event__photos-tape">
-        ${destinationPhotos.map(({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`).join('')}
-      </div>
-    </div>`
-    : ''}`
-);
-
-const createDestinationDescriptionTemplate = (
-  hasDestinationDescription,
-  hasDestinationPhotos,
-  destinationDescription,
-  destinationPhotos,
-  destinationPhotosTemplate
-) => (
-  `${hasDestinationDescription || hasDestinationPhotos ? `
-    <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destinationDescription}</p>
-         ${destinationPhotos ? destinationPhotosTemplate : ''}
-      </section>
-    </section>
-  ` : ''
-  } `
-);
-
-const createOffersSectionTemplateTemplate = (hasTypeOffers, typeOffers, pointOffersIds, isDisabled) => (
-
-  `${hasTypeOffers ? `
-      <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        <div class="event__available-offers">
-
-    ${typeOffers.map(({ id, title, price }) => {
-
-    const offerLastWord = title.split(' ').pop().replace(/-/g, '');
-    const checked = pointOffersIds.includes(id) ? 'checked' : '';
-
-    return `
-        <div class="event__offer-selector">
-          <input
-            class="event__offer-checkbox visually-hidden"
-            id="event-offer-${offerLastWord}-${id}"
-            type="checkbox"
-            name="event-offer-${offerLastWord}"
-            ${checked}
-            ${isDisabled ? 'disabled' : ''}
-          >
-          <label class="event__offer-label"
-            for="event-offer-${offerLastWord}-${id}">
-            <span class="event__offer-title">${title}</span>
-            +€&nbsp;
-            <span class="event__offer-price">${price}</span>
-          </label>
-      </div>`;
-  }).join('')}
-        </div>
-    </section>
-  ` : ''
-  } `
-);
-
-const getSelectedOffers = (typeOffers, pointOffersIds) => {
-  if (!typeOffers || !pointOffersIds) {
-    return [];
-  }
-
-  return typeOffers.filter((offer) => pointOffersIds.includes(offer.id));
-};
-
-const createSelectedOffersTemplate = (hasSelectedOffers, selectedOffers) => (
-  `${hasSelectedOffers ? `
-          <ul class="event__selected-offers">
-              ${selectedOffers.map(({ title, price }) =>
-    `<li class="event__offer">
-              <span class="event__offer-title">${title}</span>
-              +€
-              <span class="event__offer-price">${price}</span>
-            </li>`).join('')}
-          </ul>`
-    : ''}`
-);
-
+const getRouteDuration = (points = []) => points.length ? `${dayjs(points.at(0).dateFrom).format('DD MMM')}&nbsp;&mdash;&nbsp;${dayjs(points.at(-1).dateTo).format('DD MMM')}` : '';
 
 export {
   humanizePointDateTime,
@@ -236,11 +129,10 @@ export {
   getTypeOffers,
   getDestinationPhotos,
   getDestinationObject,
-  createTypeListTemplate,
-  createDestinationListTemplate,
-  createDestinationPhotosTemplate,
-  createDestinationDescriptionTemplate,
-  createOffersSectionTemplateTemplate,
   getSelectedOffers,
-  createSelectedOffersTemplate
+  toUpperCaseFirstLetter,
+  getOffersPrice,
+  getTotalPrice,
+  getRoute,
+  getRouteDuration
 };

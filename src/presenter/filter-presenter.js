@@ -4,6 +4,7 @@ import { filter } from '../utils/filter.js';
 import { FilterType, UpdateType } from '../const.js';
 
 export default class FilterPresenter {
+
   #filterContainer = null;
   #filterModel = null;
   #pointsModel = null;

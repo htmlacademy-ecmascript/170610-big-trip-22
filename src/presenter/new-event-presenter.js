@@ -1,20 +1,20 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
-import NewEventView from '../view/new-event-view.js';
+import EventEditView from '../view/event-edit-view.js';
 import { UserAction, UpdateType } from '../const.js';
 
-
 export default class NewEventPresenter {
+
   #eventListContainer = null;
   #handleDataChange = null;
   #handleDestroy = null;
 
-  #newEventComponent = null;
+  #eventEditComponent = null;
 
-  #point = null;
-  #destinations = null;
-  #offers = null;
-
-  constructor({ eventListContainer, onDataChange, onDestroy }) {
+  constructor({
+    eventListContainer,
+    onDataChange,
+    onDestroy,
+  }) {
 
     this.#eventListContainer = eventListContainer;
     this.#handleDataChange = onDataChange;
@@ -22,44 +22,41 @@ export default class NewEventPresenter {
 
   }
 
-  init(point, destinations, offers) {
+  init(destinations, offers) {
 
-    this.#point = point;
-    this.#destinations = destinations;
-    this.#offers = offers;
-
-    if (this.#newEventComponent !== null) {
+    if (this.#eventEditComponent !== null) {
       return;
     }
 
-    this.#newEventComponent = new NewEventView(
-      { point: this.#point },
-      { destinations: this.#destinations },
-      { offers: this.#offers },
-      { onFormSubmit: this.#handleFormSubmit },
-      { onDeleteClick: this.#handleDeleteClick },
-    );
+    this.#eventEditComponent = new EventEditView({
+      destinations: destinations,
+      offers: offers,
+      onFormSubmit: this.#handleFormSubmit,
+      onCloseClick: this.#handleCloseClick,
+      onDeleteClick: this.#handleDeleteClick,
+      isNewPoint: true,
+    });
 
-    render(this.#newEventComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);
+    render(this.#eventEditComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
   destroy() {
-    if (this.#newEventComponent === null) {
+    if (this.#eventEditComponent === null) {
       return;
     }
 
     this.#handleDestroy();
 
-    remove(this.#newEventComponent);
-    this.#newEventComponent = null;
+    remove(this.#eventEditComponent);
+    this.#eventEditComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
   setSaving() {
-    this.#newEventComponent.updateElement({
+    this.#eventEditComponent.updateElement({
       isDisabled: true,
       isSaving: true,
     });
@@ -67,14 +64,14 @@ export default class NewEventPresenter {
 
   setAborting() {
     const resetFormState = () => {
-      this.#newEventComponent.updateElement({
+      this.#eventEditComponent.updateElement({
         isDisabled: false,
         isSaving: false,
         // isDeleting: false,
       });
     };
 
-    this.#newEventComponent.shake(resetFormState);
+    this.#eventEditComponent.shake(resetFormState);
   }
 
   #handleFormSubmit = (point) => {
@@ -83,6 +80,10 @@ export default class NewEventPresenter {
       UpdateType.MINOR,
       point,
     );
+  };
+
+  #handleCloseClick = () => {
+    this.destroy();
   };
 
   #handleDeleteClick = () => {
