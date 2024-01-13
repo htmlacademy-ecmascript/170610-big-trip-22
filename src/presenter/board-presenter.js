@@ -69,8 +69,6 @@ export default class BoardPresenter {
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
 
-    this.#offersModel.init();
-    this.#destinationsModel.init();
   }
 
   get points() {
