@@ -76,11 +76,11 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
+infoPresenter.init();
 filterPresenter.init();
 boardPresenter.init();
 
 pointsModel.init()
-  .then(() => infoPresenter.init())
   .finally(() => {
     render(newEventButtonComponent, tripMainElement);
   });
