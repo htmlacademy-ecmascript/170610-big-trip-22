@@ -12,7 +12,7 @@ const createOffersSectionTemplate = (typeOffers, pointOffersIds, isDisabled) => 
       ${typeOffers.map((offer) => `
         <div class="event__offer-selector">
           <input
-            class="event__offer-checkbox visually-hidden"
+            class="event__offer-checkbox  visually-hidden"
             id="event-offer-${changeToDashesLowercase(offer.title)}-${offer.id}"
             type="checkbox"
             name="event-offer-${changeToDashesLowercase(offer.title)}"

@@ -39,7 +39,6 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
     isDeleting,
   } = point;
 
-
   const typeListTemplate = createTypeListTemplate(offers, pointType);
 
   const destinationListTemplate = createDestinationListTemplate(hasPointType, destinations, destinationId);
@@ -379,39 +378,29 @@ export default class EventEditView extends AbstractStatefulView {
 
   #priceInputChangeHandler = (evt) => {
     evt.preventDefault();
+    let priceValue = Number(evt.target.value);
 
-    evt.target.value = evt.target.value.replace(/[^0-9]/g, '');
-
-    const prevBasePrice = this._state.basePrice;
-    const nextBasePrice = evt.target.value;
-
-    if (nextBasePrice === '' || nextBasePrice < 1) {
-      evt.target.value = prevBasePrice;
-    } else {
-      this.updateElement({
-        basePrice: Number(nextBasePrice),
-      });
+    if (priceValue < 0) {
+      priceValue = Math.abs(priceValue);
+      evt.target.value = priceValue;
     }
-  };
 
+    if (!Number.isInteger(priceValue)) {
+      priceValue = Math.trunc(priceValue);
+      evt.target.value = priceValue;
+    }
+
+    this._setState({
+      basePrice: priceValue,
+    });
+  };
 
   #offerCheckboxChangeHandler = (evt) => {
     evt.preventDefault();
-    const checkboxId = evt.target.id;
-
-    const offerId = checkboxId.split('-').slice(3).join('-');
-
-    const toggleId = (id) => {
-      const newOffers = this._state.offers.includes(id)
-        ? this._state.offers.filter((offer) => offer !== id)
-        : [...this._state.offers, id];
-      return newOffers;
-    };
-
-    this.updateElement({
-      offers: toggleId(offerId),
+    const checkedBoxes = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
+    this._setState({
+      offers: checkedBoxes.map((item) => item.dataset.offerId)
     });
-
   };
 
   #setDateFromDatepicker() {
