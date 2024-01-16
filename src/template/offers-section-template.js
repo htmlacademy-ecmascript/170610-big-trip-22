@@ -1,4 +1,4 @@
-import { changeToLowercase } from '../utils/point';
+import { changeToDashesLowercase } from '../utils/point';
 
 const createOffersSectionTemplate = (typeOffers, pointOffersIds, isDisabled) => {
   if (typeOffers.length === 0) {
@@ -13,14 +13,14 @@ const createOffersSectionTemplate = (typeOffers, pointOffersIds, isDisabled) => 
         <div class="event__offer-selector">
           <input
             class="event__offer-checkbox visually-hidden"
-            id="event-offer-${changeToLowercase(offer.title)}-${offer.id}"
+            id="event-offer-${changeToDashesLowercase(offer.title)}-${offer.id}"
             type="checkbox"
-            name="event-offer-${changeToLowercase(offer.title)}"
+            name="event-offer-${changeToDashesLowercase(offer.title)}"
             data-offer-id="${offer.id}"
             ${pointOffersIds.includes(offer.id) ? 'checked' : ''}
             ${isDisabled ? 'disabled' : ''}
           >
-          <label for="event-offer-${changeToLowercase(offer.title)}-${offer.id}" class="event__offer-label">
+          <label for="event-offer-${changeToDashesLowercase(offer.title)}-${offer.id}" class="event__offer-label">
             <span class="event__offer-title">${offer.title}</span>
             &plus;&euro;&nbsp;
             <span class="event__offer-price">${offer.price}</span>
