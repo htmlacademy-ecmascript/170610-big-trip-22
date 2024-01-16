@@ -18,9 +18,11 @@ const FilterType = {
 };
 
 const SortType = {
-  DEFAULT: 'default',
-  TIME: 'sort-time',
-  PRICE: 'sort-price',
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
 };
 
 const UserAction = {

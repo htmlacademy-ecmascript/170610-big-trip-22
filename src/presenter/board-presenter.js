@@ -8,7 +8,7 @@ import LoadingView from '../view/loading-view.js';
 import ErrorLoadingView from '../view/error-loading-view.js';
 import PointPresenter from './point-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
-import { sortByDuration, sortByBasePrice } from '../utils/point.js';
+import { sortByDay, sortByDuration, sortByBasePrice } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 
@@ -36,7 +36,7 @@ export default class BoardPresenter {
   #eventPresenters = new Map();
   #newEventPresenter = null;
 
-  #currentSortType = SortType.DEFAULT;
+  #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
   #isLoading = true;
@@ -44,6 +44,8 @@ export default class BoardPresenter {
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
+
+  #previousSortType = null;
 
   constructor({
     boardContainer,
@@ -72,12 +74,18 @@ export default class BoardPresenter {
   }
 
   get points() {
+    const points = this.#pointsModel.points;
     this.#filterType = this.#filterModel.filter;
 
-    const points = this.#pointsModel.points;
+    if (!points) {
+      return null;
+    }
+
     const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
+      case SortType.DAY:
+        return filteredPoints.sort(sortByDay);
       case SortType.TIME:
         return filteredPoints.sort(sortByDuration);
       case SortType.PRICE:
@@ -85,7 +93,6 @@ export default class BoardPresenter {
     }
 
     return filteredPoints;
-
   }
 
   get destinations() {
@@ -191,11 +198,12 @@ export default class BoardPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
+    this.#previousSortType = this.#currentSortType;
     this.#currentSortType = sortType;
     this.#clearBoard();
     this.#renderBoard();
-
   };
+
 
   #renderSort() {
     this.#sortComponent = new SortView({
@@ -245,7 +253,6 @@ export default class BoardPresenter {
   // }
 
   #clearBoard({ resetSortType = false } = {}) {
-
     this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
@@ -259,9 +266,11 @@ export default class BoardPresenter {
     }
 
     if (resetSortType) {
-      this.#currentSortType = SortType.DEFAULT;
+      this.#previousSortType = this.#currentSortType;
+      this.#currentSortType = SortType.DAY;
     }
   }
+
 
   #renderBoard() {
     render(this.#boardComponent, this.#boardContainer);
