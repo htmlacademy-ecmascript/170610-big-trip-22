@@ -107,6 +107,8 @@ const getRoute = (points = [], destinations = []) => {
 
 const getRouteDuration = (points = []) => points.length ? `${dayjs(points.at(0).dateFrom).format('DD MMM')}&nbsp;&mdash;&nbsp;${dayjs(points.at(-1).dateTo).format('DD MMM')}` : '';
 
+const changeToLowercase = (text) => text.toLowerCase();
+
 export {
   humanizePointDateTime,
   humanizePointDateDate,
@@ -131,5 +133,6 @@ export {
   getOffersPrice,
   getTotalPrice,
   getRoute,
-  getRouteDuration
+  getRouteDuration,
+  changeToLowercase
 };

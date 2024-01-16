@@ -1,39 +1,38 @@
-const createOffersSectionTemplateTemplate = (hasTypeOffers, typeOffers, pointOffersIds, isDisabled) => (
+import { changeToLowercase } from '../utils/point';
 
-  `${hasTypeOffers ? `
-      <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        <div class="event__available-offers">
+const createOffersSectionTemplate = (typeOffers, pointOffersIds, isDisabled) => {
+  if (typeOffers.length === 0) {
+    return '';
+  }
 
-    ${typeOffers.map(({ id, title, price }) => {
-
-    const offerLastWord = title.split(' ').pop().replace(/-/g, '');
-    const checked = pointOffersIds.includes(id) ? 'checked' : '';
-
-    return `
+  const eventOffersTemplate = `
+  <section class="event__section event__section--offers">
+    <h3 class="event__section-title event__section-title--offers">Offers</h3>
+    <div class="event__available-offers">
+      ${typeOffers.map((offer) => `
         <div class="event__offer-selector">
           <input
             class="event__offer-checkbox visually-hidden"
-            id="event-offer-${offerLastWord}-${id}"
+            id="event-offer-${changeToLowercase(offer.title)}-${offer.id}"
             type="checkbox"
-            name="event-offer-${offerLastWord}"
-            ${checked}
+            name="event-offer-${changeToLowercase(offer.title)}"
+            data-offer-id="${offer.id}"
+            ${pointOffersIds.includes(offer.id) ? 'checked' : ''}
             ${isDisabled ? 'disabled' : ''}
           >
-          <label class="event__offer-label"
-            for="event-offer-${offerLastWord}-${id}">
-            <span class="event__offer-title">${title}</span>
-            +€&nbsp;
-            <span class="event__offer-price">${price}</span>
+          <label for="event-offer-${changeToLowercase(offer.title)}-${offer.id}" class="event__offer-label">
+            <span class="event__offer-title">${offer.title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${offer.price}</span>
           </label>
-      </div>`;
-  }).join('')}
         </div>
-    </section>
-  ` : ''
-  } `
-);
+      `).join('')}
+    </div>
+  </section>
+`;
 
+  return eventOffersTemplate;
+};
 
-export default createOffersSectionTemplateTemplate;
+export default createOffersSectionTemplate;
 

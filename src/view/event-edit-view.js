@@ -30,7 +30,6 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
     hasPointType,
     destinationName,
     typeOffers,
-    hasTypeOffers,
     destinationDescription,
     hasDestinationDescription,
     destinationPhotos,
@@ -56,7 +55,6 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
   );
 
   const offersSectionTemplate = createOffersSectionTemplateTemplate(
-    hasTypeOffers,
     typeOffers,
     pointOffersIds,
     isDisabled,
@@ -326,13 +324,11 @@ export default class EventEditView extends AbstractStatefulView {
     evt.preventDefault();
     const type = evt.target.value;
     const typeOffers = getTypeOffers(type, this.#offers);
-    const hasTypeOffers = Boolean(typeOffers.length);
 
     this.updateElement({
       type,
       offers: [],
       typeOffers,
-      hasTypeOffers,
     });
   };
 
@@ -494,7 +490,6 @@ export default class EventEditView extends AbstractStatefulView {
     const destinationName = getDestinationName(point.destination, destinations);
 
     const typeOffers = getTypeOffers(point.type, offers);
-    const hasTypeOffers = Boolean(typeOffers && typeOffers.length);
 
     const destinationObject = getDestinationObject(point.destination, destinations);
     const destinationDescription = destinationObject ? destinationObject.description : null;
@@ -508,7 +503,6 @@ export default class EventEditView extends AbstractStatefulView {
       hasPointType,
       destinationName,
       typeOffers,
-      hasTypeOffers,
       destinationObject,
       destinationDescription,
       hasDestinationDescription,
@@ -555,10 +549,6 @@ export default class EventEditView extends AbstractStatefulView {
       point.hasDestinationPhotos = null;
     }
 
-    if (!point.hasTypeOffers) {
-      point.hasTypeOffers = null;
-    }
-
     delete point.hasPointType;
     delete point.destinationName;
     delete point.typeOffers;
@@ -567,7 +557,6 @@ export default class EventEditView extends AbstractStatefulView {
     delete point.hasDestinationDescription;
     delete point.destinationPhotos;
     delete point.hasDestinationPhotos;
-    delete point.hasTypeOffers;
 
     delete point.isDisabled;
     delete point.isSaving;
