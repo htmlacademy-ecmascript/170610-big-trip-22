@@ -20,7 +20,6 @@ const TimeLimit = {
 export default class BoardPresenter {
 
   #boardContainer = null;
-
   #pointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
@@ -44,8 +43,6 @@ export default class BoardPresenter {
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
-
-  #previousSortType = null;
 
   constructor({
     boardContainer,
@@ -74,13 +71,9 @@ export default class BoardPresenter {
   }
 
   get points() {
-    const points = this.#pointsModel.points;
+
     this.#filterType = this.#filterModel.filter;
-
-    if (!points) {
-      return null;
-    }
-
+    const points = this.#pointsModel.points;
     const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
@@ -113,11 +106,6 @@ export default class BoardPresenter {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newEventPresenter.init(this.destinations, this.offers);
-
-    if (this.#noEventComponent) {
-      // this._isMessageRemoved = true;
-      remove(this.#noEventComponent);
-    }
   }
 
   #handleModeChange = () => {
@@ -126,55 +114,41 @@ export default class BoardPresenter {
   };
 
   #handleViewAction = async (actionType, updateType, update) => {
-
     this.#uiBlocker.block();
 
     switch (actionType) {
-
       case UserAction.UPDATE_POINT:
         this.#eventPresenters.get(update.id).setSaving();
-
         try {
           await this.#pointsModel.updatePoint(updateType, update);
         } catch (err) {
           this.#eventPresenters.get(update.id).setAborting();
         }
-
         break;
-
       case UserAction.ADD_POINT:
         this.#newEventPresenter.setSaving();
-
         try {
           await this.#pointsModel.addPoint(updateType, update);
         } catch (err) {
           this.#newEventPresenter.setAborting();
         }
-
         break;
-
       case UserAction.DELETE_POINT:
         this.#eventPresenters.get(update.id).setDeleting();
-
         try {
           await this.#pointsModel.deletePoint(updateType, update);
         } catch (err) {
           this.#eventPresenters.get(update.id).setAborting();
         }
-
         break;
     }
 
     this.#uiBlocker.unblock();
-
   };
 
   #handleModelEvent = (updateType, data) => {
-    // console.log(updateType, data);
-
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
         this.#eventPresenters.get(data.id).init(
           data,
           this.destinations,
@@ -182,12 +156,10 @@ export default class BoardPresenter {
         );
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
         this.#clearBoard();
         this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
         this.#clearBoard({ resetSortType: true });
         this.#renderBoard();
         break;
@@ -203,12 +175,11 @@ export default class BoardPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
-    this.#previousSortType = this.#currentSortType;
+
     this.#currentSortType = sortType;
-    this.#clearBoard();
+    this.#clearBoard({ resetRenderedTaskCount: true });
     this.#renderBoard();
   };
-
 
   #renderSort() {
     this.#sortComponent = new SortView({
@@ -225,9 +196,7 @@ export default class BoardPresenter {
       onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
     });
-
     pointPresenter.init(point, destinations, offers);
-
     this.#eventPresenters.set(point.id, pointPresenter);
 
   }
@@ -253,10 +222,6 @@ export default class BoardPresenter {
     render(this.#noEventComponent, this.#boardComponent.element);
   }
 
-  // #renderErrorLoading() {
-  //   render(this.#errorLoadingComponent, this.#boardComponent.element);
-  // }
-
   #clearBoard({ resetSortType = false } = {}) {
     this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
@@ -271,11 +236,9 @@ export default class BoardPresenter {
     }
 
     if (resetSortType) {
-      this.#previousSortType = this.#currentSortType;
       this.#currentSortType = SortType.DAY;
     }
   }
-
 
   #renderBoard() {
     render(this.#boardComponent, this.#boardContainer);
@@ -290,18 +253,11 @@ export default class BoardPresenter {
     const offers = this.offers;
 
     const pointCount = points.length;
-    // const destinationsCount = destinations.length;
-    // const offersCount = offers.length;
 
     if (pointCount === 0) {
       this.#renderNoEvents();
       return;
     }
-
-    // if (destinationsCount === 0 || offersCount === 0) {
-    //   this.#renderErrorLoading();
-    //   return;
-    // }
 
     this.#renderSort();
     render(this.#eventsListComponent, this.#boardComponent.element);
