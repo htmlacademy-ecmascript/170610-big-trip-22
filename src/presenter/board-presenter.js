@@ -102,11 +102,13 @@ export default class BoardPresenter {
     this.#renderBoard();
   }
 
+
   createPoint() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newEventPresenter.init(this.destinations, this.offers);
   }
+
 
   #handleModeChange = () => {
     this.#newEventPresenter.destroy();
@@ -167,6 +169,7 @@ export default class BoardPresenter {
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#renderBoard();
+        // console.log('Handling INIT event...');
         break;
     }
   };
@@ -253,21 +256,19 @@ export default class BoardPresenter {
     const offers = this.offers;
 
     const pointCount = points.length;
+    // console.log('Point count:', pointCount);
 
     if (pointCount === 0) {
+      // this.#renderSort();
+      render(this.#eventsListComponent, this.#boardComponent.element);
       this.#renderNoEvents();
+      // this.#newEventPresenter.init(destinations, offers);
       return;
     }
 
     this.#renderSort();
     render(this.#eventsListComponent, this.#boardComponent.element);
-
-    this.#renderPoints(
-      points,
-      destinations,
-      offers
-    );
-
+    this.#renderPoints(points, destinations, offers);
   }
 
 }
