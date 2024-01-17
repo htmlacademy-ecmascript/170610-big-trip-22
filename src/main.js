@@ -1,6 +1,6 @@
 import { render } from './framework/render.js';
 import NewEventButtonView from './view/new-event-button-view.js';
-import InfoPresenter from './presenter/info-presenter.js';
+// import InfoPresenter from './presenter/info-presenter.js';
 import BoardPresenter from './presenter/board-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import PointsModel from './model/points-model.js';
@@ -40,13 +40,13 @@ const pageMainElement = pageBodyElement.querySelector('.page-main');
 
 const tripEventsSectionElement = pageMainElement.querySelector('.trip-events');
 
-const infoPresenter = new InfoPresenter({
-  infoContainer: tripMainElement,
-  pointsModel,
-  destinationsModel,
-  offersModel,
-  filterModel,
-});
+// const infoPresenter = new InfoPresenter({
+//   infoContainer: tripMainElement,
+//   pointsModel,
+//   destinationsModel,
+//   offersModel,
+//   filterModel,
+// });
 
 const filterPresenter = new FilterPresenter({
   filterContainer: tripControlsFormElement,
@@ -67,6 +67,8 @@ const newEventButtonComponent = new NewEventButtonView({
   onClick: handleNewEventButtonClick
 });
 
+newEventButtonComponent.element.disabled = true;
+
 function handleNewEventFormClose() {
   newEventButtonComponent.element.disabled = false;
 }
@@ -76,12 +78,16 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-infoPresenter.init();
+// infoPresenter.init();
+
 filterPresenter.init();
+render(newEventButtonComponent, tripMainElement);
 boardPresenter.init();
+
 
 pointsModel.init()
   .finally(() => {
+    newEventButtonComponent.element.disabled = false;
     render(newEventButtonComponent, tripMainElement);
   });
 
