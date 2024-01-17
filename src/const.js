@@ -63,6 +63,16 @@ const Url = {
 
 const DESTINATIONS_ITEMS_COUNT = 3;
 
+const commonDatepickerConfig = {
+  dateFormat: 'd/m/y H:i',
+  enableTime: true,
+  locale: {
+    firstDayOfWeek: 1,
+  },
+  'time_24hr': true,
+  allowInput: true
+};
+
 export {
   OFFERS_TYPES,
   FilterType,
@@ -73,4 +83,5 @@ export {
   Method,
   Url,
   DESTINATIONS_ITEMS_COUNT,
+  commonDatepickerConfig
 };

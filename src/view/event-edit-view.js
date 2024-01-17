@@ -5,7 +5,7 @@ import createDestinationListTemplate from '../template/destination-list-template
 import createDestinationPhotosTemplate from '../template/destination-photos-template.js';
 import createDestinationDescriptionTemplate from '../template/destination-description-template.js';
 import createOffersSectionTemplateTemplate from '../template/offers-section-template.js';
-import { BLANK_POINT } from '../const.js';
+import { BLANK_POINT, commonDatepickerConfig } from '../const.js';
 
 import {
   humanizePointInputDateTimeType,
@@ -185,7 +185,8 @@ export default class EventEditView extends AbstractStatefulView {
 
   #isNewPoint = false;
 
-  #datepicker = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
 
   constructor(
     {
@@ -230,9 +231,14 @@ export default class EventEditView extends AbstractStatefulView {
   removeElement() {
     super.removeElement();
 
-    if (this.#datepicker) {
-      this.#datepicker.destroy();
-      this.#datepicker = null;
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
     }
   }
 
@@ -274,30 +280,18 @@ export default class EventEditView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
 
-    const destinationValue = this._state.destination?.trim();
-    const dateFromValue = this._state.dateFrom?.trim();
-    const dateToValue = this._state.dateTo?.trim();
-    const basePriceValue = typeof this._state.basePrice === 'string' ? this._state.basePrice.trim() : this._state.basePrice;
+    // const destinationValue = this._state.destination?.trim();
+    // const basePriceValue = typeof this._state.basePrice === 'string' ? this._state.basePrice.trim() : this._state.basePrice;
 
-    if (!destinationValue) {
-      // console.error('Поле "destination" не может быть пустым.');
-      return;
-    }
+    // if (!destinationValue) {
+    //   // console.error('Поле "destination" не может быть пустым.');
+    //   return;
+    // }
 
-    if (!dateFromValue) {
-      // console.error('Поле "dateFrom" не может быть пустым.');
-      return;
-    }
-
-    if (!dateToValue) {
-      // console.error('Поле "dateTo" не может быть пустым.');
-      return;
-    }
-
-    if (!basePriceValue) {
-      // console.error('Поле "basePrice" не может быть пустым.');
-      return;
-    }
+    // if (!basePriceValue) {
+    //   // console.error('Поле "basePrice" не может быть пустым.');
+    //   return;
+    // }
 
     this.#handleFormSubmit(
       EventEditView.parseStateToPoint(
@@ -407,72 +401,42 @@ export default class EventEditView extends AbstractStatefulView {
 
   #setDateFromDatepicker() {
 
-    this.#datepicker = flatpickr(
+    this.#datepickerFrom = flatpickr(
       this.element.querySelector('input[name="event-start-time"]'),
       {
-        enableTime: true,
-        dateFormat: 'd/m/y H:i',
-        // eslint-disable-next-line camelcase
-        time_24hr: true,
+        ...commonDatepickerConfig,
         defaultDate: this._state.dateFrom,
-        maxDate: this._state.dateTo,
-        onChange: this.#dateFromChangeHandler,
+        onClose: this.#dateFromCloseHandler,
       },
     );
 
   }
-
-  #dateFromChangeHandler = ([userDate]) => {
-    if (!userDate) {
-      // console.error('Неверный формат даты.');
-      return;
-    }
-
-    const formattedDate = userDate.toISOString();
-
-    if (formattedDate.trim() === '') {
-      // console.error('Дата не может быть пустой.');
-      return;
-    }
-
-    this.updateElement({
-      dateFrom: formattedDate,
-    });
-  };
 
   #setDateToDatepicker() {
 
-    this.#datepicker = flatpickr(
+    this.#datepickerTo = flatpickr(
       this.element.querySelector('input[name="event-end-time"]'),
       {
-        enableTime: true,
-        dateFormat: 'd/m/y H:i',
-        // eslint-disable-next-line camelcase
-        time_24hr: true,
+        ...commonDatepickerConfig,
         defaultDate: this._state.dateTo,
-        minDate: this._state.dateFrom,
-        onChange: this.#dateToChangeHandler,
+        onClose: this.#dateToCloseHandler,
       },
     );
 
   }
 
-  #dateToChangeHandler = ([userDate]) => {
-    if (!userDate) {
-      // console.error('Неверный формат даты.');
-      return;
-    }
-
-    const formattedDate = userDate.toISOString();
-
-    if (formattedDate.trim() === '') {
-      // console.error('Дата не может быть пустой.');
-      return;
-    }
-
-    this.updateElement({
-      dateTo: formattedDate,
+  #dateFromCloseHandler = ([userDate]) => {
+    this._setState({
+      dateFrom: userDate,
     });
+    this.#datepickerTo.set('minDate', this._state.dateFrom);
+  };
+
+  #dateToCloseHandler = ([userDate]) => {
+    this._setState({
+      dateTo: userDate,
+    });
+    this.#datepickerFrom.set('maxDate', this._state.dateTo);
   };
 
   static parsePointToState(point, destinations, offers) {
