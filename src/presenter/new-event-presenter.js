@@ -23,7 +23,6 @@ export default class NewEventPresenter {
   }
 
   init(destinations, offers) {
-
     if (this.#eventEditComponent !== null) {
       return;
     }
@@ -67,7 +66,7 @@ export default class NewEventPresenter {
       this.#eventEditComponent.updateElement({
         isDisabled: false,
         isSaving: false,
-        // isDeleting: false,
+        isDeleting: false,
       });
     };
 

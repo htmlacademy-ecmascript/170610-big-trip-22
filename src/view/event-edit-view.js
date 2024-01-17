@@ -59,24 +59,17 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
     isDisabled,
   );
 
-  const isSaveButtonDisabled = !destinationName || !dateFrom || !dateTo || basePrice <= 0;
-
-  const createDeleteButtonTemplate = (isNewEvent, isDeletingEvent, isSavingEvent) => {
-    let disabledAttribute = '';
-    let buttonText = '';
-
-    if (isSavingEvent || isDeletingEvent) {
-      disabledAttribute = ' disabled';
-      buttonText = isDeletingEvent ? 'Deleting...' : 'Delete';
-    } else {
-      disabledAttribute = '';
-      buttonText = isNewEvent ? 'Cancel' : 'Delete';
+  const getCurrentButton = (isNew) => {
+    if (isNew) {
+      return 'Cancel';
     }
 
-    return `<button class="event__reset-btn" type="reset"${disabledAttribute}>${buttonText}</button>`;
-  };
+    const isDelete = (isDeleting)
+      ? 'Deleting...'
+      : 'Delete';
 
-  const deleteButtonTemplate = createDeleteButtonTemplate(isNewPoint, isSaving, isDeleting);
+    return isDelete;
+  };
 
   return (
     `<li class="trip-events__item" >
@@ -157,15 +150,12 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
                 ${isDisabled ? 'disabled' : ''}>
             </div>
 
-              <button
-                class="event__save-btn  btn  btn--blue"
-                type="submit"
-                ${isDisabled || isSaveButtonDisabled ? 'disabled' : ''}>
-                ${isSaving ? 'Saving...' : 'Save'}
-              </button>
-
-              ${deleteButtonTemplate}
-
+           <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+              ${isSaving ? 'Saving...' : 'Save'}
+           </button>
+            <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+              ${getCurrentButton(isNewPoint)}
+           </button>
 
             <button class="event__rollup-btn" type="button" ${isNewPoint ? 'style="display: none;"' : ''}>
               <span class="visually-hidden">Open event</span>
