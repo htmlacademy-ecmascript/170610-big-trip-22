@@ -110,9 +110,14 @@ export default class BoardPresenter {
   }
 
   createPoint() {
-    this.#currentSortType = SortType.DEFAULT;
+    this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newEventPresenter.init(this.destinations, this.offers);
+
+    if (this.#noEventComponent) {
+      // this._isMessageRemoved = true;
+      remove(this.#noEventComponent);
+    }
   }
 
   #handleModeChange = () => {

@@ -61,6 +61,23 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
 
   const isSaveButtonDisabled = !destinationName || !dateFrom || !dateTo || basePrice <= 0;
 
+  const createDeleteButtonTemplate = (isNewEvent, isDeletingEvent, isSavingEvent) => {
+    let disabledAttribute = '';
+    let buttonText = '';
+
+    if (isSavingEvent || isDeletingEvent) {
+      disabledAttribute = ' disabled';
+      buttonText = isDeletingEvent ? 'Deleting...' : 'Delete';
+    } else {
+      disabledAttribute = '';
+      buttonText = isNewEvent ? 'Cancel' : 'Delete';
+    }
+
+    return `<button class="event__reset-btn" type="reset"${disabledAttribute}>${buttonText}</button>`;
+  };
+
+  const deleteButtonTemplate = createDeleteButtonTemplate(isNewPoint, isSaving, isDeleting);
+
   return (
     `<li class="trip-events__item" >
       <form
@@ -147,12 +164,7 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
                 ${isSaving ? 'Saving...' : 'Save'}
               </button>
 
-              <button
-                class="event__reset-btn"
-                type="reset"
-                ${isDisabled ? 'disabled' : ''}>
-                ${isDeleting ? 'Deleting...' : 'Delete'}
-              </button>
+              ${deleteButtonTemplate}
 
 
             <button class="event__rollup-btn" type="button" ${isNewPoint ? 'style="display: none;"' : ''}>
