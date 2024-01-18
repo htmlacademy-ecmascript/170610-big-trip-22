@@ -150,10 +150,15 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
                 ${isDisabled ? 'disabled' : ''}>
             </div>
 
-           <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+            <button
+              class="event__save-btn  btn  btn--blue"
+              type="submit"
+              ${isDisabled ? 'disabled' : ''}>
               ${isSaving ? 'Saving...' : 'Save'}
-           </button>
-            <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+            </button>
+
+            <button class="event__reset-btn"
+              type="reset"
               ${getCurrentButton(isNewPoint)}
            </button>
 
@@ -279,20 +284,6 @@ export default class EventEditView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-
-    // const destinationValue = this._state.destination?.trim();
-    // const basePriceValue = typeof this._state.basePrice === 'string' ? this._state.basePrice.trim() : this._state.basePrice;
-
-    // if (!destinationValue) {
-    //   // console.error('Поле "destination" не может быть пустым.');
-    //   return;
-    // }
-
-    // if (!basePriceValue) {
-    //   // console.error('Поле "basePrice" не может быть пустым.');
-    //   return;
-    // }
-
     this.#handleFormSubmit(
       EventEditView.parseStateToPoint(
         this._state,
