@@ -62,17 +62,20 @@ export default class NewEventPresenter {
   }
 
   setAborting() {
-    const resetFormState = () => {
-      this.#eventEditComponent.updateElement({
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      });
-    };
+    if (this.#eventEditComponent !== null) {
+      const resetFormState = () => {
+        this.#eventEditComponent.updateElement({
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false,
+        });
+      };
 
-    // Добавим вызов метода для анимации "покачивания головой"
-    this.#eventEditComponent.shake(resetFormState);
+      // Добавим вызов метода для анимации "покачивания головой"
+      this.#eventEditComponent.shake(resetFormState);
+    }
   }
+
 
   #handleFormSubmit = (point) => {
     this.#handleDataChange(

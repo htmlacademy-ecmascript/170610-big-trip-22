@@ -139,7 +139,7 @@ export default class BoardPresenter {
       }
 
       // После успешного выполнения запроса вызываем метод для обновления представления точки
-      this.#updatePointView(update.id);
+      // this.#updatePointView(update.id);
     } catch (err) {
       console.error(err);
 
@@ -162,16 +162,16 @@ export default class BoardPresenter {
     }
   };
 
-  #updatePointView(pointId) {
+  // #updatePointView(pointId) {
 
-    const pointData = this.#pointsModel.getPointById(pointId);
+  //   const pointData = this.#pointsModel.getPointById(pointId);
 
-    this.#eventPresenters.get(pointId).init(
-      pointData,
-      this.destinations,
-      this.offers,
-    );
-  }
+  //   this.#eventPresenters.get(pointId).init(
+  //     pointData,
+  //     this.destinations,
+  //     this.offers,
+  //   );
+  // }
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
