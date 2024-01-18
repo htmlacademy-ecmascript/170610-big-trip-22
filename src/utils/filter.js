@@ -1,9 +1,10 @@
 import { FilterType } from '../const.js';
+
 import {
   isEventFuture,
   isEventPresent,
   isEventPast
-} from './point.js';
+} from './date.js';
 
 
 const filter = {

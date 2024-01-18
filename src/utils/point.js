@@ -39,10 +39,6 @@ const getFormattedDiffDuration = (dateTo, dateFrom) => {
 
 const compareDates = (dateA, dateB) => dayjs(dateA).isBefore(dayjs(dateB)) ? -1 : 1;
 
-const isEventFuture = (date) => dayjs(date).isAfter(dayjs());
-const isEventPresent = (date) => dayjs(date).isSameOrAfter(dayjs(), 'day');
-const isEventPast = (date) => dayjs(date).isBefore(dayjs(), 'day');
-
 const sortByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 
 const sortByDuration = (pointA, pointB) => {
@@ -117,9 +113,6 @@ export {
   getFormattedDiffDuration,
   humanizePointInputDateTimeType,
   compareDates,
-  isEventFuture,
-  isEventPresent,
-  isEventPast,
   sortByDay,
   sortByDuration,
   sortByBasePrice,
