@@ -71,6 +71,7 @@ newEventButtonComponent.element.disabled = true;
 
 function handleNewEventFormClose() {
   newEventButtonComponent.element.disabled = false;
+  boardPresenter.init();
 }
 
 function handleNewEventButtonClick() {

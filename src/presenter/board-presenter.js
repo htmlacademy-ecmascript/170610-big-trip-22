@@ -141,7 +141,7 @@ export default class BoardPresenter {
       // После успешного выполнения запроса вызываем метод для обновления представления точки
       // this.#updatePointView(update.id);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
 
       // Обработка ошибок, если необходимо
 
