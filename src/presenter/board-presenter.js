@@ -122,35 +122,56 @@ export default class BoardPresenter {
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
 
-    switch (actionType) {
-      case UserAction.UPDATE_POINT:
-        this.#eventPresenters.get(update.id).setSaving();
-        try {
+    try {
+      switch (actionType) {
+        case UserAction.UPDATE_POINT:
+          this.#eventPresenters.get(update.id).setSaving();
           await this.#pointsModel.updatePoint(updateType, update);
-        } catch (err) {
-          this.#eventPresenters.get(update.id).setAborting();
-        }
-        break;
-      case UserAction.ADD_POINT:
-        this.#newEventPresenter.setSaving();
-        try {
+          break;
+        case UserAction.ADD_POINT:
+          this.#newEventPresenter.setSaving();
           await this.#pointsModel.addPoint(updateType, update);
-        } catch (err) {
-          this.#newEventPresenter.setAborting();
-        }
-        break;
-      case UserAction.DELETE_POINT:
-        this.#eventPresenters.get(update.id).setDeleting();
-        try {
+          break;
+        case UserAction.DELETE_POINT:
+          this.#eventPresenters.get(update.id).setDeleting();
           await this.#pointsModel.deletePoint(updateType, update);
-        } catch (err) {
-          this.#eventPresenters.get(update.id).setAborting();
-        }
-        break;
-    }
+          break;
+      }
 
-    this.#uiBlocker.unblock();
+      // После успешного выполнения запроса вызываем метод для обновления представления точки
+      this.#updatePointView(update.id);
+    } catch (err) {
+      console.error(err);
+
+      // Обработка ошибок, если необходимо
+
+      // В случае ошибки откатываем изменения в представлении
+      switch (actionType) {
+        case UserAction.UPDATE_POINT:
+          this.#eventPresenters.get(update.id).setAborting();
+          break;
+        case UserAction.ADD_POINT:
+          this.#newEventPresenter.setAborting();
+          break;
+        case UserAction.DELETE_POINT:
+          this.#eventPresenters.get(update.id).setAborting();
+          break;
+      }
+    } finally {
+      this.#uiBlocker.unblock();
+    }
   };
+
+  #updatePointView(pointId) {
+
+    const pointData = this.#pointsModel.getPointById(pointId);
+
+    this.#eventPresenters.get(pointId).init(
+      pointData,
+      this.destinations,
+      this.offers,
+    );
+  }
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
