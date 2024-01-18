@@ -25,6 +25,8 @@ export default class BoardPresenter {
   #offersModel = null;
   #filterModel = null;
 
+  #isErrorLoading = false;
+
   #boardComponent = new BoardView();
   #eventsListComponent = new EventsListView();
   #loadingComponent = new LoadingView();
@@ -168,13 +170,31 @@ export default class BoardPresenter {
         this.#renderBoard();
         break;
       case UpdateType.INIT:
-        this.#isLoading = false;
-        remove(this.#loadingComponent);
-        this.#renderBoard();
-        // console.log('Handling INIT event...');
+        if (data && data.error) {
+          this.#isErrorLoading = true;
+          this.#renderError();
+        } else {
+          try {
+            if (this.#destinationsModel.destinations.length === 0 || this.#offersModel.offers.length === 0) {
+              this.#isErrorLoading = true;
+              this.#renderError();
+              return;
+            }
+            this.#isLoading = false;
+            remove(this.#loadingComponent);
+            this.#renderBoard();
+          } catch (error) {
+            this.#isErrorLoading = true;
+            this.#renderError();
+          }
+        }
         break;
     }
   };
+
+  #renderError() {
+    render(this.#errorLoadingComponent, this.#boardComponent.element);
+  }
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
