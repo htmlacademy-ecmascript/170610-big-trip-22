@@ -150,15 +150,15 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
                 ${isDisabled ? 'disabled' : ''}>
             </div>
 
-            <button
+           <button
               class="event__save-btn  btn  btn--blue"
               type="submit"
               ${isDisabled ? 'disabled' : ''}>
               ${isSaving ? 'Saving...' : 'Save'}
-            </button>
+           </button>
 
             <button class="event__reset-btn"
-              type="reset"
+              type="reset">
               ${getCurrentButton(isNewPoint)}
            </button>
 
