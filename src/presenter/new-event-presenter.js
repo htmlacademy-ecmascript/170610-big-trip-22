@@ -71,7 +71,6 @@ export default class NewEventPresenter {
         });
       };
 
-      // Добавим вызов метода для анимации "покачивания головой"
       this.#eventEditComponent.shake(resetFormState);
     }
   }

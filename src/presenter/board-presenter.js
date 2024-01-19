@@ -137,15 +137,7 @@ export default class BoardPresenter {
           await this.#pointsModel.deletePoint(updateType, update);
           break;
       }
-
-      // После успешного выполнения запроса вызываем метод для обновления представления точки
-      // this.#updatePointView(update.id);
     } catch (err) {
-      // console.error(err);
-
-      // Обработка ошибок, если необходимо
-
-      // В случае ошибки откатываем изменения в представлении
       switch (actionType) {
         case UserAction.UPDATE_POINT:
           this.#eventPresenters.get(update.id).setAborting();
@@ -161,17 +153,6 @@ export default class BoardPresenter {
       this.#uiBlocker.unblock();
     }
   };
-
-  // #updatePointView(pointId) {
-
-  //   const pointData = this.#pointsModel.getPointById(pointId);
-
-  //   this.#eventPresenters.get(pointId).init(
-  //     pointData,
-  //     this.destinations,
-  //     this.offers,
-  //   );
-  // }
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
@@ -299,13 +280,10 @@ export default class BoardPresenter {
     const offers = this.offers;
 
     const pointCount = points.length;
-    // console.log('Point count:', pointCount);
 
     if (pointCount === 0) {
-      // this.#renderSort();
       render(this.#eventsListComponent, this.#boardComponent.element);
       this.#renderNoEvents();
-      // this.#newEventPresenter.init(destinations, offers);
       return;
     }
 
