@@ -13,6 +13,7 @@ import {
   humanizePointDateTimeType,
   humanizePointTimeDate,
   getFormattedDiffDuration,
+
 } from '../utils/date.js';
 
 const createEventViewTemplate = (point) => {

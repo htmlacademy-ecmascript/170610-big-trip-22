@@ -286,7 +286,6 @@ export default class EventEditView extends AbstractStatefulView {
   }
 
   #setDateFromDatepicker() {
-
     this.#datepickerFrom = flatpickr(
       this.element.querySelector('input[name="event-start-time"]'),
       {
@@ -295,11 +294,9 @@ export default class EventEditView extends AbstractStatefulView {
         onClose: this.#dateFromCloseHandler,
       },
     );
-
   }
 
   #setDateToDatepicker() {
-
     this.#datepickerTo = flatpickr(
       this.element.querySelector('input[name="event-end-time"]'),
       {
@@ -308,7 +305,6 @@ export default class EventEditView extends AbstractStatefulView {
         onClose: this.#dateToCloseHandler,
       },
     );
-
   }
 
   #dateFromCloseHandler = ([userDate]) => {
