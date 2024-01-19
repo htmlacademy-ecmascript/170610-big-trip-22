@@ -12,7 +12,7 @@ import {
   getDestinationName,
   getTypeOffers,
   getDestinationPhotos,
-  getDestinationObject,
+  getFullDestination,
 } from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
@@ -282,6 +282,46 @@ export default class EventEditView extends AbstractStatefulView {
 
   }
 
+  #setDateFromDatepicker() {
+
+    this.#datepickerFrom = flatpickr(
+      this.element.querySelector('input[name="event-start-time"]'),
+      {
+        ...commonDatepickerConfig,
+        defaultDate: this._state.dateFrom,
+        onClose: this.#dateFromCloseHandler,
+      },
+    );
+
+  }
+
+  #setDateToDatepicker() {
+
+    this.#datepickerTo = flatpickr(
+      this.element.querySelector('input[name="event-end-time"]'),
+      {
+        ...commonDatepickerConfig,
+        defaultDate: this._state.dateTo,
+        onClose: this.#dateToCloseHandler,
+      },
+    );
+
+  }
+
+  #dateFromCloseHandler = ([userDate]) => {
+    this._setState({
+      dateFrom: userDate,
+    });
+    this.#datepickerTo.set('minDate', this._state.dateFrom);
+  };
+
+  #dateToCloseHandler = ([userDate]) => {
+    this._setState({
+      dateTo: userDate,
+    });
+    this.#datepickerFrom.set('maxDate', this._state.dateTo);
+  };
+
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit(
@@ -323,29 +363,22 @@ export default class EventEditView extends AbstractStatefulView {
 
     let previousValue = this._state.destinationName;
     let inputValue = evt.target.value;
-
-    // Преобразуем введенное значение в нижний регистр для регистронезависимой проверки
     const inputCityName = inputValue.toLowerCase();
-
-    // Проверяем, входит ли введенное имя в список городов
     const isValidCity = this.#destinations.some((city) => city.name.toLowerCase() === inputCityName);
 
     if (!isValidCity) {
-      // Если введенное значение не допустимо, возвращаем предыдущее значение
       inputValue = previousValue;
     } else {
-      // Если введенное значение допустимо, обновляем предыдущее значение
       previousValue = inputValue;
     }
 
-    // Устанавливаем значение инпута
     evt.target.value = inputValue;
 
     const foundCity = this.#destinations.find((city) => city.name === inputValue);
 
-    const destinationObject = getDestinationObject(foundCity.id, this.#destinations);
-    const destinationDescription = destinationObject.description;
-    const hasDestinationDescription = Boolean(destinationObject.description);
+    const fullDestination = getFullDestination(foundCity.id, this.#destinations);
+    const destinationDescription = fullDestination.description;
+    const hasDestinationDescription = Boolean(fullDestination.description);
 
     const destinationPhotos = getDestinationPhotos(foundCity.id, this.#destinations);
     const hasDestinationPhotos = Boolean(destinationPhotos.length);
@@ -354,7 +387,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.updateElement({
       destination: foundCity.id,
       destinationName: foundCity.name,
-      destinationObject,
+      fullDestination,
       destinationDescription,
       hasDestinationDescription,
       destinationPhotos,
@@ -390,46 +423,6 @@ export default class EventEditView extends AbstractStatefulView {
     });
   };
 
-  #setDateFromDatepicker() {
-
-    this.#datepickerFrom = flatpickr(
-      this.element.querySelector('input[name="event-start-time"]'),
-      {
-        ...commonDatepickerConfig,
-        defaultDate: this._state.dateFrom,
-        onClose: this.#dateFromCloseHandler,
-      },
-    );
-
-  }
-
-  #setDateToDatepicker() {
-
-    this.#datepickerTo = flatpickr(
-      this.element.querySelector('input[name="event-end-time"]'),
-      {
-        ...commonDatepickerConfig,
-        defaultDate: this._state.dateTo,
-        onClose: this.#dateToCloseHandler,
-      },
-    );
-
-  }
-
-  #dateFromCloseHandler = ([userDate]) => {
-    this._setState({
-      dateFrom: userDate,
-    });
-    this.#datepickerTo.set('minDate', this._state.dateFrom);
-  };
-
-  #dateToCloseHandler = ([userDate]) => {
-    this._setState({
-      dateTo: userDate,
-    });
-    this.#datepickerFrom.set('maxDate', this._state.dateTo);
-  };
-
   static parsePointToState(point, destinations, offers) {
 
     const hasPointType = offers.some((offer) => offer.type === point.type);
@@ -437,9 +430,9 @@ export default class EventEditView extends AbstractStatefulView {
 
     const typeOffers = getTypeOffers(point.type, offers);
 
-    const destinationObject = getDestinationObject(point.destination, destinations);
-    const destinationDescription = destinationObject ? destinationObject.description : null;
-    const hasDestinationDescription = Boolean(destinationObject && destinationObject.description);
+    const fullDestination = getFullDestination(point.destination, destinations);
+    const destinationDescription = fullDestination ? fullDestination.description : null;
+    const hasDestinationDescription = Boolean(fullDestination && fullDestination.description);
 
     const destinationPhotos = getDestinationPhotos(point.destination, destinations);
     const hasDestinationPhotos = Boolean(destinationPhotos && destinationPhotos.length);
@@ -449,7 +442,7 @@ export default class EventEditView extends AbstractStatefulView {
       hasPointType,
       destinationName,
       typeOffers,
-      destinationObject,
+      fullDestination,
       destinationDescription,
       hasDestinationDescription,
       destinationPhotos,
@@ -475,8 +468,8 @@ export default class EventEditView extends AbstractStatefulView {
       point.typeOffers = null;
     }
 
-    if (!point.destinationObject) {
-      point.destinationObject = null;
+    if (!point.fullDestination) {
+      point.fullDestination = null;
     }
 
     if (!point.destinationDescription) {
@@ -498,7 +491,7 @@ export default class EventEditView extends AbstractStatefulView {
     delete point.hasPointType;
     delete point.destinationName;
     delete point.typeOffers;
-    delete point.destinationObject;
+    delete point.fullDestination;
     delete point.destinationDescription;
     delete point.hasDestinationDescription;
     delete point.destinationPhotos;

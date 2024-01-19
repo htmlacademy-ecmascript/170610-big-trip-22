@@ -79,7 +79,7 @@ const getDestinationPhotos = (destinationId, pointDestinations) => {
   return foundDestination?.pictures || null;
 };
 
-const getDestinationObject = (destinationId, pointDestinations) => {
+const getFullDestination = (destinationId, pointDestinations) => {
   if (!destinationId) {
     return '';
   }
@@ -120,7 +120,7 @@ export {
   isDatesEqual,
   getTypeOffers,
   getDestinationPhotos,
-  getDestinationObject,
+  getFullDestination,
   getSelectedOffers,
   toUpperCaseFirstLetter,
   getOffersPrice,

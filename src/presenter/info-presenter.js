@@ -1,7 +1,5 @@
 import { render, replace, remove, RenderPosition } from '../framework/render.js';
 import InfoView from '../view/info-view.js';
-// import { filter } from '../utils/filter.js';
-// import { FilterType } from '../const.js';
 
 export default class InfoPresenter {
 
@@ -10,24 +8,20 @@ export default class InfoPresenter {
   #pointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
-  // #filterModel = null;
 
   #infoComponent = null;
-
-  // #filterType = FilterType.EVERYTHING;
 
   constructor({
     infoContainer,
     pointsModel,
     destinationsModel,
     offersModel,
-    // filterModel,
+
   }) {
     this.#infoContainer = infoContainer;
     this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
-    // this.#filterModel = filterModel;
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
 
@@ -36,11 +30,6 @@ export default class InfoPresenter {
   get points() {
     const points = this.#pointsModel.points;
     return points;
-
-    // this.#filterType = this.#filterModel.filter;
-    // const filteredPoints = filter[this.#filterType](points);
-    // return filteredPoints;
-
   }
 
   get destinations() {
