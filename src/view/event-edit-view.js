@@ -8,12 +8,15 @@ import createOffersSectionTemplateTemplate from '../template/offers-section-temp
 import { BLANK_POINT, commonDatepickerConfig } from '../const.js';
 
 import {
-  humanizePointInputDateTimeType,
   getDestinationName,
   getTypeOffers,
   getDestinationPhotos,
   getFullDestination,
 } from '../utils/point.js';
+
+import {
+  humanizePointInputDateTimeType,
+} from '../utils/date.js';
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';

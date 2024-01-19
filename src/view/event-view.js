@@ -2,15 +2,18 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import createSelectedOffersTemplate from '../template/selected-offers-template.js';
 
 import {
+  getTypeOffers,
+  getDestinationName,
+  getSelectedOffers,
+} from '../utils/point.js';
+
+import {
   humanizePointDateTime,
   humanizePointDateDate,
   humanizePointDateTimeType,
   humanizePointTimeDate,
   getFormattedDiffDuration,
-  getTypeOffers,
-  getDestinationName,
-  getSelectedOffers,
-} from '../utils/point.js';
+} from '../utils/date.js';
 
 const createEventViewTemplate = (point) => {
 
