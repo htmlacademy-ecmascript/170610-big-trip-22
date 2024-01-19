@@ -25,8 +25,6 @@ export default class BoardPresenter {
   #offersModel = null;
   #filterModel = null;
 
-  #isErrorLoading = false;
-
   #boardComponent = new BoardView();
   #eventsListComponent = new EventsListView();
   #loadingComponent = new LoadingView();
@@ -173,12 +171,10 @@ export default class BoardPresenter {
         break;
       case UpdateType.INIT:
         if (data && data.error) {
-          this.#isErrorLoading = true;
           this.#renderError();
         } else {
           try {
             if (this.#destinationsModel.destinations.length === 0 || this.#offersModel.offers.length === 0) {
-              this.#isErrorLoading = true;
               this.#renderError();
               return;
             }
@@ -186,17 +182,12 @@ export default class BoardPresenter {
             remove(this.#loadingComponent);
             this.#renderBoard();
           } catch (error) {
-            this.#isErrorLoading = true;
             this.#renderError();
           }
         }
         break;
     }
   };
-
-  #renderError() {
-    render(this.#errorLoadingComponent, this.#boardComponent.element);
-  }
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
@@ -249,22 +240,8 @@ export default class BoardPresenter {
     render(this.#noEventComponent, this.#boardComponent.element);
   }
 
-  #clearBoard({ resetSortType = false } = {}) {
-    this.#newEventPresenter.destroy();
-    this.#eventPresenters.forEach((presenter) => presenter.destroy());
-    this.#eventPresenters.clear();
-
-    remove(this.#sortComponent);
-    remove(this.#loadingComponent);
-    remove(this.#errorLoadingComponent);
-
-    if (this.#noEventComponent) {
-      remove(this.#noEventComponent);
-    }
-
-    if (resetSortType) {
-      this.#currentSortType = SortType.DAY;
-    }
+  #renderError() {
+    render(this.#errorLoadingComponent, this.#boardComponent.element);
   }
 
   #renderBoard() {
@@ -290,6 +267,24 @@ export default class BoardPresenter {
     this.#renderSort();
     render(this.#eventsListComponent, this.#boardComponent.element);
     this.#renderPoints(points, destinations, offers);
+  }
+
+  #clearBoard({ resetSortType = false } = {}) {
+    this.#newEventPresenter.destroy();
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#loadingComponent);
+    remove(this.#errorLoadingComponent);
+
+    if (this.#noEventComponent) {
+      remove(this.#noEventComponent);
+    }
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
   }
 
 }
