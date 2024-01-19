@@ -1,5 +1,6 @@
 import { render, replace, remove, RenderPosition } from '../framework/render.js';
 import InfoView from '../view/info-view.js';
+import { sortByDay } from '../utils/point.js';
 
 export default class InfoPresenter {
 
@@ -46,12 +47,13 @@ export default class InfoPresenter {
     const points = this.points;
     const destinations = this.destinations;
     const offers = this.offers;
+    const sortedPoints = points.sort(sortByDay);
 
     const prevInfoComponent = this.#infoComponent;
 
     this.#infoComponent = new InfoView(
       {
-        points: points,
+        points: sortedPoints,
         destinations: destinations,
         offers: offers,
       }
