@@ -94,16 +94,26 @@ const getOffersPrice = (offerIDs = [], offers = []) => offerIDs.reduce((offerCos
 const getTotalPrice = (points = [], offers = []) => points.reduce((total, point) => total + point.basePrice + getOffersPrice(point.offers, getCheckedOffers(offers, point.type)), 0);
 
 const getRoute = (points = [], destinations = []) => {
-  const destinationNames = [...points]
-    .map((point) => destinations
-      .find((destination) => destination.id === point.destination)?.name);
+  const destinationNames = points.map((point) => destinations.find((destination) => destination.id === point.destination)?.name);
 
-  return destinationNames <= DESTINATIONS_ITEMS_COUNT ? destinationNames.join('&nbsp;&mdash;&nbsp;') : `${destinationNames.at(0)}&nbsp;&mdash;&nbsp;...&nbsp;&mdash;&nbsp;${destinationNames.at(-1)}`;
+  if (destinationNames.length <= DESTINATIONS_ITEMS_COUNT) {
+    return destinationNames.join('&nbsp;&mdash;&nbsp;');
+  } else {
+    const truncatedNames = `${destinationNames[0]}&nbsp;&mdash;&nbsp;...&nbsp;&mdash;&nbsp;${destinationNames.slice(-1)}`;
+    return truncatedNames;
+  }
 };
 
 const getRouteDuration = (points = []) => points.length ? `${dayjs(points.at(0).dateFrom).format('DD MMM')}&nbsp;&mdash;&nbsp;${dayjs(points.at(-1).dateTo).format('DD MMM')}` : '';
 
 const changeToDashesLowercase = (text) => text.toLowerCase().split(' ').pop().replace(/-/g, '');
+
+const getDestinationById = (id, destinations) => {
+  if (id) {
+    return destinations.find((destination) => destination.id === id);
+  }
+  return '';
+};
 
 export {
   humanizePointDateTime,
@@ -127,5 +137,6 @@ export {
   getTotalPrice,
   getRoute,
   getRouteDuration,
-  changeToDashesLowercase
+  changeToDashesLowercase,
+  getDestinationById
 };
