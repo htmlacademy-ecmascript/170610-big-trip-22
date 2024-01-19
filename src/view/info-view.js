@@ -7,10 +7,6 @@ const createInfoViewTemplate = ({ isEmpty, totalPrice, route, routeDuration }) =
       <h1 class="trip-info__title">Loading...</h1>
       <p class="trip-info__dates">Loading...</p>
     </div>
-
-    <p class="trip-info__cost">
-      Total: &euro;&nbsp;<span class="trip-info__cost-value">0</span>
-    </p>
   </section>` : `
   <section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">

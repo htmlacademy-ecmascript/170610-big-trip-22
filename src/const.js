@@ -18,9 +18,11 @@ const FilterType = {
 };
 
 const SortType = {
-  DEFAULT: 'default',
-  TIME: 'sort-time',
-  PRICE: 'sort-price',
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
 };
 
 const UserAction = {
@@ -46,20 +48,30 @@ const BLANK_POINT = {
   'type': 'flight'
 };
 
-const METHOD = {
+const Method = {
   GET: 'GET',
   PUT: 'PUT',
   POST: 'POST',
   DELETE: 'DELETE',
 };
 
-const URL = {
+const Url = {
   POINTS: 'points',
   DESTINATIONS: 'destinations',
   OFFERS: 'offers',
 };
 
 const DESTINATIONS_ITEMS_COUNT = 3;
+
+const commonDatepickerConfig = {
+  dateFormat: 'd/m/y H:i',
+  enableTime: true,
+  locale: {
+    firstDayOfWeek: 1,
+  },
+  'time_24hr': true,
+  allowInput: true
+};
 
 export {
   OFFERS_TYPES,
@@ -68,7 +80,8 @@ export {
   UserAction,
   UpdateType,
   BLANK_POINT,
-  METHOD,
-  URL,
+  Method,
+  Url,
   DESTINATIONS_ITEMS_COUNT,
+  commonDatepickerConfig
 };

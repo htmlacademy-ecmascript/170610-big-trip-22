@@ -23,7 +23,6 @@ export default class NewEventPresenter {
   }
 
   init(destinations, offers) {
-
     if (this.#eventEditComponent !== null) {
       return;
     }
@@ -63,16 +62,19 @@ export default class NewEventPresenter {
   }
 
   setAborting() {
-    const resetFormState = () => {
-      this.#eventEditComponent.updateElement({
-        isDisabled: false,
-        isSaving: false,
-        // isDeleting: false,
-      });
-    };
+    if (this.#eventEditComponent !== null) {
+      const resetFormState = () => {
+        this.#eventEditComponent.updateElement({
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false,
+        });
+      };
 
-    this.#eventEditComponent.shake(resetFormState);
+      this.#eventEditComponent.shake(resetFormState);
+    }
   }
+
 
   #handleFormSubmit = (point) => {
     this.#handleDataChange(

@@ -39,21 +39,13 @@ const getFormattedDiffDuration = (dateTo, dateFrom) => {
 
 const compareDates = (dateA, dateB) => dayjs(dateA).isBefore(dayjs(dateB)) ? -1 : 1;
 
-const isEventFuture = (date) => dayjs(date).isAfter(dayjs());
-const isEventPresent = (date) => dayjs(date).isSameOrAfter(dayjs(), 'day');
-const isEventPast = (date) => dayjs(date).isBefore(dayjs(), 'day');
-
-const calculateDurationInSeconds = (dateFrom, dateTo) => {
-  const start = dayjs(dateFrom);
-  const end = dayjs(dateTo);
-  return end.diff(start, 'second');
-};
+const sortByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 
 const sortByDuration = (pointA, pointB) => {
-  const durationA = calculateDurationInSeconds(pointA.dateFrom, pointA.dateTo);
-  const durationB = calculateDurationInSeconds(pointB.dateFrom, pointB.dateTo);
+  const pointADuration = dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom));
+  const pointBDuration = dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom));
 
-  return durationB - durationA;
+  return dayjs(pointBDuration).diff(dayjs(pointADuration));
 };
 
 const sortByBasePrice = (pointA, pointB) =>
@@ -87,7 +79,7 @@ const getDestinationPhotos = (destinationId, pointDestinations) => {
   return foundDestination?.pictures || null;
 };
 
-const getDestinationObject = (destinationId, pointDestinations) => {
+const getFullDestination = (destinationId, pointDestinations) => {
   if (!destinationId) {
     return '';
   }
@@ -102,14 +94,26 @@ const getOffersPrice = (offerIDs = [], offers = []) => offerIDs.reduce((offerCos
 const getTotalPrice = (points = [], offers = []) => points.reduce((total, point) => total + point.basePrice + getOffersPrice(point.offers, getCheckedOffers(offers, point.type)), 0);
 
 const getRoute = (points = [], destinations = []) => {
-  const destinationNames = [...points]
-    .map((point) => destinations
-      .find((destination) => destination.id === point.destination)?.name);
+  const destinationNames = points.map((point) => destinations.find((destination) => destination.id === point.destination)?.name);
 
-  return destinationNames <= DESTINATIONS_ITEMS_COUNT ? destinationNames.join('&nbsp;&mdash;&nbsp;') : `${destinationNames.at(0)}&nbsp;&mdash;&nbsp;...&nbsp;&mdash;&nbsp;${destinationNames.at(-1)}`;
+  if (destinationNames.length <= DESTINATIONS_ITEMS_COUNT) {
+    return destinationNames.join('&nbsp;&mdash;&nbsp;');
+  } else {
+    const truncatedNames = `${destinationNames[0]}&nbsp;&mdash;&nbsp;...&nbsp;&mdash;&nbsp;${destinationNames.slice(-1)}`;
+    return truncatedNames;
+  }
 };
 
 const getRouteDuration = (points = []) => points.length ? `${dayjs(points.at(0).dateFrom).format('DD MMM')}&nbsp;&mdash;&nbsp;${dayjs(points.at(-1).dateTo).format('DD MMM')}` : '';
+
+const changeToDashesLowercase = (text) => text.toLowerCase().split(' ').pop().replace(/-/g, '');
+
+const getDestinationById = (id, destinations) => {
+  if (id) {
+    return destinations.find((destination) => destination.id === id);
+  }
+  return '';
+};
 
 export {
   humanizePointDateTime,
@@ -119,20 +123,20 @@ export {
   getFormattedDiffDuration,
   humanizePointInputDateTimeType,
   compareDates,
-  isEventFuture,
-  isEventPresent,
-  isEventPast,
+  sortByDay,
   sortByDuration,
   sortByBasePrice,
   getDestinationName,
   isDatesEqual,
   getTypeOffers,
   getDestinationPhotos,
-  getDestinationObject,
+  getFullDestination,
   getSelectedOffers,
   toUpperCaseFirstLetter,
   getOffersPrice,
   getTotalPrice,
   getRoute,
-  getRouteDuration
+  getRouteDuration,
+  changeToDashesLowercase,
+  getDestinationById
 };

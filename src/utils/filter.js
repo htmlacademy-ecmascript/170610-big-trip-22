@@ -1,17 +1,16 @@
 import { FilterType } from '../const.js';
+
 import {
-  compareDates,
   isEventFuture,
   isEventPresent,
   isEventPast
-} from './point.js';
+} from './date.js';
 
 
 const filter = {
-  [FilterType.EVERYTHING]: (points) => points.sort((a, b) => compareDates(a.dateFrom, b.dateFrom)),
+  [FilterType.EVERYTHING]: (points) => points,
   [FilterType.FUTURE]: (points) => points.filter((point) => isEventFuture(point.dateFrom)),
-  [FilterType.PRESENT]: (points) => points.filter((point) => isEventPresent(point.dateFrom)),
-  [FilterType.PAST]: (points) => points.filter((point) => isEventPast(point.dateFrom)),
+  [FilterType.PRESENT]: (points) => points.filter((point) => isEventPresent(point.dateFrom, point.dateTo)),
+  [FilterType.PAST]: (points) => points.filter((point) => isEventPast(point.dateTo)),
 };
-
 export { filter };

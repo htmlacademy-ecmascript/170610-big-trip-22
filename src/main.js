@@ -1,6 +1,4 @@
-// import { render, RenderPosition } from './framework/render.js';
 import { render } from './framework/render.js';
-// import InfoView from './view/info-view.js';
 import NewEventButtonView from './view/new-event-button-view.js';
 import InfoPresenter from './presenter/info-presenter.js';
 import BoardPresenter from './presenter/board-presenter.js';
@@ -10,24 +8,26 @@ import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
 import FilterModel from './model/filter-model.js';
 import PointsApiService from './api/points-api-service.js';
-import DestinationsApiService from './api/destinations-api-service.js';
-import OffersApiService from './api/offers-api-service.js';
 
-const AUTHORIZATION = 'Basic 1R21Yxa~x~2Dp';
-const END_POINT = 'https://21.objects.pages.academy/big-trip';
+const AUTHORIZATION = 'Basic 1R21Y2xa~xz2~232D2p';
+const END_POINT = 'https://22.objects.pages.academy/big-trip';
 
 const pageBodyElement = document.querySelector('.page-body');
 
-const pointsModel = new PointsModel({
-  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
-});
+const pointsApiService = new PointsApiService(END_POINT, AUTHORIZATION);
 
 const destinationsModel = new DestinationsModel({
-  destinationsApiService: new DestinationsApiService(END_POINT, AUTHORIZATION)
+  destinationsApiService: pointsApiService,
 });
 
 const offersModel = new OffersModel({
-  offersApiService: new OffersApiService(END_POINT, AUTHORIZATION)
+  offersApiService: pointsApiService,
+});
+
+const pointsModel = new PointsModel({
+  pointsApiService: pointsApiService,
+  destinationsModel,
+  offersModel
 });
 
 const filterModel = new FilterModel();
@@ -67,8 +67,17 @@ const newEventButtonComponent = new NewEventButtonView({
   onClick: handleNewEventButtonClick
 });
 
+newEventButtonComponent.element.disabled = true;
+
 function handleNewEventFormClose() {
   newEventButtonComponent.element.disabled = false;
+
+  const pointsCount = pointsModel.points;
+
+  if (pointsCount.length === 0) {
+    boardPresenter.init();
+  }
+
 }
 
 function handleNewEventButtonClick() {
@@ -77,11 +86,15 @@ function handleNewEventButtonClick() {
 }
 
 infoPresenter.init();
+
 filterPresenter.init();
+render(newEventButtonComponent, tripMainElement);
 boardPresenter.init();
+
 
 pointsModel.init()
   .finally(() => {
+    newEventButtonComponent.element.disabled = false;
     render(newEventButtonComponent, tripMainElement);
   });
 

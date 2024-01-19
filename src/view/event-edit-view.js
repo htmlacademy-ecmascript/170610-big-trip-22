@@ -5,14 +5,14 @@ import createDestinationListTemplate from '../template/destination-list-template
 import createDestinationPhotosTemplate from '../template/destination-photos-template.js';
 import createDestinationDescriptionTemplate from '../template/destination-description-template.js';
 import createOffersSectionTemplateTemplate from '../template/offers-section-template.js';
-import { BLANK_POINT } from '../const.js';
+import { BLANK_POINT, commonDatepickerConfig } from '../const.js';
 
 import {
   humanizePointInputDateTimeType,
   getDestinationName,
   getTypeOffers,
   getDestinationPhotos,
-  getDestinationObject,
+  getFullDestination,
 } from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
@@ -30,7 +30,6 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
     hasPointType,
     destinationName,
     typeOffers,
-    hasTypeOffers,
     destinationDescription,
     hasDestinationDescription,
     destinationPhotos,
@@ -39,7 +38,6 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
     isSaving,
     isDeleting,
   } = point;
-
 
   const typeListTemplate = createTypeListTemplate(offers, pointType);
 
@@ -56,13 +54,22 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
   );
 
   const offersSectionTemplate = createOffersSectionTemplateTemplate(
-    hasTypeOffers,
     typeOffers,
     pointOffersIds,
     isDisabled,
   );
 
-  const isSaveButtonDisabled = !destinationName || !dateFrom || !dateTo || basePrice <= 0;
+  const getCurrentButton = (isNew) => {
+    if (isNew) {
+      return 'Cancel';
+    }
+
+    const isDelete = (isDeleting)
+      ? 'Deleting...'
+      : 'Delete';
+
+    return isDelete;
+  };
 
   return (
     `<li class="trip-events__item" >
@@ -143,20 +150,17 @@ const createEventEditViewTemplate = (point, destinations, offers, isNewPoint) =>
                 ${isDisabled ? 'disabled' : ''}>
             </div>
 
-              <button
-                class="event__save-btn  btn  btn--blue"
-                type="submit"
-                ${isDisabled || isSaveButtonDisabled ? 'disabled' : ''}>
-                ${isSaving ? 'Saving...' : 'Save'}
-              </button>
+           <button
+              class="event__save-btn  btn  btn--blue"
+              type="submit"
+              ${isDisabled ? 'disabled' : ''}>
+              ${isSaving ? 'Saving...' : 'Save'}
+           </button>
 
-              <button
-                class="event__reset-btn"
-                type="reset"
-                ${isDisabled ? 'disabled' : ''}>
-                ${isDeleting ? 'Deleting...' : 'Delete'}
-              </button>
-
+            <button class="event__reset-btn"
+              type="reset">
+              ${getCurrentButton(isNewPoint)}
+           </button>
 
             <button class="event__rollup-btn" type="button" ${isNewPoint ? 'style="display: none;"' : ''}>
               <span class="visually-hidden">Open event</span>
@@ -186,7 +190,8 @@ export default class EventEditView extends AbstractStatefulView {
 
   #isNewPoint = false;
 
-  #datepicker = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
 
   constructor(
     {
@@ -231,9 +236,14 @@ export default class EventEditView extends AbstractStatefulView {
   removeElement() {
     super.removeElement();
 
-    if (this.#datepicker) {
-      this.#datepicker.destroy();
-      this.#datepicker = null;
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
     }
   }
 
@@ -272,34 +282,48 @@ export default class EventEditView extends AbstractStatefulView {
 
   }
 
+  #setDateFromDatepicker() {
+
+    this.#datepickerFrom = flatpickr(
+      this.element.querySelector('input[name="event-start-time"]'),
+      {
+        ...commonDatepickerConfig,
+        defaultDate: this._state.dateFrom,
+        onClose: this.#dateFromCloseHandler,
+      },
+    );
+
+  }
+
+  #setDateToDatepicker() {
+
+    this.#datepickerTo = flatpickr(
+      this.element.querySelector('input[name="event-end-time"]'),
+      {
+        ...commonDatepickerConfig,
+        defaultDate: this._state.dateTo,
+        onClose: this.#dateToCloseHandler,
+      },
+    );
+
+  }
+
+  #dateFromCloseHandler = ([userDate]) => {
+    this._setState({
+      dateFrom: userDate,
+    });
+    this.#datepickerTo.set('minDate', this._state.dateFrom);
+  };
+
+  #dateToCloseHandler = ([userDate]) => {
+    this._setState({
+      dateTo: userDate,
+    });
+    this.#datepickerFrom.set('maxDate', this._state.dateTo);
+  };
+
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-
-    const destinationValue = this._state.destination?.trim();
-    const dateFromValue = this._state.dateFrom?.trim();
-    const dateToValue = this._state.dateTo?.trim();
-    const basePriceValue = typeof this._state.basePrice === 'string' ? this._state.basePrice.trim() : this._state.basePrice;
-
-    if (!destinationValue) {
-      // console.error('Поле "destination" не может быть пустым.');
-      return;
-    }
-
-    if (!dateFromValue) {
-      // console.error('Поле "dateFrom" не может быть пустым.');
-      return;
-    }
-
-    if (!dateToValue) {
-      // console.error('Поле "dateTo" не может быть пустым.');
-      return;
-    }
-
-    if (!basePriceValue) {
-      // console.error('Поле "basePrice" не может быть пустым.');
-      return;
-    }
-
     this.#handleFormSubmit(
       EventEditView.parseStateToPoint(
         this._state,
@@ -326,13 +350,11 @@ export default class EventEditView extends AbstractStatefulView {
     evt.preventDefault();
     const type = evt.target.value;
     const typeOffers = getTypeOffers(type, this.#offers);
-    const hasTypeOffers = Boolean(typeOffers.length);
 
     this.updateElement({
       type,
       offers: [],
       typeOffers,
-      hasTypeOffers,
     });
   };
 
@@ -341,29 +363,22 @@ export default class EventEditView extends AbstractStatefulView {
 
     let previousValue = this._state.destinationName;
     let inputValue = evt.target.value;
-
-    // Преобразуем введенное значение в нижний регистр для регистронезависимой проверки
     const inputCityName = inputValue.toLowerCase();
-
-    // Проверяем, входит ли введенное имя в список городов
     const isValidCity = this.#destinations.some((city) => city.name.toLowerCase() === inputCityName);
 
     if (!isValidCity) {
-      // Если введенное значение не допустимо, возвращаем предыдущее значение
       inputValue = previousValue;
     } else {
-      // Если введенное значение допустимо, обновляем предыдущее значение
       previousValue = inputValue;
     }
 
-    // Устанавливаем значение инпута
     evt.target.value = inputValue;
 
     const foundCity = this.#destinations.find((city) => city.name === inputValue);
 
-    const destinationObject = getDestinationObject(foundCity.id, this.#destinations);
-    const destinationDescription = destinationObject.description;
-    const hasDestinationDescription = Boolean(destinationObject.description);
+    const fullDestination = getFullDestination(foundCity.id, this.#destinations);
+    const destinationDescription = fullDestination.description;
+    const hasDestinationDescription = Boolean(fullDestination.description);
 
     const destinationPhotos = getDestinationPhotos(foundCity.id, this.#destinations);
     const hasDestinationPhotos = Boolean(destinationPhotos.length);
@@ -372,7 +387,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.updateElement({
       destination: foundCity.id,
       destinationName: foundCity.name,
-      destinationObject,
+      fullDestination,
       destinationDescription,
       hasDestinationDescription,
       destinationPhotos,
@@ -383,108 +398,28 @@ export default class EventEditView extends AbstractStatefulView {
 
   #priceInputChangeHandler = (evt) => {
     evt.preventDefault();
+    let priceValue = Number(evt.target.value);
 
-    evt.target.value = evt.target.value.replace(/[^0-9]/g, '');
-
-    const prevBasePrice = this._state.basePrice;
-    const nextBasePrice = evt.target.value;
-
-    if (nextBasePrice === '' || nextBasePrice < 1) {
-      evt.target.value = prevBasePrice;
-    } else {
-      this.updateElement({
-        basePrice: Number(nextBasePrice),
-      });
+    if (priceValue < 0) {
+      priceValue = Math.abs(priceValue);
+      evt.target.value = priceValue;
     }
-  };
 
+    if (!Number.isInteger(priceValue)) {
+      priceValue = Math.trunc(priceValue);
+      evt.target.value = priceValue;
+    }
+
+    this._setState({
+      basePrice: priceValue,
+    });
+  };
 
   #offerCheckboxChangeHandler = (evt) => {
     evt.preventDefault();
-    const checkboxId = evt.target.id;
-
-    const offerId = checkboxId.split('-').slice(3).join('-');
-
-    const toggleId = (id) => {
-      const newOffers = this._state.offers.includes(id)
-        ? this._state.offers.filter((offer) => offer !== id)
-        : [...this._state.offers, id];
-      return newOffers;
-    };
-
-    this.updateElement({
-      offers: toggleId(offerId),
-    });
-
-  };
-
-  #setDateFromDatepicker() {
-
-    this.#datepicker = flatpickr(
-      this.element.querySelector('input[name="event-start-time"]'),
-      {
-        enableTime: true,
-        dateFormat: 'd/m/y H:i',
-        // eslint-disable-next-line camelcase
-        time_24hr: true,
-        defaultDate: this._state.dateFrom,
-        maxDate: this._state.dateTo,
-        onChange: this.#dateFromChangeHandler,
-      },
-    );
-
-  }
-
-  #dateFromChangeHandler = ([userDate]) => {
-    if (!userDate) {
-      // console.error('Неверный формат даты.');
-      return;
-    }
-
-    const formattedDate = userDate.toISOString();
-
-    if (formattedDate.trim() === '') {
-      // console.error('Дата не может быть пустой.');
-      return;
-    }
-
-    this.updateElement({
-      dateFrom: formattedDate,
-    });
-  };
-
-  #setDateToDatepicker() {
-
-    this.#datepicker = flatpickr(
-      this.element.querySelector('input[name="event-end-time"]'),
-      {
-        enableTime: true,
-        dateFormat: 'd/m/y H:i',
-        // eslint-disable-next-line camelcase
-        time_24hr: true,
-        defaultDate: this._state.dateTo,
-        minDate: this._state.dateFrom,
-        onChange: this.#dateToChangeHandler,
-      },
-    );
-
-  }
-
-  #dateToChangeHandler = ([userDate]) => {
-    if (!userDate) {
-      // console.error('Неверный формат даты.');
-      return;
-    }
-
-    const formattedDate = userDate.toISOString();
-
-    if (formattedDate.trim() === '') {
-      // console.error('Дата не может быть пустой.');
-      return;
-    }
-
-    this.updateElement({
-      dateTo: formattedDate,
+    const checkedBoxes = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
+    this._setState({
+      offers: checkedBoxes.map((item) => item.dataset.offerId)
     });
   };
 
@@ -494,11 +429,10 @@ export default class EventEditView extends AbstractStatefulView {
     const destinationName = getDestinationName(point.destination, destinations);
 
     const typeOffers = getTypeOffers(point.type, offers);
-    const hasTypeOffers = Boolean(typeOffers && typeOffers.length);
 
-    const destinationObject = getDestinationObject(point.destination, destinations);
-    const destinationDescription = destinationObject ? destinationObject.description : null;
-    const hasDestinationDescription = Boolean(destinationObject && destinationObject.description);
+    const fullDestination = getFullDestination(point.destination, destinations);
+    const destinationDescription = fullDestination ? fullDestination.description : null;
+    const hasDestinationDescription = Boolean(fullDestination && fullDestination.description);
 
     const destinationPhotos = getDestinationPhotos(point.destination, destinations);
     const hasDestinationPhotos = Boolean(destinationPhotos && destinationPhotos.length);
@@ -508,8 +442,7 @@ export default class EventEditView extends AbstractStatefulView {
       hasPointType,
       destinationName,
       typeOffers,
-      hasTypeOffers,
-      destinationObject,
+      fullDestination,
       destinationDescription,
       hasDestinationDescription,
       destinationPhotos,
@@ -535,8 +468,8 @@ export default class EventEditView extends AbstractStatefulView {
       point.typeOffers = null;
     }
 
-    if (!point.destinationObject) {
-      point.destinationObject = null;
+    if (!point.fullDestination) {
+      point.fullDestination = null;
     }
 
     if (!point.destinationDescription) {
@@ -555,19 +488,14 @@ export default class EventEditView extends AbstractStatefulView {
       point.hasDestinationPhotos = null;
     }
 
-    if (!point.hasTypeOffers) {
-      point.hasTypeOffers = null;
-    }
-
     delete point.hasPointType;
     delete point.destinationName;
     delete point.typeOffers;
-    delete point.destinationObject;
+    delete point.fullDestination;
     delete point.destinationDescription;
     delete point.hasDestinationDescription;
     delete point.destinationPhotos;
     delete point.hasDestinationPhotos;
-    delete point.hasTypeOffers;
 
     delete point.isDisabled;
     delete point.isSaving;
