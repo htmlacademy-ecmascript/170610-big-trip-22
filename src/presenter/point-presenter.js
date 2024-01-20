@@ -80,19 +80,24 @@ export default class PointPresenter {
   }
 
   destroy() {
-    remove(this.#eventComponent);
-    remove(this.#eventEditComponent);
+    if (this.#eventComponent) {
+      remove(this.#eventComponent);
+    }
+
+    if (this.#eventEditComponent) {
+      remove(this.#eventEditComponent);
+    }
   }
 
   resetView() {
-    if (this.#mode !== Mode.DEFAULT) {
+    if (this.#mode !== Mode.DEFAULT && this.#eventEditComponent) {
       this.#eventEditComponent.reset(this.#point);
       this.#replaceFormToCard();
     }
   }
 
   setSaving() {
-    if (this.#mode === Mode.EDITING) {
+    if (this.#mode === Mode.EDITING && this.#eventEditComponent) {
       this.#eventEditComponent.updateElement({
         isDisabled: true,
         isSaving: true,
@@ -101,7 +106,7 @@ export default class PointPresenter {
   }
 
   setDeleting() {
-    if (this.#mode === Mode.EDITING) {
+    if (this.#mode === Mode.EDITING && this.#eventEditComponent) {
       this.#eventEditComponent.updateElement({
         isDisabled: true,
         isDeleting: true,
