@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { DESTINATIONS_ITEMS_COUNT } from '../const';
+import { DESTINATIONS_ITEMS_COUNT, DASH_SEPARATOR } from '../const';
 
 const sortByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 
@@ -21,7 +21,7 @@ const getDestinationName = (destinationId, destinations) => {
     return '';
   }
   const foundDestination = destinations.find(({ id: pointDestinationId }) => pointDestinationId === destinationId);
-  return foundDestination?.name || ''; // Если foundDestination равно undefined, вернем пустую строку
+  return foundDestination?.name || '';
 };
 
 const getTypeOffers = (pointType, offers) => offers
@@ -55,14 +55,13 @@ const getRoute = (points = [], destinations = []) => {
   const destinationNames = points.map((point) => destinations.find((destination) => destination.id === point.destination)?.name);
 
   if (destinationNames.length <= DESTINATIONS_ITEMS_COUNT) {
-    return destinationNames.join('&nbsp;&mdash;&nbsp;');
+    return destinationNames.join(DASH_SEPARATOR);
   } else {
-    const truncatedNames = `${destinationNames[0]}&nbsp;&mdash;&nbsp;...&nbsp;&mdash;&nbsp;${destinationNames.slice(-1)}`;
+    const truncatedNames = `${destinationNames[0]}${DASH_SEPARATOR}...${DASH_SEPARATOR}${destinationNames.slice(-1)}`;
     return truncatedNames;
   }
 };
-
-const getRouteDuration = (points = []) => points.length ? `${dayjs(points.at(0).dateFrom).format('DD MMM')}&nbsp;&mdash;&nbsp;${dayjs(points.at(-1).dateTo).format('DD MMM')}` : '';
+const getRouteDuration = (points = []) => points.length ? `${dayjs(points.at(0).dateFrom).format('DD MMM')}${DASH_SEPARATOR}${dayjs(points.at(-1).dateTo).format('DD MMM')}` : '';
 
 const changeToDashesLowercase = (text) => text.toLowerCase().split(' ').pop().replace(/-/g, '');
 
