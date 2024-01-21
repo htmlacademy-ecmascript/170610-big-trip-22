@@ -73,6 +73,8 @@ const commonDatepickerConfig = {
   allowInput: true
 };
 
+const DASH_SEPARATOR = '&nbsp;&mdash;&nbsp;';
+
 export {
   OFFERS_TYPES,
   FilterType,
@@ -83,5 +85,6 @@ export {
   Method,
   Url,
   DESTINATIONS_ITEMS_COUNT,
-  commonDatepickerConfig
+  commonDatepickerConfig,
+  DASH_SEPARATOR
 };

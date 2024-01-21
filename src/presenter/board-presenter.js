@@ -112,93 +112,6 @@ export default class BoardPresenter {
     }
   }
 
-  #handleModeChange = () => {
-    this.#newEventPresenter.destroy();
-    this.#eventPresenters.forEach((presenter) => presenter.resetView());
-  };
-
-  #handleViewAction = async (actionType, updateType, update) => {
-    this.#uiBlocker.block();
-
-    try {
-      switch (actionType) {
-        case UserAction.UPDATE_POINT:
-          this.#eventPresenters.get(update.id).setSaving();
-          await this.#pointsModel.updatePoint(updateType, update);
-          break;
-        case UserAction.ADD_POINT:
-          this.#newEventPresenter.setSaving();
-          await this.#pointsModel.addPoint(updateType, update);
-          break;
-        case UserAction.DELETE_POINT:
-          this.#eventPresenters.get(update.id).setDeleting();
-          await this.#pointsModel.deletePoint(updateType, update);
-          break;
-      }
-    } catch (err) {
-      switch (actionType) {
-        case UserAction.UPDATE_POINT:
-          this.#eventPresenters.get(update.id).setAborting();
-          break;
-        case UserAction.ADD_POINT:
-          this.#newEventPresenter.setAborting();
-          break;
-        case UserAction.DELETE_POINT:
-          this.#eventPresenters.get(update.id).setAborting();
-          break;
-      }
-    } finally {
-      this.#uiBlocker.unblock();
-    }
-  };
-
-  #handleModelEvent = (updateType, data) => {
-    switch (updateType) {
-      case UpdateType.PATCH:
-        this.#eventPresenters.get(data.id).init(
-          data,
-          this.destinations,
-          this.offers,
-        );
-        break;
-      case UpdateType.MINOR:
-        this.#clearBoard();
-        this.#renderBoard();
-        break;
-      case UpdateType.MAJOR:
-        this.#clearBoard({ resetSortType: true });
-        this.#renderBoard();
-        break;
-      case UpdateType.INIT:
-        if (data && data.error) {
-          this.#renderError();
-        } else {
-          try {
-            if (this.#destinationsModel.destinations.length === 0 || this.#offersModel.offers.length === 0) {
-              this.#renderError();
-              return;
-            }
-            this.#isLoading = false;
-            remove(this.#loadingComponent);
-            this.#renderBoard();
-          } catch (error) {
-            this.#renderError();
-          }
-        }
-        break;
-    }
-  };
-
-  #handleSortTypeChange = (sortType) => {
-    if (this.#currentSortType === sortType) {
-      return;
-    }
-
-    this.#currentSortType = sortType;
-    this.#clearBoard({ resetRenderedTaskCount: true });
-    this.#renderBoard();
-  };
-
   #renderSort() {
     this.#sortComponent = new SortView({
       currentSortType: this.#currentSortType,
@@ -286,5 +199,92 @@ export default class BoardPresenter {
       this.#currentSortType = SortType.DAY;
     }
   }
+
+  #handleModeChange = () => {
+    this.#newEventPresenter.destroy();
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
+    try {
+      switch (actionType) {
+        case UserAction.UPDATE_POINT:
+          this.#eventPresenters.get(update.id).setSaving();
+          await this.#pointsModel.updatePoint(updateType, update);
+          break;
+        case UserAction.ADD_POINT:
+          this.#newEventPresenter.setSaving();
+          await this.#pointsModel.addPoint(updateType, update);
+          break;
+        case UserAction.DELETE_POINT:
+          this.#eventPresenters.get(update.id).setDeleting();
+          await this.#pointsModel.deletePoint(updateType, update);
+          break;
+      }
+    } catch (err) {
+      switch (actionType) {
+        case UserAction.UPDATE_POINT:
+          this.#eventPresenters.get(update.id).setAborting();
+          break;
+        case UserAction.ADD_POINT:
+          this.#newEventPresenter.setAborting();
+          break;
+        case UserAction.DELETE_POINT:
+          this.#eventPresenters.get(update.id).setAborting();
+          break;
+      }
+    } finally {
+      this.#uiBlocker.unblock();
+    }
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#eventPresenters.get(data.id).init(
+          data,
+          this.destinations,
+          this.offers,
+        );
+        break;
+      case UpdateType.MINOR:
+        this.#clearBoard();
+        this.#renderBoard();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearBoard({ resetSortType: true });
+        this.#renderBoard();
+        break;
+      case UpdateType.INIT:
+        if (data && data.error) {
+          this.#renderError();
+        } else {
+          try {
+            if (this.#destinationsModel.destinations.length === 0 || this.#offersModel.offers.length === 0) {
+              this.#renderError();
+              return;
+            }
+            this.#isLoading = false;
+            remove(this.#loadingComponent);
+            this.#renderBoard();
+          } catch (error) {
+            this.#renderError();
+          }
+        }
+        break;
+    }
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#currentSortType = sortType;
+    this.#clearBoard({ resetRenderedTaskCount: true });
+    this.#renderBoard();
+  };
 
 }

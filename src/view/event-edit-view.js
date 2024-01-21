@@ -8,12 +8,15 @@ import createOffersSectionTemplateTemplate from '../template/offers-section-temp
 import { BLANK_POINT, commonDatepickerConfig } from '../const.js';
 
 import {
-  humanizePointInputDateTimeType,
   getDestinationName,
   getTypeOffers,
   getDestinationPhotos,
   getFullDestination,
 } from '../utils/point.js';
+
+import {
+  humanizePointInputDateTimeType,
+} from '../utils/date.js';
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -283,7 +286,6 @@ export default class EventEditView extends AbstractStatefulView {
   }
 
   #setDateFromDatepicker() {
-
     this.#datepickerFrom = flatpickr(
       this.element.querySelector('input[name="event-start-time"]'),
       {
@@ -292,11 +294,9 @@ export default class EventEditView extends AbstractStatefulView {
         onClose: this.#dateFromCloseHandler,
       },
     );
-
   }
 
   #setDateToDatepicker() {
-
     this.#datepickerTo = flatpickr(
       this.element.querySelector('input[name="event-end-time"]'),
       {
@@ -305,7 +305,6 @@ export default class EventEditView extends AbstractStatefulView {
         onClose: this.#dateToCloseHandler,
       },
     );
-
   }
 
   #dateFromCloseHandler = ([userDate]) => {

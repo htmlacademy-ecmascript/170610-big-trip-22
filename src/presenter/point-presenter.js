@@ -80,19 +80,24 @@ export default class PointPresenter {
   }
 
   destroy() {
-    remove(this.#eventComponent);
-    remove(this.#eventEditComponent);
+    if (this.#eventComponent) {
+      remove(this.#eventComponent);
+    }
+
+    if (this.#eventEditComponent) {
+      remove(this.#eventEditComponent);
+    }
   }
 
   resetView() {
-    if (this.#mode !== Mode.DEFAULT) {
+    if (this.#mode !== Mode.DEFAULT && this.#eventEditComponent) {
       this.#eventEditComponent.reset(this.#point);
       this.#replaceFormToCard();
     }
   }
 
   setSaving() {
-    if (this.#mode === Mode.EDITING) {
+    if (this.#mode === Mode.EDITING && this.#eventEditComponent) {
       this.#eventEditComponent.updateElement({
         isDisabled: true,
         isSaving: true,
@@ -101,7 +106,7 @@ export default class PointPresenter {
   }
 
   setDeleting() {
-    if (this.#mode === Mode.EDITING) {
+    if (this.#mode === Mode.EDITING && this.#eventEditComponent) {
       this.#eventEditComponent.updateElement({
         isDisabled: true,
         isDeleting: true,
@@ -152,20 +157,14 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
-
       { ...this.#point, isFavorite: !this.#point.isFavorite },
-
     );
-
   };
 
-
   #handleFormSubmit = (update) => {
-
     const isMinorUpdate = !isDatesEqual(this.#point.dateFrom, update.dateFrom) || this.#point.basePrice !== update.basePrice;
 
     this.#handleDataChange(
@@ -173,7 +172,6 @@ export default class PointPresenter {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update,
     );
-
   };
 
   #handleCloseClick = () => {
