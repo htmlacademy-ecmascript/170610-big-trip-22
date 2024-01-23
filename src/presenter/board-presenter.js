@@ -39,6 +39,8 @@ export default class BoardPresenter {
   #filterType = FilterType.EVERYTHING;
 
   #isLoading = true;
+  #isErrorLoading = false;
+
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
@@ -154,6 +156,8 @@ export default class BoardPresenter {
   }
 
   #renderError() {
+    this.#isLoading = false;
+    this.#isErrorLoading = true;
     render(this.#errorLoadingComponent, this.#boardComponent.element);
   }
 
@@ -162,6 +166,12 @@ export default class BoardPresenter {
 
     if (this.#isLoading) {
       this.#renderLoading();
+      return;
+    }
+
+
+    if (this.#isErrorLoading) {
+      this.#renderError();
       return;
     }
 
@@ -260,18 +270,13 @@ export default class BoardPresenter {
       case UpdateType.INIT:
         if (data && data.error) {
           this.#renderError();
+          console.log('data.error');
         } else {
-          try {
-            if (this.#destinationsModel.destinations.length === 0 || this.#offersModel.offers.length === 0) {
-              this.#renderError();
-              return;
-            }
-            this.#isLoading = false;
-            remove(this.#loadingComponent);
-            this.#renderBoard();
-          } catch (error) {
-            this.#renderError();
-          }
+          this.#isLoading = false;
+          remove(this.#loadingComponent);
+          this.#renderBoard();
+          console.log(this.#isErrorLoading);
+          console.log('else');
         }
         break;
     }
