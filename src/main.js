@@ -9,7 +9,7 @@ import OffersModel from './model/offers-model.js';
 import FilterModel from './model/filter-model.js';
 import PointsApiService from './api/points-api-service.js';
 
-const AUTHORIZATION = 'Basic 1R21Y2xa~232D2p';
+const AUTHORIZATION = 'Basic 1R21Y2xas~232D2p';
 const END_POINT = 'https://22.objects.pages.academy/big-trip';
 
 const pageBodyElement = document.querySelector('.page-body');
