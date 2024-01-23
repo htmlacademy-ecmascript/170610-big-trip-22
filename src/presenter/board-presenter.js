@@ -158,6 +158,7 @@ export default class BoardPresenter {
   #renderError() {
     this.#isLoading = false;
     this.#isErrorLoading = true;
+    remove(this.#loadingComponent);
     render(this.#errorLoadingComponent, this.#boardComponent.element);
   }
 
@@ -168,13 +169,10 @@ export default class BoardPresenter {
       this.#renderLoading();
       return;
     }
-
-
     if (this.#isErrorLoading) {
       this.#renderError();
       return;
     }
-
     const points = this.points;
     const destinations = this.destinations;
     const offers = this.offers;
@@ -270,13 +268,18 @@ export default class BoardPresenter {
       case UpdateType.INIT:
         if (data && data.error) {
           this.#renderError();
-          console.log('data.error');
         } else {
-          this.#isLoading = false;
-          remove(this.#loadingComponent);
-          this.#renderBoard();
-          console.log(this.#isErrorLoading);
-          console.log('else');
+          try {
+            if (this.#destinationsModel.destinations.length === 0 || this.#offersModel.offers.length === 0) {
+              this.#renderError();
+              return;
+            }
+            this.#isLoading = false;
+            remove(this.#loadingComponent);
+            this.#renderBoard();
+          } catch (error) {
+            this.#renderError();
+          }
         }
         break;
     }
