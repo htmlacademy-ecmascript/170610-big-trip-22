@@ -1,7 +1,7 @@
 import { changeToDashesLowercase } from '../utils/point';
 
 const createOffersSectionTemplate = (typeOffers, pointOffersIds, isDisabled) => {
-  if (typeOffers.length === 0) {
+  if (!typeOffers || typeOffers.length === 0) {
     return '';
   }
 

@@ -1,6 +1,5 @@
 import { render, remove } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
-import BoardView from '../view/board-view.js';
 import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
@@ -20,12 +19,12 @@ const TimeLimit = {
 export default class BoardPresenter {
 
   #boardContainer = null;
+
   #pointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
   #filterModel = null;
 
-  #boardComponent = new BoardView();
   #eventsListComponent = new EventsListView();
   #loadingComponent = new LoadingView();
   #errorLoadingComponent = new ErrorLoadingView();
@@ -39,6 +38,8 @@ export default class BoardPresenter {
   #filterType = FilterType.EVERYTHING;
 
   #isLoading = true;
+  #isErrorLoading = false;
+
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
@@ -105,11 +106,13 @@ export default class BoardPresenter {
   createPoint() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newEventPresenter.init(this.destinations, this.offers);
 
     if (this.#noEventComponent) {
+      render(this.#eventsListComponent, this.#boardContainer);
       remove(this.#noEventComponent);
     }
+
+    this.#newEventPresenter.init(this.destinations, this.offers);
   }
 
   #renderSort() {
@@ -118,7 +121,7 @@ export default class BoardPresenter {
       onSortTypeChange: this.#handleSortTypeChange
     });
 
-    render(this.#sortComponent, this.#boardComponent.element);
+    render(this.#sortComponent, this.#boardContainer);
   }
 
   #renderPoint(point, destinations, offers) {
@@ -142,29 +145,32 @@ export default class BoardPresenter {
   }
 
   #renderLoading() {
-    render(this.#loadingComponent, this.#boardComponent.element);
+    render(this.#loadingComponent, this.#boardContainer);
   }
 
   #renderNoEvents() {
     this.#noEventComponent = new NoEventView({
       filterType: this.#filterType
     });
-
-    render(this.#noEventComponent, this.#boardComponent.element);
+    render(this.#noEventComponent, this.#boardContainer);
   }
 
   #renderError() {
-    render(this.#errorLoadingComponent, this.#boardComponent.element);
+    this.#isLoading = false;
+    this.#isErrorLoading = true;
+    remove(this.#loadingComponent);
+    render(this.#errorLoadingComponent, this.#boardContainer);
   }
 
   #renderBoard() {
-    render(this.#boardComponent, this.#boardContainer);
-
     if (this.#isLoading) {
       this.#renderLoading();
       return;
     }
-
+    if (this.#isErrorLoading) {
+      this.#renderError();
+      return;
+    }
     const points = this.points;
     const destinations = this.destinations;
     const offers = this.offers;
@@ -172,13 +178,13 @@ export default class BoardPresenter {
     const pointCount = points.length;
 
     if (pointCount === 0) {
-      render(this.#eventsListComponent, this.#boardComponent.element);
+      render(this.#eventsListComponent, this.#boardContainer);
       this.#renderNoEvents();
       return;
     }
 
     this.#renderSort();
-    render(this.#eventsListComponent, this.#boardComponent.element);
+    render(this.#eventsListComponent, this.#boardContainer);
     this.#renderPoints(points, destinations, offers);
   }
 
