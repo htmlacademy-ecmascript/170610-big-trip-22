@@ -85,7 +85,6 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-
 let isError = false;
 
 infoPresenter.init();
